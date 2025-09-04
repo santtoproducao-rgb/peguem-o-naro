@@ -14,10 +14,15 @@
     --donate:#00a307; --ok:#16a34a; --err:#dc2626;
 
     /* Layout do crédito e offsets de segurança (iOS etc.) */
-    --credit-h: 28px;                       /* altura aproximada do crédito */
-    --credit-gap: 8px;                      /* espaço entre crédito e outros botões */
+    --credit-h: 28px;
+    --credit-gap: 8px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+    /* NOVO: Controle de altura */
+    --naro-bottom: 150px;   /* quanto maior o valor, mais baixo fica o Naro */
+    --cage-top: 10px;        /* quanto maior o valor, mais baixo fica a gaiola */
   }
+
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;background:#000;color:var(--text)}
@@ -41,7 +46,6 @@
     position:absolute; left:0; right:0; bottom:14vh;
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
-  /* Empurra a área de conteúdo um pouco para cima no MOBILE para não colidir com o crédito */
   @media (max-width:767px){
     .content{
       bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));
@@ -60,7 +64,6 @@
       z-index:1000;
     }
   }
-  /* MOBILE: compacto em 1 linha */
   @media (max-width:767px){
     .counters{
       position:relative; margin:0 0 6px 0;
@@ -79,7 +82,7 @@
   .btn:hover{background:var(--accent)}
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
 
-  /* Helper: duas versões (desk e mob) para evitar linha em branco no mobile */
+  /* Helper */
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px;text-align:center}
   .helper .only-desk{display:inline}
   .helper .only-mob{display:none}
@@ -103,7 +106,7 @@
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
 
-  /* DOAR (desktop): abaixo do logo-menu */
+  /* DOAR desktop */
   .donate-btn-desktop{
     display:inline-flex; align-items:center; justify-content:center;
     padding:12px 18px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;
@@ -111,55 +114,34 @@
   }
   @media (max-width:767px){ .donate-btn-desktop{ display:none; } }
 
-  /* BG/arena */
+  /* Arena */
   .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .naro{position:absolute;left:0;display:flex;align-items:flex-end;justify-content:center;bottom:110px}
-  .cage{position:absolute;top:0;left:0;transform:none;display:flex;align-items:flex-end;justify-content:center}
+  .naro{position:absolute;left:0;display:flex;align-items:flex-end;justify-content:center;bottom: var(--naro-bottom);}
+  .cage{position:absolute;top: var(--cage-top);left:0;transform:none;display:flex;align-items:flex-end;justify-content:center}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
   /* ======= MOBILE ======= */
   @media (max-width:767px){
-    .top-mobile-hud{
-      position:absolute;top:8px;left:8px;right:8px;z-index:9;
-      display:flex;gap:10px;justify-content:space-between;
-    }
-    .top-mobile-hud .box{
-      background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12);
-      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;
-      padding:0 8px;min-width:0;
-    }
-    .brand-left{
-      top:58px; left:10px; right:10px;
-      flex-direction:row; justify-content:space-between; align-items:center; gap:10px;
-    }
+    .top-mobile-hud{position:absolute;top:8px;left:8px;right:8px;z-index:9;display:flex;gap:10px;justify-content:space-between;}
+    .top-mobile-hud .box{background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;padding:0 8px;min-width:0;}
+    .brand-left{top:58px; left:10px; right:10px;flex-direction:row; justify-content:space-between; align-items:center; gap:10px;}
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:100px}
     .logo-arco img{width:60px}
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
-
-    /* barra de ações mobile: "Pegue o Naro" + "Doar" lado a lado */
     .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:center; justify-content:center;}
     .mobile-drop .row-mobile-actions .btn{ flex:1; }
-    .donate-btn-mobile{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:12px 16px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;
-      box-shadow:var(--shadow); font-weight:800; white-space:nowrap;
-    }
+    .donate-btn-mobile{display:inline-flex; align-items:center; justify-content:center;padding:12px 16px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;box-shadow:var(--shadow); font-weight:800; white-space:nowrap;}
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  /* Sobe os botões mobile para não colidir com o crédito */
-  .mobile-drop{
-    position:fixed;left:50%;transform:translateX(-50%);
-    bottom: calc(16px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));
-    width:90vw;max-width:560px;z-index:30;
-  }
+  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(16px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
   .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
@@ -170,15 +152,8 @@
   .modal h2.error{color:var(--err)}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
-  /* Crédito fixo (todas as telas) — 1 linha, fundo branco, texto preto */
-  .credit{
-    position:fixed; left:50%; transform:translateX(-50%);
-    bottom: max(2px, var(--safe-bottom));
-    z-index:60;
-    font-size:12px; font-weight:800; color:#111; text-decoration:none;
-    padding:4px 8px; border-radius:8px; background:#fff; border:1px solid #e5e7eb;
-    white-space:nowrap;
-  }
+  /* Créditos */
+  .credit{position:fixed; left:50%; transform:translateX(-50%); bottom: max(2px, var(--safe-bottom)); z-index:60; font-size:12px; font-weight:800; color:#111; text-decoration:none; padding:4px 8px; border-radius:8px; background:#fff; border:1px solid #e5e7eb; white-space:nowrap;}
   .credit:hover{text-decoration:underline}
 </style>
 </head>
@@ -219,7 +194,6 @@
 <section id="gamePage" class="page hidden">
   <div id="gameBg" class="bg"></div>
 
-  <!-- HUD MOBILE -->
   <div class="top-mobile-hud">
     <div class="box">⏱ <span id="time">00:00</span></div>
     <div class="box">⚡ <span id="speed">0</span></div>
@@ -227,14 +201,12 @@
     <div class="box">🎯 <span id="level">1</span></div>
   </div>
 
-  <!-- logos + DOAR (desktop) -->
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
     <a class="donate-btn-desktop" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
   </div>
 
-  <!-- HUD desktop -->
   <div class="top-right">
     <div class="hud">
       <div class="pill pill-time">⏱ <b id="timeDesk">00:00</b></div>
@@ -244,7 +216,6 @@
     </div>
   </div>
 
-  <!-- arena -->
   <div class="arena" id="arena">
     <div class="layer">
       <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
@@ -253,7 +224,6 @@
     </div>
   </div>
 
-  <!-- AÇÕES MOBILE -->
   <div class="mobile-drop">
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
@@ -276,12 +246,11 @@
   </div>
 </div>
 
-<!-- CRÉDITO FIXO -->
 <a class="credit" href="https://www.instagram.com/umcarlossantos/" target="_blank" rel="noopener">
   DESENVOLVIDO POR: @umcarlossantos
 </a>
 
-<!-- ========== SCRIPT DO JOGO (lógica principal) ========== -->
+<!-- ========== SCRIPT DO JOGO ========== -->
 <script>
 /** ====== ASSETS ====== **/
 const ASSETS = {
@@ -293,35 +262,15 @@ const ASSETS = {
   logoMenu:  './logo-menu.png'
 };
 
-/** dimensões originais */
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/** RATIOS (ajuste fino) */
-const RATIO_DESK = { cageH: 0.40, naroH: 0.35, cageTop: 0 };
-const RATIO_MOB  = { cageH: 0.22, naroH: 0.20, cageTop: 0 };
+const RATIO_DESK = { cageH: 0.40, naroH: 0.35 };
+const RATIO_MOB  = { cageH: 0.22, naroH: 0.20 };
 
-/** Estado */
-let state = {
-  userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
-  dir:1, x:0, vx:0, naroW:0, naroH:0,
-  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0,
-  lastWin:null
-};
+let state = { userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false, dir:1, x:0, vx:0, naroW:0, naroH:0, cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0, lastWin:null };
 
-const params = {
-  baseSpeed: 360,
-  speedIncreasePerLevel: 90,
-  speedRampByTime: 0.018,
-  cagePatrolSpeed: 260,
-  dropSpeed: 1100,
-  hitboxInnerPadding:14,
-  minOverlapToCaptureMobile:0.60,
-  minOverlapToCaptureDesktop:0.75,  // MAIS rígido no desktop
-  balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
-  balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
-  transparentWhiteThreshold:242
-};
+const params = { baseSpeed: 360, speedIncreasePerLevel: 90, speedRampByTime: 0.018, cagePatrolSpeed: 260, dropSpeed: 1100, hitboxInnerPadding:14, minOverlapToCaptureMobile:0.60, minOverlapToCaptureDesktop:0.75, balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500, balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"], transparentWhiteThreshold:242 };
 
 function $(id){return document.getElementById(id)}
 function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
@@ -329,25 +278,7 @@ function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/** trata branco como transparente (opcional) */
-function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
-  return new Promise((resolve)=>{
-    const img = new Image(); img.crossOrigin = 'anonymous';
-    img.onload = ()=>{
-      const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
-      const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
-      const data=ctx.getImageData(0,0,c.width,c.height); const d=data.data; let changed=false;
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i],g=d[i+1],b=d[i+2]; if(r>=threshold&&g>=threshold&&b>=threshold){d[i+3]=0;changed=true;}
-      }
-      if(changed){ ctx.putImageData(data,0,0); resolve(c.toDataURL('image/png')); } else resolve(url);
-    };
-    img.onerror=()=>resolve(url);
-    img.src=url+'?v='+Date.now();
-  });
-}
-
-/** layout – usa a tela inteira */
+/** Sprites */
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
   const R = isMobile()? RATIO_MOB : RATIO_DESK;
@@ -361,45 +292,12 @@ function layoutSprites(){
 
   $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px';
   $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px';
-
-  state.suspendedTop = R.cageTop; $('cage').style.top = state.suspendedTop+'px';
-
-  const maxNaroX = arena.width - naroW;
-  state.x = clamp(state.x, 0, maxNaroX); $('naro').style.left = state.x+'px';
-
-  const maxCageX = arena.width - cageW;
-  let x = Number($('cage').dataset.x ?? Math.round(arena.width*0.72 - cageW/2));
-  x = clamp(x, 0, maxCageX);
-  $('cage').dataset.x = x; $('cage').style.left = x+'px';
 }
 
-async function loadImages(){
-  const bg=currentBg();
-  $('menuBg').style.backgroundImage=`url(${bg})`;
-  $('gameBg').style.backgroundImage=`url(${bg})`;
-
-  $('menuLogoLeft').src=ASSETS.logoMenu;
-  $('menuLogoRight').src=ASSETS.logoGame;
-
-  $('gameLogoCard').src=ASSETS.logoGame;
-  $('gameLogoLeft').src=ASSETS.logoMenu;
-
-  $('naroImg').src=await makeWhiteTransparent(ASSETS.naro);
-  $('cageImg').src=await makeWhiteTransparent(ASSETS.cage);
-
-  setTimeout(layoutSprites,50);
-  window.addEventListener('resize', layoutSprites);
-}
-
-function showMenu(){ 
-  $('menuPage').classList.remove('hidden'); 
-  $('gamePage').classList.add('hidden'); 
-  $('overlay').classList.remove('show'); 
-  state.playing=false; state.cageDropping=false; 
-}
+function showMenu(){ $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
 function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
 
-/** balões */
+/** Balões */
 let balloonTimer=null;
 function scheduleBalloon(){
   clearTimeout(balloonTimer);
@@ -408,77 +306,38 @@ function scheduleBalloon(){
   const wait=Math.floor(min + Math.random()*(max-min));
   balloonTimer=setTimeout(()=>{
     const t=params.balloons[Math.floor(Math.random()*params.balloons.length)];
-    showBalloon(t);
-    setTimeout(hideBalloon, params.balloonDurationMs);
+    const b=$('balloon'); b.textContent=t; b.classList.add('show');
+    setTimeout(()=>b.classList.remove('show'), params.balloonDurationMs);
     scheduleBalloon();
   }, wait);
 }
-function showBalloon(t){
-  const b=$('balloon'); b.textContent=t;
-  const naro=$('naro').getBoundingClientRect();
-  const arena=$('arena').getBoundingClientRect();
-  const left=clamp((naro.left-arena.left)+naro.width/2-120, 8, arena.width-250);
-  b.style.left=left+'px'; b.classList.add('show');
-}
-function hideBalloon(){ $('balloon').classList.remove('show'); }
 
-/** hit test (mais rigoroso) */
-function getInnerCageRect(){
-  const cage=$('cage').getBoundingClientRect();
-  const pad=params.hitboxInnerPadding;
-  return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad};
-}
+/** Captura */
+function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad}; }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
 function naroCaptured(){
   const inner=getInnerCageRect(), n=getNaroRect();
   const fully = (n.left>=inner.left && n.right<=inner.right && n.top>=inner.top && n.bottom<=inner.bottom);
   if(fully) return true;
-
-  // centro precisa estar dentro
   const cx=(n.left+n.right)/2, cy=(n.top+n.bottom)/2;
   const centerInside = (cx>=inner.left && cx<=inner.right && cy>=inner.top && cy<=inner.bottom);
   if(!centerInside) return false;
-
-  // sobreposição vertical precisa ser >= threshold (desktop mais rígido)
   const vOverlap = Math.max(0, Math.min(inner.bottom, n.bottom) - Math.max(inner.top, n.top));
   const nH = (n.bottom - n.top) || 1;
   const threshold = isMobile() ? params.minOverlapToCaptureMobile : params.minOverlapToCaptureDesktop;
   return (vOverlap / nH) >= threshold;
 }
 
-/** jogo */
+/** Jogo */
 function resetRound(){
-  state.startedAt=performance.now(); state.elapsed=0;
-  state.dir = Math.random()<0.5 ? -1 : 1;
-  state.vx=0;
-  state.cageDir = Math.random()<0.5 ? -1 : 1;
-  state.cageDropping=false;
-  $('cage').style.top = state.suspendedTop+'px';
-  layoutSprites(); updateHUD(); scheduleBalloon();
+  state.startedAt=performance.now(); state.elapsed=0; state.dir = Math.random()<0.5 ? -1 : 1; state.vx=0; state.cageDir = Math.random()<0.5 ? -1 : 1; state.cageDropping=false; layoutSprites(); updateHUD(); scheduleBalloon();
 }
-function currentSpeed(){
-  const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
-  const ramp=1 + params.speedRampByTime * (state.elapsed/1000);
-  return base*ramp;
-}
-function updateHUD(){
-  const t = fmtTime(state.elapsed/1000);
-  const sp = Math.round(currentSpeed());
-  $('time').textContent=t; $('timeDesk').textContent=t;
-  $('level').textContent=state.level; $('levelDesk').textContent=state.level;
-  $('speed').textContent=sp; $('speedDesk').textContent=sp;
-  $('score').textContent=state.score; $('scoreDesk').textContent=state.score;
-}
+function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
+function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); $('time').textContent=t; $('timeDesk').textContent=t; $('level').textContent=state.level; $('levelDesk').textContent=state.level; $('speed').textContent=sp; $('speedDesk').textContent=sp; $('score').textContent=state.score; $('scoreDesk').textContent=state.score; }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
-/* chão da gaiola no mobile: para na mesma altura que o Naro */
-function cageGroundY(){
-  const arena = $('arena').getBoundingClientRect();
-  const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
-  const pad = 0;
-  return arena.height - state.cageH - naroBottom - pad;
-}
+function cageGroundY(){ const arena = $('arena').getBoundingClientRect(); const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0; const pad = 0; return arena.height - state.cageH - naroBottom - pad; }
 
-/** loop */
+/** Loop */
 let raf=null;
 function loop(ts){
   if(!state.playing){ raf=requestAnimationFrame(loop); return; }
@@ -488,7 +347,6 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // NARO bate-e-volta
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
@@ -496,7 +354,6 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // GAIOLA bate-e-volta enquanto suspensa
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
     const maxCageX = arena.width - state.cageW;
@@ -508,7 +365,6 @@ function loop(ts){
     cageEl.style.left = Math.round(x)+'px';
   }
 
-  // queda
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
@@ -530,74 +386,28 @@ function showResult(win){
   state.lastWin = win;
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
-
-  const title = $('modalTitle');
-  const icon  = $('modalIcon');
-  const ttext = $('modalTitleText');
+  const title = $('modalTitle'); const icon  = $('modalIcon'); const ttext = $('modalTitleText');
   title.classList.remove('success','error');
-
-  if(win){
-    window.incWin && window.incWin();     // conta ACERTO global
-    ttext.textContent = 'Parabéns!';
-    title.classList.add('success');
-    icon.textContent = '✅';
-    $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
-    state.score += 100;                   // soma pontos apenas no acerto
-  }else{
-    // ERRO: não soma pontos e reseta dificuldade para velocidade inicial
-    state.level = 1;
-    ttext.textContent = 'FALHOU';
-    title.classList.add('error');
-    icon.textContent = '❌';
-    $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
-  }
-
+  if(win){ window.incWin && window.incWin(); ttext.textContent = 'Parabéns!'; title.classList.add('success'); icon.textContent = '✅'; $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`; state.score += 100; }
+  else{ state.level = 1; ttext.textContent = 'FALHOU'; title.classList.add('error'); icon.textContent = '❌'; $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`; }
   $('modalAction').textContent = 'TENTAR SALVAR A DEMOCRACIA NOVAMENTE';
 }
 
-/** controles */
+/** Controles */
 $('startBtn').addEventListener('click', startGame);
 const mobileBtn=$('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
+$('modalAction').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; } else if (state.lastWin === true) { state.level++; } state.playing = true; resetRound(); });
 
-// Botão único do modal
-$('modalAction').addEventListener('click', ()=>{
-  $('overlay').classList.remove('show');
+function startGame(){ state.userName = $('userName').value.trim(); state.level = state.level || 1; state.playing = true; state.lastWin = null; window.incPlayed && window.incPlayed(); $('overlay').classList.remove('show'); showGame(); resetRound(); }
 
-  if (state.lastWin === false) {
-    // errou: conta jogado, volta para velocidade inicial
-    window.incPlayed && window.incPlayed();
-    state.level = 1;
-  } else if (state.lastWin === true) {
-    // acertou: próxima fase
-    state.level++;
-  }
-
-  state.playing = true;
-  resetRound(); // reseta tempo e reposiciona tudo
-});
-
-function startGame(){
-  state.userName = $('userName').value.trim();
-  state.level = state.level || 1;
-  state.playing = true;
-  state.lastWin = null;
-  window.incPlayed && window.incPlayed();  // conta jogado ao iniciar
-  $('overlay').classList.remove('show');
-  showGame(); resetRound();
-}
-
-/* Stub — os contadores agora são controlados pelo módulo Firebase abaixo */
-function bootstrapCounters(){}
-
-function init(){ loadImages(); showMenu(); bootstrapCounters(); loop(0); }
+function init(){ showMenu(); layoutSprites(); loop(0); }
 init();
 </script>
 
-<!-- ========== FIREBASE (MÓDULO) — contadores globais ========== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
   import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
@@ -618,16 +428,8 @@ init();
   const playsRef = ref(db, "counters/plays");
   const winsRef  = ref(db, "counters/wins");
 
-  onValue(playsRef, (snap)=>{
-    const v = snap.val() ?? 0;
-    const el = document.getElementById("playedCount");
-    if (el) el.textContent = v;
-  });
-  onValue(winsRef, (snap)=>{
-    const v = snap.val() ?? 0;
-    const el = document.getElementById("winCount");
-    if (el) el.textContent = v;
-  });
+  onValue(playsRef, (snap)=>{ const v = snap.val() ?? 0; const el = document.getElementById("playedCount"); if (el) el.textContent = v; });
+  onValue(winsRef, (snap)=>{ const v = snap.val() ?? 0; const el = document.getElementById("winCount"); if (el) el.textContent = v; });
 
   window.incPlayed = () => runTransaction(playsRef, (cur)=> (cur||0)+1);
   window.incWin    = () => runTransaction(winsRef,  (cur)=> (cur||0)+1);
