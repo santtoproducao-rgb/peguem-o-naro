@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PEGUEM O NARO – BANDIDO BOM É BANDIDO PRESO</title>
+<title>PEGUE O NARO – BANDIDO BOM É BANDIDO PRESO</title>
 <meta name="description" content="Jogo web: derrube a gaiola e prenda o Naro.">
 <style>
   :root{
     --primary:#111827; --accent:#f59e0b; --text:#111111;
     --glass:rgba(255,255,255,.18); --glass-strong:rgba(255,255,255,.65);
-    --hud-bg:rgba(18,18,18,.35); --hud-text:#f5f5f5;
+    --hud-bg:#2b241d; --hud-chip:#d2b48c; /* marrom/bronzeado do mock */
+    --hud-text:#f5f5f5;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#ffffff; --modal-text:#111111;
     --btn-radius:14px; --btn-weight:800;
+    --shadow:0 10px 30px rgba(0,0,0,.25);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -25,17 +27,24 @@
   .page{position:relative;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
-  /* ==== MENU ==== */
-  .menu-logo-fixed{position:absolute;top:14px;left:14px;z-index:5}
-  .menu-logo-fixed img{width:120px;height:auto}
-  @media (max-width:767px){.menu-logo-fixed img{width:90px}}
+  /* ====== CARTÕES/LOGOS ====== */
+  .card-white{background:#fff;border-radius:26px;box-shadow:var(--shadow);padding:16px 20px}
+  .badge{background:#fff;border-radius:12px;padding:6px 10px;box-shadow:var(--shadow)}
 
-  .content{width:100%;max-width:1024px;padding:16px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
-  .logo-game-wrap{background:#fff;border-radius:24px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .logo-game{max-width:340px;max-height:340px}
-  @media (max-width:767px){.logo-game{max-width:240px;max-height:240px}}
+  /* ====== MENU (imagem 2) ====== */
+  .menu-logos{
+    position:absolute;top:22px;left:22px;right:22px;z-index:6;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  }
+  .menu-logo-left img{width:160px;height:auto}
+  .menu-logo-right img{width:300px;height:auto}
+  @media (max-width:1024px){
+    .menu-logo-right img{width:220px}
+    .menu-logo-left img{width:120px}
+  }
 
-  .card{background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .content{width:100%;max-width:1024px;padding:16px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;margin-top:120px}
+  .card{background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
   .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
@@ -43,47 +52,58 @@
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
-  /* ==== JOGO ==== */
-  .brand-cluster{
-    position:absolute;top:14px;left:14px;z-index:7;display:flex;flex-direction:column;gap:12px;align-items:flex-start
+  /* ====== JOGO (imagem 1) ====== */
+  .brand-cluster-left{
+    position:absolute;top:24px;left:24px;z-index:7;
+    display:flex;flex-direction:column;gap:18px;align-items:flex-start
   }
-  .logo-game-card{
-    background:#fff;border-radius:24px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)
-  }
-  .logo-game-card img{width:260px;height:auto}
-  .logo-menu-small img{width:120px;height:auto}
-  @media (max-width:767px){
-    .logo-game-card img{width:200px}
-    .logo-menu-small img{width:90px}
+  .logo-game-card img{width:300px;height:auto}
+  .logo-arco img{width:140px;height:auto}
+  @media (max-width:1024px){
+    .logo-game-card img{width:240px}
+    .logo-arco img{width:110px}
   }
 
   .top-right-actions{
-    position:absolute;top:10px;right:10px;z-index:7;display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:flex-end
+    position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end
   }
-  .hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .pill{color:var(--hud-text);background:var(--hud-bg);border:1px solid rgba(255,255,255,.18);padding:8px 12px;border-radius:12px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.35);backdrop-filter:blur(8px) saturate(1.25);display:flex;gap:6px;align-items:center}
-  .donate-btn{white-space:nowrap}
+  .hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
+  .pill{color:#1c160f;background:var(--hud-chip);border:0;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
+  .pill b{color:#1c160f}
+  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow)}
 
-  .arena{position:relative;width:min(1200px,90vw);height:min(74vh,780px);border-radius:16px;overflow:hidden}
+  .arena{position:relative;width:min(1200px,92vw);height:min(74vh,780px);border-radius:16px;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
 
-  /* posições base */
+  /* posições fixas (desktop) */
   .naro{
     position:absolute;bottom:2px;left:0;
     display:flex;align-items:flex-end;justify-content:center
   }
   .cage{
-    position:absolute;top:0;left:50%;transform:translateX(-50%); /* topo do BG no desktop */
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
     display:flex;align-items:flex-end;justify-content:center
   }
 
-  .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
+  .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
-  @media (max-width:767px){
-    .arena{width:95vw;height:66vh}
-    .balloon{max-width:300px;bottom:210px;white-space:normal}
-    .cage{top:64px} /* no mobile deixamos um respiro do topo */
+
+  /* ====== MOBILE ====== */
+  @media (max-width: 767px){
+    .menu-logos{top:10px;left:10px;right:10px}
+    .menu-logo-left img{width:96px}
+    .menu-logo-right img{width:180px}
+    .content{margin-top:80px}
+
+    .arena{ width: 95vw; height: 68vh; }
+    .top-right-actions{ top:8px; left:8px; right:8px; justify-content:center; gap:8px; }
+    .hud{ width:100%; justify-content:center; gap:8px; }
+    .pill{ padding:6px 10px; }
+    .donate-btn{ padding:10px 12px; }
+
+    .balloon{ bottom:188px; max-width:280px; }
+    .cage{ top:64px; } /* leve respiro no topo no mobile */
   }
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
@@ -94,41 +114,20 @@
   .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
   .modal h2{margin:0 0 8px}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-
-  /* ====== MOBILE HUD compacto ====== */
-  @media (max-width: 767px){
-    .arena{ width: 95vw; height: 68vh; }
-
-    .top-right-actions{ top:8px; left:8px; right:8px; justify-content:center; gap:8px; }
-    .hud{ width:100%; display:flex; justify-content:center; gap:8px; flex-wrap:nowrap; }
-    .pill{ background:#fff; color:#111; border:0; padding:6px 12px; border-radius:12px; font-weight:800; text-shadow:none; }
-    .pill-speed{ display:none; } /* ficam 3 barras: tempo, score, nível */
-
-    .donate-btn{ padding:10px 12px; order:2; }
-
-    .brand-cluster{
-      top:58px; left:10px; right:10px;
-      flex-direction:row; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .logo-game-card{ padding:10px 12px; border-radius:18px; }
-    .logo-game-card img{ width:120px; height:auto; }
-    .logo-menu-small img{ width:72px; height:auto; }
-
-    .balloon{ bottom:188px; max-width:280px; }
-  }
 </style>
 </head>
 <body>
 <div class="app" id="app">
-  <!-- ===== MENU ===== -->
+  <!-- ===== MENU (imagem 2) ===== -->
   <section id="menuPage" class="page">
     <div id="menuBg" class="bg"></div>
 
-    <div class="menu-logo-fixed"><img id="menuLogoTop" alt="Logo pequeno"></div>
+    <div class="menu-logos">
+      <div class="menu-logo-left"><img id="menuLogoLeft" alt="Logo ARCO"></div>
+      <div class="menu-logo-right card-white"><img id="menuLogoRight" alt="Logo do jogo"></div>
+    </div>
 
     <div class="content">
-      <div class="logo-game-wrap"><img id="menuLogoGame" class="logo-game" alt="Logo do jogo"></div>
-
       <div class="card">
         <div class="row" style="margin-bottom:10px">
           <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
@@ -138,19 +137,18 @@
           <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
         </div>
       </div>
-
       <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
     </div>
   </section>
 
-  <!-- ===== JOGO ===== -->
+  <!-- ===== JOGO (imagem 1) ===== -->
   <section id="gamePage" class="page hidden">
     <div id="gameBg" class="bg"></div>
 
-    <!-- cluster topo-esquerdo -->
-    <div class="brand-cluster">
-      <div class="logo-game-card"><img id="gameLogoCard" alt="Logo do jogo"></div>
-      <div class="logo-menu-small"><img id="gameLogoLeft" alt="Logo ARCO"></div>
+    <!-- cluster topo-esquerdo como no mock -->
+    <div class="brand-cluster-left">
+      <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
+      <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
     </div>
 
     <div class="top-right-actions">
@@ -197,7 +195,8 @@ const ASSETS = {
   naro:      './naro.png',
   logoGame:  './logo-game.png',
   cage:      './cage.png',
-  logoMenu:  './logo-menu.png'
+  logoMenu:  './logo-menu.png',   // ARCO
+  logoGameCard: './logo-game.png' // mesmo do jogo
 };
 
 /** ====== DIMENSÕES ORIGINAIS ====== **/
@@ -216,10 +215,10 @@ const params = {
   cagePatrolSpeed:180,
   dropSpeed:980,
   hitboxInnerPadding:14,
-  minOverlapToCapture:0.33, // % do Naro que precisa estar sob a gaiola p/ contar ACERTO
+  minOverlapToCapture:0.33,
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
-  transparentWhiteThreshold: 242
+  transparentWhiteThreshold:242
 };
 
 function $(id){return document.getElementById(id)}
@@ -244,15 +243,15 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   });
 }
 
-/** Layout proporcional dos sprites **/
+/** Layout proporcional dos sprites p/ bater com os mockups */
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
 
-  // Tamanhos proporcionais
-  const cageH = isMobile()? Math.round(arena.height * 0.56) : Math.round(arena.height * 0.64);
+  // Tamanhos
+  const cageH = isMobile()? Math.round(arena.height * 0.52) : Math.round(arena.height * 0.58);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
-  const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
+  const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.48);
   const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
   state.cageH=cageH; state.cageW=cageW; state.naroH=naroH; state.naroW=naroW;
@@ -261,25 +260,21 @@ function layoutSprites(){
   cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
   naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
-  // topo no desktop; um respiro no mobile
+  // Topo no desktop; leve respiro no mobile
   state.suspendedTop = isMobile()? 64 : 0;
   cageEl.style.top = state.suspendedTop+'px';
 
-  // manter X válidos
+  // garantir X dentro dos limites atuais
   const maxNaroX = arena.width - naroW;
   state.x = clamp(state.x, 0, maxNaroX);
   naroEl.style.left = state.x+'px';
 
   const maxCageX = arena.width - cageW;
   if(cageEl.dataset.x===undefined){
-    // começa aleatório para variar
-    const start = Math.round(Math.random()*maxCageX);
-    cageEl.dataset.x = start;
-    cageEl.style.left = start + 'px';
-  }else{
-    const x = clamp(Number(cageEl.dataset.x), 0, maxCageX);
-    cageEl.dataset.x = x; cageEl.style.left = x+'px';
+    const start = Math.round(arena.width*0.72 - cageW/2); // começa mais à direita como no mock
+    cageEl.dataset.x = clamp(start, 0, maxCageX);
   }
+  cageEl.style.left = clamp(Number(cageEl.dataset.x), 0, maxCageX) + 'px';
 }
 
 async function loadImages(){
@@ -287,8 +282,8 @@ async function loadImages(){
   $('menuBg').style.backgroundImage=`url(${bg})`;
   $('gameBg').style.backgroundImage=`url(${bg})`;
 
-  $('menuLogoTop').src=ASSETS.logoMenu;
-  $('menuLogoGame').src=ASSETS.logoGame;
+  $('menuLogoLeft').src=ASSETS.logoMenu;
+  $('menuLogoRight').src=ASSETS.logoGame;
 
   $('gameLogoCard').src=ASSETS.logoGame;
   $('gameLogoLeft').src=ASSETS.logoMenu;
@@ -342,28 +337,22 @@ function getInnerCageRect(){
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
 function centerOf(rect){ return { x:(rect.left+rect.right)/2, y:(rect.top+rect.bottom)/2 }; }
 function intersectionArea(a,b){
-  const left=Math.max(a.left,b.left);
-  const right=Math.min(a.right,b.right);
-  const top=Math.max(a.top,b.top);
-  const bottom=Math.min(a.bottom,b.bottom);
-  const w=Math.max(0, right-left);
-  const h=Math.max(0, bottom-top);
+  const left=Math.max(a.left,b.left), right=Math.min(a.right,b.right);
+  const top=Math.max(a.top,b.top), bottom=Math.min(a.bottom,b.bottom);
+  const w=Math.max(0, right-left), h=Math.max(0, bottom-top);
   return w*h;
 }
 function naroCaptured(){
   const inner=getInnerCageRect();
   const naro=getNaroRect();
 
-  const fullyInside = (naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom);
-  if(fullyInside) return true;
-
+  if(naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom) return true;
   const c=centerOf(naro);
-  const centerInside = (c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom);
-  if(centerInside) return true;
+  if(c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom) return true;
 
   const inter=intersectionArea(inner, naro);
-  const naroArea=naro.width*naro.height || 1;
-  return (inter/naroArea) >= params.minOverlapToCapture;
+  const ratio=inter/((naro.width||1)*(naro.height||1));
+  return ratio >= params.minOverlapToCapture;
 }
 
 /** ====== JOGO ====== **/
@@ -401,29 +390,29 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // ----- Movimento do Naro com WRAP-AROUND -----
+  // Naro com wrap-around
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
-  if(state.x > maxNaroX){ state.x = -state.naroW + 1; }        // saiu à direita, entra pela esquerda
-  if(state.x < -state.naroW){ state.x = maxNaroX - 1; }         // saiu à esquerda, entra pela direita
+  if(state.x > maxNaroX){ state.x = -state.naroW + 1; }
+  if(state.x < -state.naroW){ state.x = maxNaroX - 1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // ----- Patrulha da gaiola com WRAP-AROUND (quando suspensa) -----
+  // Gaiola com wrap-around enquanto suspensa
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
     const maxCageX = arena.width - state.cageW;
     let x = Number(cageEl.dataset.x ?? (arena.width/2 - state.cageW/2));
     x += patrolV*state.cageDir;
 
-    if(x > maxCageX){ x = -state.cageW + 1; }   // sai à direita, volta pela esquerda
-    if(x < -state.cageW){ x = maxCageX - 1; }   // sai à esquerda, volta pela direita
+    if(x > maxCageX){ x = -state.cageW + 1; }
+    if(x < -state.cageW){ x = maxCageX - 1; }
 
     cageEl.dataset.x = x;
     cageEl.style.left = Math.round(x)+'px';
   }
 
-  // ----- Queda da gaiola -----
+  // Queda
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
@@ -483,4 +472,3 @@ init();
 </script>
 </body>
 </html>
-
