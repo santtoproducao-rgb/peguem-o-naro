@@ -348,6 +348,16 @@ function primeAudio(){
 function playOk(){ const a=$('sOK'); a && a.play().catch(()=>{}); }
 function playBad(){ const a=$('sBad'); a && a.play().catch(()=>{}); }
 
+/* === Vibração: helper só em gesto do usuário === */
+function vibrateTap(){
+  try{
+    if (navigator.vibrate) {
+      // Padrão curtinho e perceptível no toque
+      navigator.vibrate([20]);
+    }
+  }catch(e){}
+}
+
 /* Aplica src nos <img> e background-images */
 function applyAssets(){
   const bgUrl = `url("${currentBg()}")`;
@@ -443,14 +453,11 @@ function resetRound(){
 function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
 function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); $('time').textContent=t; $('timeDesk').textContent=t; $('level').textContent=state.level; $('levelDesk').textContent=state.level; $('speed').textContent=sp; $('speedDesk').textContent=sp; $('score').textContent=state.score; $('scoreDesk').textContent=state.score; }
 
-/* Vibração + queda */
+/* Queda da gaiola */
 function dropCage(){
   if(state.playing && !state.cageDropping){
     state.cageDropping=true;
-    // Vibração no mobile (ignora se não suportado)
-    if (navigator.vibrate){
-      navigator.vibrate([30]);
-    }
+    // (vibração foi movida para o clique do botão)
     // garantir que áudio esteja destravado por gesto do usuário
     primeAudio();
   }
@@ -536,7 +543,15 @@ $('startBtn').addEventListener('click', ()=>{
   primeAudio();  // destrava áudio no primeiro clique
   startGame();
 });
-const mobileBtn=$('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
+const mobileBtn=$('mobileDropBtn'); 
+if(mobileBtn){
+  // Vibra no gesto do usuário (tap/click) e depois derruba a gaiola
+  mobileBtn.addEventListener('click', ()=>{
+    vibrateTap();
+    dropCage();
+  });
+}
+
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); primeAudio(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
