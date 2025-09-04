@@ -406,6 +406,14 @@ function updateHUD(){
   $('score').textContent=state.score; $('scoreDesk').textContent=state.score;
 }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
+// Calcula a posição final (chão) da gaiola considerando a altura em que o Naro está no mobile.
+function cageGroundY(){
+  const arena = $('arena').getBoundingClientRect();
+  // Lê o bottom atual do Naro no CSS (no mobile você colocou 94px, por exemplo)
+  const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
+  const pad = 0; // ajuste fino se quiser 1–2 px
+  return arena.height - state.cageH - naroBottom - pad;
+}
 
 /** loop */
 let raf=null;
@@ -441,7 +449,7 @@ function loop(ts){
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
-    const ground=arena.height - state.cageH + 6;
+    const ground = cageGroundY();
     const next=Math.min(curTop+step, ground);
     cageEl.style.top=next+'px';
     if(next>=ground){
