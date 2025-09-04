@@ -116,6 +116,8 @@
     .logo-arco img{width:92px}
     .donate-btn{display:none}
     .top-right{display:none}
+/* Sobe o Naro no mobile para alinhar com a base do botão */
+  .naro{ bottom: 94px; }  /* ajuste fino: teste 86–110px até bater com o mock */
     .balloon{bottom:188px;max-width:280px}
   }
   @media (min-width:768px){
@@ -234,7 +236,7 @@ const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
 /** RATIOS (ajuste fino) */
-const RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0 };
+const RATIO_DESK = { cageH: 0.38, naroH: 0.33, cageTop: 0 };
 const RATIO_MOB  = { cageH: 0.22, naroH: 0.20, cageTop: 0 };
 
 /** Estado */
