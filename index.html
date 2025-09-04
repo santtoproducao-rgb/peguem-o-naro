@@ -503,27 +503,62 @@ function startGame(){
   showGame(); resetRound();
 }
 
-/* ====== CONTADORES (GLOBAL via Firebase + FALLBACK localStorage) ====== */
+/* ====== CONTADORES (GLOBAL pelo Firebase; FALLBACK localStorage) ====== */
 const STORAGE_KEYS = { plays: 'pegueonaro_plays', wins: 'pegueonaro_wins' };
 function lsGetCounters(){ return { plays:Number(localStorage.getItem(STORAGE_KEYS.plays)||0), wins:Number(localStorage.getItem(STORAGE_KEYS.wins)||0) }; }
 function lsSetCounters({plays,wins}){ localStorage.setItem(STORAGE_KEYS.plays,String(plays)); localStorage.setItem(STORAGE_KEYS.wins,String(wins)); }
-function renderCountersUI(plays, wins){ const pc=$('playedCount'), wc=$('winCount'); if(pc) pc.textContent=plays; if(wc) wc.textContent=wins; }
-function bootstrapCounters(){
-  const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
-  // se Firebase estiver disponível, ouvimos em tempo real
-  if (typeof firebase!=='undefined' && firebase.apps && firebase.apps.length){
-    const db=firebase.database(); const refPlays=db.ref("counters/plays"); const refWins=db.ref("counters/wins");
-    refPlays.on("value", s=>{ renderCountersUI(Number(s.val()??0), Number(window.__winsCache??wins)); window.__playsCache=Number(s.val()??0); });
-    refWins .on("value", s=>{ renderCountersUI(Number(window.__playsCache??plays), Number(s.val()??0)); window.__winsCache=Number(s.val()??0); });
+function renderCountersUI(plays, wins){
+  const pc=$('playedCount'), wc=$('winCount');
+  if(pc) pc.textContent=String(plays);
+  if(wc) wc.textContent=String(wins);
+}
+function hasFirebase(){ return (typeof firebase!=='undefined' && firebase.apps && firebase.apps.length); }
+
+/* Lê do Firebase primeiro (global) e já exibe na primeira carga; senão, fallback local */
+async function bootstrapCounters(){
+  if (hasFirebase()){
+    try{
+      const db = firebase.database();
+      const refPlays = db.ref("counters/plays");
+      const refWins  = db.ref("counters/wins");
+
+      // leitura inicial (mostra, por ex., 80 assim que abrir)
+      const [snapP, snapW] = await Promise.all([refPlays.get(), refWins.get()]);
+      const plays0 = Number(snapP.val() ?? 0);
+      const wins0  = Number(snapW.val() ?? 0);
+      renderCountersUI(plays0, wins0);
+
+      // listeners em tempo real
+      refPlays.on("value", s => renderCountersUI(Number(s.val() ?? plays0), Number(window.__lastWinsVal ?? wins0)));
+      refWins .on("value", s => { window.__lastWinsVal = Number(s.val() ?? wins0);
+                                  const curPlays = Number((window.__lastPlaysVal ?? plays0));
+                                  renderCountersUI(curPlays, window.__lastWinsVal); });
+      refPlays.on("value", s => { window.__lastPlaysVal = Number(s.val() ?? plays0); });
+    }catch(e){
+      // erro na leitura → usa localStorage
+      const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
+    }
+  }else{
+    const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
   }
 }
+
+/* Incrementos: preferir SEMPRE o Firebase; localStorage só se não houver Firebase */
 async function incPlayed(){
-  const c=lsGetCounters(); c.plays++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
-  try{ if(typeof firebase!=='undefined'&&firebase.apps&&firebase.apps.length) await firebase.database().ref("counters/plays").transaction(v=>(Number(v)||0)+1);}catch(e){}
+  if (hasFirebase()){
+    try{ await firebase.database().ref("counters/plays").transaction(v => (Number(v)||0)+1); }
+    catch(_){}  // não duplica no local; mantemos a fonte única
+  }else{
+    const c=lsGetCounters(); c.plays++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
+  }
 }
 async function incWin(){
-  const c=lsGetCounters(); c.wins++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
-  try{ if(typeof firebase!=='undefined'&&firebase.apps&&firebase.apps.length) await firebase.database().ref("counters/wins").transaction(v=>(Number(v)||0)+1);}catch(e){}
+  if (hasFirebase()){
+    try{ await firebase.database().ref("counters/wins").transaction(v => (Number(v)||0)+1); }
+    catch(_){} 
+  }else{
+    const c=lsGetCounters(); c.wins++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
+  }
 }
 
 /** boot */
