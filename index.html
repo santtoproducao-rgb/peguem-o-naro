@@ -44,7 +44,6 @@
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
   /* ==== JOGO ==== */
-  /* cluster de marcas no topo esquerdo do jogo */
   .brand-cluster{
     position:absolute;top:14px;left:14px;z-index:7;display:flex;flex-direction:column;gap:12px;align-items:flex-start
   }
@@ -70,8 +69,14 @@
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
 
   /* posições base */
-  .naro{position:absolute;bottom:2 px;left:0;display:flex;align-items:flex-end;justify-content:center}
-  .cage{position:absolute;top:90px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
+  .naro{
+    position:absolute;bottom:2px;left:0;
+    display:flex;align-items:flex-end;justify-content:center
+  }
+  .cage{
+    position:absolute;top:90px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:flex-end;justify-content:center
+  }
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap}
   .balloon.show{opacity:1;transform:translateY(0)}
@@ -120,7 +125,7 @@
   <section id="gamePage" class="page hidden">
     <div id="gameBg" class="bg"></div>
 
-    <!-- cluster topo-esquerdo (como no mock) -->
+    <!-- cluster topo-esquerdo -->
     <div class="brand-cluster">
       <div class="logo-game-card"><img id="gameLogoCard" alt="Logo do jogo"></div>
       <div class="logo-menu-small"><img id="gameLogoLeft" alt="Logo ARCO"></div>
@@ -219,9 +224,12 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
 /** Layout proporcional dos sprites (base 480×1080 e 864×1080) **/
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
-  const cageH = isMobile()? Math.round(arena.height * 0.58) : Math.round(arena.height * 0.66);
+
+  // Gaiola: levemente menor e bem suspensa para aumentar a queda
+  const cageH = isMobile()? Math.round(arena.height * 0.56) : Math.round(arena.height * 0.64);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
+  // Naro: altura proporcional (mantendo "encostado" no chão com bottom:2px no CSS)
   const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
   const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
@@ -231,7 +239,8 @@ function layoutSprites(){
   cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
   naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
-  state.suspendedTop = isMobile()? 55 : 40;
+  // MAIS PERTO DO TOPO (menor = mais alto)
+  state.suspendedTop = isMobile()? 40 : 22;
   cageEl.style.top = state.suspendedTop+'px';
 
   // ajustar posições atuais aos limites
@@ -409,9 +418,3 @@ init();
 </script>
 </body>
 </html>
-
-
-
-
-
-
