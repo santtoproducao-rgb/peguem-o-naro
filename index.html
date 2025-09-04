@@ -162,6 +162,24 @@
     display:flex; align-items:center; justify-content:center;
     font-size:18px; line-height:1; box-shadow:var(--shadow);
   }
+  /* Desktop: posição independente (ajuste à vontade) */
+  @media (min-width:768px){
+    .sound-toggle{
+      top: 50px;   /* Desktop */
+      right: 16px;
+      bottom: auto;
+      left: auto;
+    }
+  }
+  /* Mobile: posição independente (exemplo: canto inferior direito, acima do botão móvel) */
+  @media (max-width:767px){
+    .sound-toggle{
+      top: auto;
+      right: 12px;
+      bottom: calc(200px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom) + 12px);
+      left: auto;
+    }
+  }
 </style>
 </head>
 <body>
