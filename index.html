@@ -8,12 +8,9 @@
 <style>
   :root{
     --primary:#111827; --accent:#f59e0b; --text:#111111;
-    --glass:rgba(255,255,255,.18); --glass-strong:rgba(255,255,255,.65);
-    --hud-bg:#2b241d; --hud-chip:#d2b48c; /* marrom/bronzeado do mock */
-    --hud-text:#f5f5f5;
+    --hud-bg:#2b241d; --hud-chip:#d2b48c; --hud-text:#1c160f;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#ffffff; --modal-text:#111111;
-    --btn-radius:14px; --btn-weight:800;
-    --shadow:0 10px 30px rgba(0,0,0,.25);
+    --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -23,28 +20,18 @@
 
   .app{height:100vh;display:flex;flex-direction:column}
   .hidden{display:none!important}
-
   .page{position:relative;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
-  /* ====== CARTÕES/LOGOS ====== */
+  /* ===== MENU (mock desktop 2) ===== */
+  .menu-logos{position:absolute;top:22px;left:22px;right:22px;z-index:6;display:flex;justify-content:space-between;gap:16px}
   .card-white{background:#fff;border-radius:26px;box-shadow:var(--shadow);padding:16px 20px}
-  .badge{background:#fff;border-radius:12px;padding:6px 10px;box-shadow:var(--shadow)}
-
-  /* ====== MENU (imagem 2) ====== */
-  .menu-logos{
-    position:absolute;top:22px;left:22px;right:22px;z-index:6;
-    display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
-  }
   .menu-logo-left img{width:160px;height:auto}
   .menu-logo-right img{width:300px;height:auto}
-  @media (max-width:1024px){
-    .menu-logo-right img{width:220px}
-    .menu-logo-left img{width:120px}
-  }
+  @media (max-width:1024px){ .menu-logo-right img{width:220px} .menu-logo-left img{width:120px} }
 
   .content{width:100%;max-width:1024px;padding:16px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;margin-top:120px}
-  .card{background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)}
+  .card{background:rgba(255,255,255,.65);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
   .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
@@ -52,58 +39,44 @@
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
-  /* ====== JOGO (imagem 1) ====== */
+  /* ===== JOGO (mock desktop 1) ===== */
   .brand-cluster-left{
-    position:absolute;top:24px;left:24px;z-index:7;
-    display:flex;flex-direction:column;gap:18px;align-items:flex-start
+    position:absolute;top:24px;left:24px;z-index:7;display:flex;flex-direction:column;gap:18px;align-items:flex-start
   }
   .logo-game-card img{width:300px;height:auto}
   .logo-arco img{width:140px;height:auto}
-  @media (max-width:1024px){
-    .logo-game-card img{width:240px}
-    .logo-arco img{width:110px}
-  }
+  @media (max-width:1024px){ .logo-game-card img{width:240px} .logo-arco img{width:110px} }
 
-  .top-right-actions{
-    position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end
-  }
-  .hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
-  .pill{color:#1c160f;background:var(--hud-chip);border:0;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
-  .pill b{color:#1c160f}
-  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow)}
+  .top-right-actions{position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
+  .pill{background:var(--hud-chip);color:var(--hud-text);padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
+  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#0f172a}
 
   .arena{position:relative;width:min(1200px,92vw);height:min(74vh,780px);border-radius:16px;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
 
-  /* posições fixas (desktop) */
-  .naro{
-    position:absolute;bottom:2px;left:0;
-    display:flex;align-items:flex-end;justify-content:center
-  }
-  .cage{
-    position:absolute;top:0;left:50%;transform:translateX(-50%);
-    display:flex;align-items:flex-end;justify-content:center
-  }
+  /* sprites */
+  .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
+  .cage{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
-  /* ====== MOBILE ====== */
+  /* ===== MOBILE ===== */
   @media (max-width: 767px){
     .menu-logos{top:10px;left:10px;right:10px}
     .menu-logo-left img{width:96px}
     .menu-logo-right img{width:180px}
     .content{margin-top:80px}
 
-    .arena{ width: 95vw; height: 68vh; }
-    .top-right-actions{ top:8px; left:8px; right:8px; justify-content:center; gap:8px; }
-    .hud{ width:100%; justify-content:center; gap:8px; }
-    .pill{ padding:6px 10px; }
-    .donate-btn{ padding:10px 12px; }
-
-    .balloon{ bottom:188px; max-width:280px; }
-    .cage{ top:64px; } /* leve respiro no topo no mobile */
+    .arena{width:95vw;height:68vh}
+    .top-right-actions{top:8px;left:8px;right:8px;justify-content:center;gap:8px}
+    .hud{width:100%;justify-content:center}
+    .pill{padding:6px 10px}
+    .donate-btn{padding:10px 12px}
+    .cage{top:60px} /* pequeno respiro no mobile */
+    .balloon{bottom:188px;max-width:280px}
   }
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
@@ -118,15 +91,13 @@
 </head>
 <body>
 <div class="app" id="app">
-  <!-- ===== MENU (imagem 2) ===== -->
+  <!-- ===== MENU ===== -->
   <section id="menuPage" class="page">
     <div id="menuBg" class="bg"></div>
-
     <div class="menu-logos">
       <div class="menu-logo-left"><img id="menuLogoLeft" alt="Logo ARCO"></div>
       <div class="menu-logo-right card-white"><img id="menuLogoRight" alt="Logo do jogo"></div>
     </div>
-
     <div class="content">
       <div class="card">
         <div class="row" style="margin-bottom:10px">
@@ -141,11 +112,10 @@
     </div>
   </section>
 
-  <!-- ===== JOGO (imagem 1) ===== -->
+  <!-- ===== JOGO ===== -->
   <section id="gamePage" class="page hidden">
     <div id="gameBg" class="bg"></div>
 
-    <!-- cluster topo-esquerdo como no mock -->
     <div class="brand-cluster-left">
       <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
       <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
@@ -195,13 +165,16 @@ const ASSETS = {
   naro:      './naro.png',
   logoGame:  './logo-game.png',
   cage:      './cage.png',
-  logoMenu:  './logo-menu.png',   // ARCO
-  logoGameCard: './logo-game.png' // mesmo do jogo
+  logoMenu:  './logo-menu.png'
 };
 
-/** ====== DIMENSÕES ORIGINAIS ====== **/
+/** ====== DIMENSÕES ORIGINAIS (para escala proporcional) ====== **/
 const NARO_W0 = 480, NARO_H0 = 1080;
 const CAGE_W0 = 864, CAGE_H0 = 1080;
+
+/** ====== RATIOS (ajuste fino para bater com os mocks) ====== **/
+const RATIO_DESK = { cageH: 0.40, naroH: 0.26, cageTop: 0 };  // desktop: % da altura da arena
+const RATIO_MOB  = { cageH: 0.48, naroH: 0.24, cageTop: 60 }; // mobile: % e respiro no topo px
 
 /** ====== ESTADO / PARÂMETROS ====== **/
 let state = {
@@ -243,38 +216,40 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   });
 }
 
-/** Layout proporcional dos sprites p/ bater com os mockups */
+/** Layout proporcional dos sprites p/ bater com os mocks */
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
+  const R = isMobile()? RATIO_MOB : RATIO_DESK;
 
-  // Tamanhos
-  const cageH = isMobile()? Math.round(arena.height * 0.52) : Math.round(arena.height * 0.58);
+  // tamanhos
+  const cageH = Math.round(arena.height * R.cageH);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
-
-  const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.48);
+  const naroH = Math.round(arena.height * R.naroH);
   const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
   state.cageH=cageH; state.cageW=cageW; state.naroH=naroH; state.naroW=naroW;
 
   const cageEl=$('cage'), naroEl=$('naro');
   cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
-  naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
+  naroEl.style.width=naroW+'px';  naroEl.style.height=naroH+'px';
 
-  // Topo no desktop; leve respiro no mobile
-  state.suspendedTop = isMobile()? 64 : 0;
+  // topo (desktop 0px; mobile respiro)
+  state.suspendedTop = R.cageTop;
   cageEl.style.top = state.suspendedTop+'px';
 
-  // garantir X dentro dos limites atuais
+  // manter X válidos
   const maxNaroX = arena.width - naroW;
   state.x = clamp(state.x, 0, maxNaroX);
   naroEl.style.left = state.x+'px';
 
   const maxCageX = arena.width - cageW;
   if(cageEl.dataset.x===undefined){
-    const start = Math.round(arena.width*0.72 - cageW/2); // começa mais à direita como no mock
+    const start = Math.round(arena.width*0.72 - cageW/2); // posição inicial à direita (mock)
     cageEl.dataset.x = clamp(start, 0, maxCageX);
+  }else{
+    cageEl.dataset.x = clamp(Number(cageEl.dataset.x), 0, maxCageX);
   }
-  cageEl.style.left = clamp(Number(cageEl.dataset.x), 0, maxCageX) + 'px';
+  cageEl.style.left = cageEl.dataset.x + 'px';
 }
 
 async function loadImages(){
@@ -326,10 +301,7 @@ function getInnerCageRect(){
   const cage=$('cage').getBoundingClientRect();
   const pad=params.hitboxInnerPadding;
   return {
-    left:cage.left+pad,
-    right:cage.right-pad,
-    top:cage.top+pad,
-    bottom:cage.bottom-pad,
+    left:cage.left+pad, right:cage.right-pad, top:cage.top+pad, bottom:cage.bottom-pad,
     width:Math.max(0,(cage.right-pad)-(cage.left+pad)),
     height:Math.max(0,(cage.bottom-pad)-(cage.top+pad))
   };
@@ -343,13 +315,10 @@ function intersectionArea(a,b){
   return w*h;
 }
 function naroCaptured(){
-  const inner=getInnerCageRect();
-  const naro=getNaroRect();
-
+  const inner=getInnerCageRect(); const naro=getNaroRect();
   if(naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom) return true;
   const c=centerOf(naro);
   if(c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom) return true;
-
   const inter=intersectionArea(inner, naro);
   const ratio=inter/((naro.width||1)*(naro.height||1));
   return ratio >= params.minOverlapToCapture;
@@ -390,29 +359,27 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // Naro com wrap-around
+  // NARO: patrulha bate-e-volta
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
-  if(state.x > maxNaroX){ state.x = -state.naroW + 1; }
-  if(state.x < -state.naroW){ state.x = maxNaroX - 1; }
+  if(state.x < 0){ state.x = 0; state.dir = 1; }
+  if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // Gaiola com wrap-around enquanto suspensa
+  // GAIOLA: patrulha bate-e-volta enquanto suspensa
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
     const maxCageX = arena.width - state.cageW;
     let x = Number(cageEl.dataset.x ?? (arena.width/2 - state.cageW/2));
     x += patrolV*state.cageDir;
-
-    if(x > maxCageX){ x = -state.cageW + 1; }
-    if(x < -state.cageW){ x = maxCageX - 1; }
-
+    if(x < 0){ x = 0; state.cageDir = 1; }
+    if(x > maxCageX){ x = maxCageX; state.cageDir = -1; }
     cageEl.dataset.x = x;
     cageEl.style.left = Math.round(x)+'px';
   }
 
-  // Queda
+  // Queda da gaiola
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
