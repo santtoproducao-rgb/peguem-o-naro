@@ -7,16 +7,10 @@
 <meta name="description" content="Jogo web: derrube a gaiola e prenda o Naro.">
 <style>
   :root{
-    --primary:#111827;       /* cor principal (botões) */
-    --accent:#f59e0b;        /* destaques/hover */
-    --text:#111111;          /* texto padrão */
-    --hud-bg:rgba(255,255,255,.82);
-    --hud-text:#111111;
-    --modal-bg:rgba(0,0,0,.5);
-    --modal-card:#ffffff;
-    --modal-text:#111111;
-    --btn-radius:12px;
-    --btn-weight:700;
+    --primary:#111827; --accent:#f59e0b; --text:#111111;
+    --hud-bg:rgba(255,255,255,.82); --hud-text:#111111;
+    --modal-bg:rgba(0,0,0,.5); --modal-card:#ffffff; --modal-text:#111111;
+    --btn-radius:12px; --btn-weight:700;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;color:var(--text);background:#000}
@@ -28,9 +22,7 @@
   .bg{position:absolute; inset:0; z-index:-2; background:#000 center/cover no-repeat}
 
   /* ====== TELA INICIAL ====== */
-  .content{
-    width:100%;max-width:1024px;padding:24px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;text-align:center
-  }
+  .content{width:100%;max-width:1024px;padding:24px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;text-align:center}
   .logo-stack{display:flex;flex-direction:column;align-items:center;gap:10px;margin:8px 0 6px}
   .logo-menu-top{max-width:140px;max-height:140px; padding:6px}
   .logo-game-below{max-width:260px;max-height:260px; padding:6px}
@@ -38,84 +30,35 @@
     .logo-menu-top{max-width:110px;max-height:110px}
     .logo-game-below{max-width:200px;max-height:200px}
   }
-  .title{
-    font-weight:900; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.45);
-    font-size:clamp(20px,3.5vw,42px); letter-spacing:.2px
-  }
-  .card{
-    background:rgba(255,255,255,.9);
-    border-radius:16px; padding:20px; width:min(560px,92vw);
-    box-shadow:0 10px 30px rgba(0,0,0,.25)
-  }
+  .title{font-weight:900; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.45); font-size:clamp(20px,3.5vw,42px); letter-spacing:.2px}
+  .card{background:rgba(255,255,255,.9); border-radius:16px; padding:20px; width:min(560px,92vw); box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .input{
-    width:100%; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #e5e7eb; outline:0
-  }
-  .btn{
-    background:var(--primary); color:#fff; padding:14px 20px; border:0; border-radius:var(--btn-radius);
-    font-weight:var(--btn-weight); font-size:16px; transition:.15s transform, .15s opacity, .15s background;
-  }
+  .input{width:100%; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #e5e7eb; outline:0}
+  .btn{background:var(--primary); color:#fff; padding:14px 20px; border:0; border-radius:var(--btn-radius); font-weight:var(--btn-weight); font-size:16px; transition:.15s}
   .btn:hover{background:var(--accent)}
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .helper{color:#f9fafb;font-size:14px;opacity:.95}
 
   /* ====== JOGO ====== */
-  .hud{
-    position:absolute; left:0; right:0; bottom:0; padding:10px 14px;
-    display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;
-    background:var(--hud-bg); color:var(--hud-text); z-index:5
-  }
+  .hud{position:absolute; left:0; right:0; bottom:0; padding:10px 14px; display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; background:var(--hud-bg); color:var(--hud-text); z-index:5}
   .hud .pill{background:rgba(0,0,0,.06); padding:6px 10px; border-radius:999px}
-  .game-topbar{
-    position:absolute; top:8px; left:8px; right:8px; display:flex; align-items:center; justify-content:space-between; z-index:6;
-  }
-  .game-logo{
-    max-width:140px; max-height:140px; padding:6px; background:rgba(255,255,255,.6);
-    border-radius:12px; backdrop-filter:saturate(1.2) blur(2px)
-  }
-  @media (max-width:767px){
-    .game-logo{max-width:100px; max-height:100px}
-  }
+  .game-topbar{position:absolute; top:8px; left:8px; right:8px; display:flex; align-items:center; justify-content:space-between; z-index:6}
+  .game-logo{max-width:140px; max-height:140px; padding:6px; background:rgba(255,255,255,.6); border-radius:12px; backdrop-filter:saturate(1.2) blur(2px)}
+  @media (max-width:767px){ .game-logo{max-width:100px; max-height:100px} }
   .donate-btn{white-space:nowrap}
-  .mobile-drop{
-    position:fixed; left:50%; transform:translateX(-50%);
-    bottom:16px; width:80vw; max-width:480px; z-index:30;
-  }
-  @media (min-width:768px){
-    .mobile-drop{display:none}
-  }
+  .mobile-drop{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; width:80vw; max-width:480px; z-index:30}
+  @media (min-width:768px){ .mobile-drop{display:none} }
 
-  /* área de jogo */
-  .arena{
-    position:relative; width:min(1100px,95vw); height:min(62vh,640px);
-    background:transparent; border-radius:16px; overflow:hidden;
-  }
+  .arena{position:relative; width:min(1100px,95vw); height:min(62vh,640px); background:transparent; border-radius:16px; overflow:hidden}
   .arena .layer{position:absolute; inset:0}
-  .naro{
-    position:absolute; bottom:12px; left:0;
-    /* Tamanho do Naro (aprox. como sua referência) */
-    width:160px; height:auto;
-    display:flex; align-items:flex-end; justify-content:center;
-  }
+  .naro{position:absolute; bottom:12px; left:0; width:160px; height:auto; display:flex; align-items:flex-end; justify-content:center}
   .naro img{max-width:100%; max-height:100%; object-fit:contain}
-  .cage{
-    position:absolute; top:0; left:50%; transform:translateX(-50%);
-    width:360px; height:420px; display:flex; align-items:flex-end; justify-content:center;
-  }
+  .cage{position:absolute; top:0; left:50%; transform:translateX(-50%); width:360px; height:420px; display:flex; align-items:flex-end; justify-content:center}
   .cage img{max-width:100%; max-height:100%; object-fit:contain}
-  .balloon{
-    position:absolute; bottom:220px; padding:10px 12px; max-width:420px; border-radius:12px;
-    background:#fff; border:1px solid rgba(17,17,17,.1); box-shadow:0 6px 20px rgba(0,0,0,.18);
-    opacity:0; transform:translateY(6px); transition:.25s;
-  }
+  .balloon{position:absolute; bottom:220px; padding:10px 12px; max-width:420px; border-radius:12px; background:#fff; border:1px solid rgba(17,17,17,.1); box-shadow:0 6px 20px rgba(0,0,0,.18); opacity:0; transform:translateY(6px); transition:.25s}
   .balloon.show{opacity:1; transform:translateY(0)}
-  @media (max-width:767px){
-    .naro{width:140px}
-    .cage{width:280px;height:340px}
-    .balloon{max-width:300px; bottom:200px}
-  }
+  @media (max-width:767px){ .naro{width:140px} .cage{width:280px;height:340px} .balloon{max-width:300px; bottom:200px} }
 
-  /* modais */
   .overlay{position:fixed; inset:0; background:var(--modal-bg); display:none; align-items:center; justify-content:center; z-index:50}
   .overlay.show{display:flex}
   .modal{background:var(--modal-card); color:var(--modal-text); border-radius:18px; width:min(520px,92vw); padding:22px; text-align:center; box-shadow:0 14px 50px rgba(0,0,0,.35)}
@@ -130,8 +73,8 @@
     <div id="menuBg" class="bg"></div>
     <div class="content">
       <div class="logo-stack">
-        <img id="menuLogoTop" class="logo-menu-top" alt="Logo do projeto (pequeno)">
-        <img id="menuLogoGame" class="logo-game-below" alt="Logo do jogo (maior)">
+        <img id="menuLogoTop" class="logo-menu-top" alt="Logo pequeno">
+        <img id="menuLogoGame" class="logo-game-below" alt="Logo do jogo">
       </div>
       <h1 class="title">PEGUEM O NARO — BANDIDO BOM É BANDIDO PRESO</h1>
       <div class="card">
@@ -143,7 +86,7 @@
           <a id="donateMenu" class="btn secondary hidden" href="#" target="_blank" rel="noopener">DOAR AGORA</a>
         </div>
       </div>
-      <div class="helper">PC: use a <b>Barra de Espaço</b> para derrubar a gaiola • Celular: toque em <b>Pegue o Naro</b></div>
+      <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
     </div>
   </section>
 
@@ -192,71 +135,48 @@
 </div>
 
 <script>
-/* =========================
-   IMAGENS (Google Drive)
-   =========================
-   Formato usado: https://drive.google.com/uc?export=view&id=ARQUIVO_ID
-*/
-const GDRIVE = {
-  bgDesktop: 'https://drive.google.com/uc?export=view&id=1aK-LmXKQnTjoFJo9SUOhZqs3RDrOYms_',
-  bgMobile:  'https://drive.google.com/uc?export=view&id=1C64gln39Yq_n25oZOpnLgTsHqAWp5F8J',
-  naro:      'https://drive.google.com/uc?export=view&id=15_FakU5UeuhCc1nu1ozAsVSbm7Josov1',
-  logoGame:  'https://drive.google.com/uc?export=view&id=1Ju4_u0plyxsaSnN4-difSkYNFwK5rLkw',
-  cage:      'https://drive.google.com/uc?export=view&id=16elKT2JpshDSz9mzAznx0TBOCn2NoExb',
-  logoMenu:  'https://drive.google.com/uc?export=view&id=1ZZfkeYe7r7HZPldrvAn8N2g7jCgFyFMW'
+/* ====== CONFIG DAS IMAGENS (ARQUIVOS NA RAIZ DO REPO) ====== */
+const ASSETS = {
+  bgDesktop: './bg-desktop.png',
+  bgMobile:  './bg-mobile.png',
+  naro:      './naro.png',
+  logoGame:  './logo-game.png',
+  cage:      './cage.png',
+  logoMenu:  './logo-menu.png'
 };
 
-// Se quiser mostrar o botão de doação, coloque o link aqui:
-const DONATE_URL = ''; // exemplo: 'https://arco.org.br/doe'
+// Se quiser ativar o botão de doação, coloque a URL aqui:
+const DONATE_URL = ''; // ex.: 'https://arco.org.br/doe'
 
-/* =========================
-   ESTADO DO JOGO
-   ========================= */
+/* ====== ESTADO ====== */
 let state = {
-  userName:'',
-  level:1, score:0,
-  startedAt:0, elapsed:0,
-  playing:false,
-  dir:1, x:0, vx:0,
-  cageDropping:false
+  userName:'', level:1, score:0,
+  startedAt:0, elapsed:0, playing:false,
+  dir:1, x:0, vx:0, cageDropping:false
 };
 
-/* =========================
-   CONFIG PARÂMETROS
-   ========================= */
 const params = {
-  baseSpeed:220,
-  speedIncreasePerLevel:60,
-  speedRampByTime:0.01, // +1% por segundo
-  dropSpeed:1000,
-  hitboxPadding:10,
-  balloonIntervalRangeMs:[4000,9000],
-  balloonDurationMs:2500,
-  balloons:[
-    "Isso nunca vai dar em nada!",
-    "Acabou a mamata?!",
-    "Eu sou imbrochável!",
-    "Fake news!"
-  ]
+  baseSpeed:220, speedIncreasePerLevel:60, speedRampByTime:0.01,
+  dropSpeed:1000, hitboxPadding:10,
+  balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
+  balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"]
 };
 
 function $(id){return document.getElementById(id)}
 function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
-function currentBg(){ return isMobile()? (GDRIVE.bgMobile || GDRIVE.bgDesktop) : (GDRIVE.bgDesktop || GDRIVE.bgMobile); }
+function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/* =========================
-   INICIALIZAÇÃO UI
-   ========================= */
+/* ====== UI ====== */
 function loadImages(){
   $('menuBg').style.backgroundImage = `url(${currentBg()})`;
   $('gameBg').style.backgroundImage = `url(${currentBg()})`;
-  $('menuLogoTop').src = GDRIVE.logoMenu;
-  $('menuLogoGame').src = GDRIVE.logoGame;
-  $('gameLogo').src = GDRIVE.logoGame;
-  $('naroImg').src = GDRIVE.naro;
-  $('cageImg').src = GDRIVE.cage;
+  $('menuLogoTop').src = ASSETS.logoMenu;
+  $('menuLogoGame').src = ASSETS.logoGame;
+  $('gameLogo').src = ASSETS.logoGame;
+  $('naroImg').src = ASSETS.naro;
+  $('cageImg').src = ASSETS.cage;
 
   if(DONATE_URL){
     $('donateMenu').href = DONATE_URL;
@@ -265,21 +185,10 @@ function loadImages(){
     $('donateGame').classList.remove('hidden');
   }
 }
-function showMenu(){
-  $('menuPage').classList.remove('hidden');
-  $('gamePage').classList.add('hidden');
-  $('overlay').classList.remove('show');
-  state.playing=false; state.cageDropping=false;
-}
-function showGame(){
-  $('menuPage').classList.add('hidden');
-  $('gamePage').classList.remove('hidden');
-  $('overlay').classList.remove('show');
-}
+function showMenu(){ $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
+function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
 
-/* =========================
-   JOGO
-   ========================= */
+/* ====== JOGO ====== */
 let balloonTimer=null;
 function scheduleBalloon(){
   clearTimeout(balloonTimer);
@@ -309,8 +218,7 @@ function resetRound(){
   state.cageDropping=false;
   $('cage').style.top='0px';
   state.x=0; $('naro').style.left='0px'; state.dir=1;
-  updateHUD();
-  scheduleBalloon();
+  updateHUD(); scheduleBalloon();
 }
 function currentSpeed(){
   const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
@@ -387,46 +295,29 @@ function showResult(win){
   }
 }
 
-/* =========================
-   CONTROLES / START
-   ========================= */
+/* ====== CONTROLES ====== */
 $('startBtn').addEventListener('click', startGame);
 $('mobileDropBtn').addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
-  if(e.code==='Space' && $('menuPage') && !$('menuPage').classList.contains('hidden')){
-    e.preventDefault(); startGame(); return;
-  }
+  if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
   if(e.key==='d' || e.key==='D'){ if(DONATE_URL) window.open(DONATE_URL,'_blank','noopener'); }
 });
-$('modalPrimary').addEventListener('click', ()=>{
-  $('overlay').classList.remove('show');
-  if(state.score>0){ state.level++; } // vitória → próximo nível
-  state.playing=true; resetRound();
-});
-$('modalSecondary').addEventListener('click', ()=>{
-  $('overlay').classList.remove('show');
-  state.playing=true; resetRound();   // falha → mesmo nível
-});
+$('modalPrimary').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); if(state.score>0){ state.level++; } state.playing=true; resetRound(); });
+$('modalSecondary').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); state.playing=true; resetRound(); });
 
 function startGame(){
   state.userName = $('userName').value.trim();
   state.level = state.level || 1;
   state.playing = true;
   $('overlay').classList.remove('show');
-  showGame();
-  resetRound();
+  showGame(); resetRound();
 }
 
-/* =========================
-   BOOT
-   ========================= */
-function init(){
-  loadImages();
-  showMenu();
-  loop(0);
-}
+/* ====== BOOT ====== */
+function init(){ loadImages(); showMenu(); loop(0); }
 init();
 </script>
 </body>
 </html>
+
