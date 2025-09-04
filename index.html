@@ -20,7 +20,7 @@
 
     /* NOVO: Controle de altura */
     --naro-bottom: 200px;   /* quanto maior o valor, mais baixo fica o Naro */
-    --cage-top: 10px;        /* quanto maior o valor, mais baixo fica a gaiola */
+    --cage-top: 10px;       /* quanto maior o valor, mais baixo fica a gaiola */
   }
 
   *{box-sizing:border-box}
@@ -141,7 +141,7 @@
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(300px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
+  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(150px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
   .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
@@ -253,13 +253,14 @@
 <!-- ========== SCRIPT DO JOGO ========== -->
 <script>
 /** ====== ASSETS ====== **/
+/* Os nomes abaixo batem 100% com os arquivos da pasta (print). */
 const ASSETS = {
-  bgDesktop: './bg-desktop.jpg',
-  bgMobile:  './bg-mobile.jpg',
-  naro:      './naro.png',
-  logoGame:  './logo-game.png',
-  cage:      './cage.png',
-  logoMenu:  './logo-menu.png'
+  bgDesktop: 'bg-desktop.jpg',
+  bgMobile:  'bg-mobile.jpg',
+  naro:      'naro.png',
+  logoGame:  'logo-game.png',
+  cage:      'cage.png',
+  logoMenu:  'logo-menu.png'
 };
 
 const NARO_W0=480, NARO_H0=1080;
@@ -277,6 +278,32 @@ function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
+
+/* === NOVO: aplica src nos <img> e background-images === */
+function applyAssets(){
+  // Fundos (menu e jogo)
+  const bgUrl = `url("${currentBg()}")`;
+  const menuBg = $('menuBg'); const gameBg = $('gameBg');
+  if(menuBg) menuBg.style.backgroundImage = bgUrl;
+  if(gameBg) gameBg.style.backgroundImage = bgUrl;
+
+  // Logos (menu)
+  const logoArco = $('menuLogoLeft');  if(logoArco && !logoArco.src) logoArco.src = ASSETS.logoMenu;
+  const logoGameMenu = $('menuLogoRight'); if(logoGameMenu && !logoGameMenu.src) logoGameMenu.src = ASSETS.logoGame;
+
+  // Logos (jogo)
+  const logoGameCard = $('gameLogoCard'); if(logoGameCard && !logoGameCard.src) logoGameCard.src = ASSETS.logoGame;
+  const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame && !logoArcoGame.src) logoArcoGame.src = ASSETS.logoMenu;
+
+  // Sprites
+  const naroImg = $('naroImg'); if(naroImg && !naroImg.src) naroImg.src = ASSETS.naro;
+  const cageImg = $('cageImg'); if(cageImg && !cageImg.src) cageImg.src = ASSETS.cage;
+}
+
+/* Opcional: pré-carregar para evitar piscar */
+function preloadImages(paths){
+  paths.forEach(p => { const i = new Image(); i.src = p; });
+}
 
 /** Sprites */
 function layoutSprites(){
@@ -404,8 +431,21 @@ $('modalAction').addEventListener('click', ()=>{ $('overlay').classList.remove('
 
 function startGame(){ state.userName = $('userName').value.trim(); state.level = state.level || 1; state.playing = true; state.lastWin = null; window.incPlayed && window.incPlayed(); $('overlay').classList.remove('show'); showGame(); resetRound(); }
 
-function init(){ showMenu(); layoutSprites(); loop(0); }
-init();
+/* === NOVO: init visual + listeners de mudança de viewport === */
+function init(){
+  // Preload leve (evita “piscar”)
+  preloadImages([ASSETS.bgDesktop, ASSETS.bgMobile, ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu]);
+
+  applyAssets();          // define src e fundos
+  showMenu();
+  layoutSprites();
+  loop(0);
+
+  // Atualiza fundos ao mudar orientação/viewport
+  window.addEventListener('resize', applyAssets);
+  window.addEventListener('orientationchange', applyAssets);
+}
+document.addEventListener('DOMContentLoaded', init);
 </script>
 
 <script type="module">
