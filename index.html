@@ -137,8 +137,8 @@
 <script>
 /* ====== CONFIG DAS IMAGENS (ARQUIVOS NA RAIZ DO REPO) ====== */
 const ASSETS = {
-  bgDesktop: './bg-desktop.png',
-  bgMobile:  './bg-mobile.png',
+  bgDesktop: './bg-desktop.jpg', // <-- fundos .jpg
+  bgMobile:  './bg-mobile.jpg',  // <--
   naro:      './naro.png',
   logoGame:  './logo-game.png',
   cage:      './cage.png',
@@ -172,9 +172,9 @@ function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) :
 function loadImages(){
   $('menuBg').style.backgroundImage = `url(${currentBg()})`;
   $('gameBg').style.backgroundImage = `url(${currentBg()})`;
-  $('menuLogoTop').src = ASSETS.logoMenu;
+  $('menuLogoTop').src  = ASSETS.logoMenu;
   $('menuLogoGame').src = ASSETS.logoGame;
-  $('gameLogo').src = ASSETS.logoGame;
+  $('gameLogo').src     = ASSETS.logoGame;
   $('naroImg').src = ASSETS.naro;
   $('cageImg').src = ASSETS.cage;
 
@@ -320,4 +320,5 @@ init();
 </script>
 </body>
 </html>
+
 
