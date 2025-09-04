@@ -56,7 +56,7 @@
   /* ======= SPLASH (ACESSAR) ======= */
   #splashPage{background:#fff; color:#111; display:flex; align-items:center; justify-content:center;}
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
-  .splash-logo-menu{width:min(220px,50vw); height:auto;} /* NOVO: logo-menu acima */
+  .splash-logo-menu{width:min(220px,50vw); height:auto;}
   .splash-logo{width:min(320px,60vw); height:auto;}
   .splash-btn{ background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px; font-weight:800; box-shadow:var(--shadow); }
   .splash-btn:hover{ background:#f59e0b; color:#111; }
@@ -163,51 +163,27 @@
     display:flex; align-items:center; justify-content:center;
     font-size:18px; line-height:1; box-shadow:var(--shadow);
   }
-  /* Desktop: posição independente (ajuste à vontade) */
   @media (min-width:768px){
-    .sound-toggle{
-      top: 50px;   /* Desktop */
-      right: 16px;
-      bottom: auto;
-      left: auto;
-    }
+    .sound-toggle{ top: 50px; right: 16px; bottom:auto; left:auto; }
   }
-  /* Mobile: posição independente */
   @media (max-width:767px){
-    .sound-toggle{
-      top: 135px;   /* ajuste aqui para “subir/baixar” no mobile */
-      right: 12px;
-      bottom: auto;
-      left: auto;
-    }
+    .sound-toggle{ top: 135px; right: 12px; bottom:auto; left:auto; }
   }
 
   /* ===== Overrides — Splash ===== */
-
-  /* Tamanhos */
-  #splashLogoMenu { width: 220px; }    /* logo-menu (ARCO) */
-  #splashLogo     { width: 320px; }    /* logo do jogo */
-  #accessBtn      { font-size: 16px; padding: 14px 24px; } /* botão ACESSAR */
-
-  /* Espaçamento entre os três (gera “respiro” vertical entre eles) */
-  .splash-wrap { gap: 18px; }
-
-  /* Altura (sobe/baixa TODO o bloco central da splash) */
-  #splashPage .splash-wrap { transform: translateY(-50px); } /* valor negativo = “sobe” */
-
-  /* Se preferir ajustar cada elemento individualmente: */
+  #splashLogoMenu { width: 220px; }
+  #splashLogo     { width: 320px; }
+  #accessBtn      { font-size: 16px; padding: 14px 24px; }
+  .splash-wrap    { gap: 18px; }
+  #splashPage .splash-wrap { transform: translateY(-50px); }
   #splashLogoMenu { margin-top: 0; }
   #splashLogo     { margin-top: 8px; }
   #accessBtn      { margin-top: 16px; }
-
-  /* Desktop: tamanhos/altura independentes */
   @media (min-width:768px){
     #splashLogoMenu { width: 150px; }
     #splashLogo     { width: 380px; }
     #splashPage .splash-wrap { transform: translateY(-20px); }
   }
-
-  /* Mobile: tamanhos/altura independentes */
   @media (max-width:767px){
     #splashLogoMenu { width: 100px; }
     #splashLogo     { width: 280px; }
@@ -220,7 +196,6 @@
 <!-- ========== SPLASH (ACESSAR) ========== -->
 <section id="splashPage" class="page">
   <div class="splash-wrap">
-    <!-- NOVO: logo do menu acima do logo do jogo -->
     <img id="splashLogoMenu" class="splash-logo-menu" alt="Logo ARCO">
     <img id="splashLogo" class="splash-logo" alt="Logo do jogo">
     <button id="accessBtn" class="splash-btn">ACESSAR</button>
@@ -315,7 +290,7 @@
   </div>
 </div>
 
-<!-- Botão global de som (agora controla só o BGM) -->
+<!-- Botão global de som -->
 <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Som de fundo ligado" title="Som de fundo: ligado">🔊</button>
 
 <a class="credit" href="https://www.instagram.com/umcarlossantos/" target="_blank" rel="noopener">
@@ -335,10 +310,21 @@
 const ASSETS = {
   bgDesktop: 'bg-desktop.jpg',
   bgMobile:  'bg-mobile.jpg',
+  bgDesktop2: 'bg-desktop-fase2.jpg',  // << ajuste o nome se necessário
+  bgMobile2:  'bg-mobile-fase2.jpg',
+  bgDesktop3: 'bg-desktop-fase3.jpg',
+  bgMobile3:  'bg-mobile-fase3.jpg',
   naro:      'naro.png',
   logoGame:  'logo-game.png',
   cage:      'cage.png',
   logoMenu:  'logo-menu.png'
+};
+
+/* Fases: BG por fase + multiplicador de velocidade */
+const PHASES = {
+  1: { bgDesktop: ASSETS.bgDesktop,  bgMobile: ASSETS.bgMobile,  speedMult: 1.00 },
+  2: { bgDesktop: ASSETS.bgDesktop2, bgMobile: ASSETS.bgMobile2, speedMult: 1.18 },
+  3: { bgDesktop: ASSETS.bgDesktop3, bgMobile: ASSETS.bgMobile3, speedMult: 1.32 },
 };
 
 const NARO_W0=480, NARO_H0=1080;
@@ -348,14 +334,41 @@ const CAGE_W0=864, CAGE_H0=1080;
 const RATIO_DESK = { cageH: 0.40, naroH: 0.35 };
 const RATIO_MOB  = { cageH: 0.22, naroH: 0.20 };
 
-let state = { userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false, dir:1, x:0, vx:0, naroW:0, naroH:0, cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0, lastWin:null };
+let state = {
+  userName:'', score:0,
+  phase:1, capturesInPhase:0,        // << NOVO: controle de fase
+  startedAt:0, elapsed:0, playing:false,
+  dir:1, x:0, vx:0, naroW:0, naroH:0,
+  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0,
+  suspendedTop:0, lastWin:null,
+  modalActionType:'continue'         // 'continue' | 'nextPhase' | 'resetToMenu' | 'retryReset'
+};
 
-const params = { baseSpeed: 360, speedIncreasePerLevel: 90, speedRampByTime: 0.018, cagePatrolSpeed: 260, dropSpeed: 1100, hitboxInnerPadding:14, minOverlapToCaptureMobile:0.60, minOverlapToCaptureDesktop:0.75, balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500, balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"], transparentWhiteThreshold:242 };
+const params = {
+  baseSpeed: 360,
+  speedRampByTime: 0.018,
+  cagePatrolSpeed: 260,
+  dropSpeed: 1100,
+  hitboxInnerPadding:14,
+  minOverlapToCaptureMobile:0.60,
+  minOverlapToCaptureDesktop:0.75,
+  balloonIntervalRangeMs:[4000,9000],
+  balloonDurationMs:2500,
+  balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
+  transparentWhiteThreshold:242
+};
 
 function $(id){return document.getElementById(id)}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
-function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
+function phaseConf(){ return PHASES[state.phase] || PHASES[1]; }
+function currentBg(){
+  const ph = phaseConf();
+  const d = ph.bgDesktop || ASSETS.bgDesktop;
+  const m = ph.bgMobile  || ASSETS.bgMobile;
+  return isMobile()? (m||d) : (d||m);
+}
+function phaseSpeedMult(){ return (phaseConf().speedMult || 1); }
 
 /* ===== Música de fundo (BGM) — mudo durante efeitos ===== */
 let audioPrimed = false;
@@ -373,12 +386,10 @@ function playBgm(){
   const p=a.play(); if(p && p.catch) p.catch(()=>{});
   ensureBgmMuteState();
 }
-/* Enquanto um efeito toca, o BGM fica mudo. Ao terminar, restaura conforme preferência do usuário */
 function muteBgmWhile(effectEl){
   const a = getBgm(); if(!a || !effectEl) return;
   fxInProgress++;
   ensureBgmMuteState();
-
   let restored = false;
   const restore = ()=>{
     if (restored) return;
@@ -387,7 +398,7 @@ function muteBgmWhile(effectEl){
     ensureBgmMuteState();
   };
   effectEl.addEventListener('ended', restore, { once:true });
-  setTimeout(restore, 8000); // fallback de segurança
+  setTimeout(restore, 8000);
 }
 
 /* ===== Áudio: helpers ===== */
@@ -422,7 +433,7 @@ function setBgmMuted(flag){
 }
 $('soundToggle').addEventListener('click', ()=>{
   setBgmMuted(!bgmMuted);
-  if(!bgmMuted){ playBgm(); }   // ao religar, garante a trilha rodando (respeitando efeitos)
+  if(!bgmMuted){ playBgm(); }
 });
 
 /* Aplica src nos <img> e background-images */
@@ -438,7 +449,6 @@ function applyAssets(){
   const logoGameCard = $('gameLogoCard'); if(logoGameCard) logoGameCard.src = ASSETS.logoGame;
   const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame) logoArcoGame.src = ASSETS.logoMenu;
 
-  /* SPLASH: define as duas marcas */
   const splashLogoMenu = $('splashLogoMenu'); if(splashLogoMenu) splashLogoMenu.src = ASSETS.logoMenu;
   const splashLogo = $('splashLogo');         if(splashLogo)      splashLogo.src      = ASSETS.logoGame;
 
@@ -465,6 +475,7 @@ function layoutSprites(){
   if($('naro')){ $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px'; }
 }
 
+/* Vistas */
 function showSplash(){ $('splashPage').classList.remove('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); }
 function showMenu(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
 function showGame(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
@@ -518,8 +529,26 @@ function resetRound(){
   updateHUD();
   scheduleBalloon();
 }
-function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
-function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); if($('time')){$('time').textContent=t;} if($('timeDesk')){$('timeDesk').textContent=t;} if($('level')){$('level').textContent=state.level;} if($('levelDesk')){$('levelDesk').textContent=state.level;} if($('speed')){$('speed').textContent=sp;} if($('speedDesk')){$('speedDesk').textContent=sp;} if($('score')){$('score').textContent=state.score;} if($('scoreDesk')){$('scoreDesk').textContent=state.score;} }
+
+/* Velocidades influenciadas pela fase */
+function currentSpeed(){
+  const base=params.baseSpeed;
+  const ramp=1 + params.speedRampByTime * (state.elapsed/1000);
+  return base * ramp * phaseSpeedMult(); // velocidade do Naro
+}
+
+function updateHUD(){
+  const t = fmtTime(state.elapsed/1000);
+  const sp = Math.round(currentSpeed());
+  if($('time')){$('time').textContent=t;}
+  if($('timeDesk')){$('timeDesk').textContent=t;}
+  if($('level')){$('level').textContent=state.phase;}
+  if($('levelDesk')){$('levelDesk').textContent=state.phase;}
+  if($('speed')){$('speed').textContent=sp;}
+  if($('speedDesk')){$('speedDesk').textContent=sp;}
+  if($('score')){$('score').textContent=state.score;}
+  if($('scoreDesk')){$('scoreDesk').textContent=state.score;}
+}
 
 /* Queda da gaiola */
 function dropCage(){
@@ -545,6 +574,7 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
+  // Naro (horizontal)
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
@@ -552,8 +582,9 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
+  // Cage (patrulha horizontal) — acelera por fase
   if(!state.cageDropping){
-    const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
+    const patrolV=(params.cagePatrolSpeed * phaseSpeedMult())*(1/60);
     const maxCageX = arena.width - state.cageW;
     let x = Number(cageEl.dataset.x ?? (arena.width*0.72 - state.cageW/2));
     x += patrolV*state.cageDir;
@@ -563,6 +594,7 @@ function loop(ts){
     cageEl.style.left = Math.round(x)+'px';
   }
 
+  // Cage (queda)
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
@@ -580,37 +612,80 @@ function loop(ts){
   raf=requestAnimationFrame(loop);
 }
 
+/* Mensagens e fluxo por fase/capturas */
+function plural(n){ return n===1 ? 'vez' : 'vezes'; }
+
 function showResult(win){
   state.playing=false;
   state.lastWin = win;
-  const name=state.userName||'Você';
   $('overlay').classList.add('show');
-  const title = $('modalTitle'); const icon  = $('modalIcon'); const ttext = $('modalTitleText');
+
+  const title = $('modalTitle');
+  const icon  = $('modalIcon');
+  const ttext = $('modalTitleText');
   title.classList.remove('success','error');
 
   if(win){
     window.incWin && window.incWin();
-    ttext.textContent = 'Parabéns!'; title.classList.add('success'); icon.textContent = '✅';
-    $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     state.score += 100;
     playOk();
+
+    // Progresso da fase
+    state.capturesInPhase = Math.min(3, state.capturesInPhase + 1);
+    const c = state.capturesInPhase;
+    const remaining = 3 - c;
+
+    ttext.textContent = 'Parabéns!';
+    title.classList.add('success'); icon.textContent = '✅';
+
+    if(state.phase < 3){
+      if(c < 3){
+        $('modalMsg').textContent =
+          `Parabéns, você prendeu o Naro ${c} ${plural(c)}, prenda mais ${remaining} para passar de fase.`;
+        $('modalAction').textContent = 'CONTINUAR';
+        state.modalActionType = 'continue';
+      }else{
+        $('modalMsg').textContent =
+          `Parabéns, você prendeu o Naro 3 vezes, siga para a próxima fase.`;
+        $('modalAction').textContent = 'PRÓXIMA FASE';
+        state.modalActionType = 'nextPhase';
+      }
+    }else{ // Fase 3 (última)
+      if(c < 3){
+        $('modalMsg').textContent =
+          `Parabéns, você prendeu o Naro ${c} ${plural(c)}, prenda mais ${remaining} ` +
+          `para salvar a democracia de vez.`;
+        $('modalAction').textContent = 'CONTINUAR';
+        state.modalActionType = 'continue';
+      }else{
+        $('modalMsg').textContent =
+          `Parabéns, você prendeu o Naro definitivamente e salvou a democracia.`;
+        $('modalAction').textContent = 'VOLTAR AO INÍCIO';
+        state.modalActionType = 'resetToMenu';
+      }
+    }
   }else{
-    state.level = 1;
-    ttext.textContent = 'FALHOU'; title.classList.add('error'); icon.textContent = '❌';
-    $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+    // Derrota: volta para a fase 1
     playBad();
+    state.phase = 1;
+    state.capturesInPhase = 0;
+
+    ttext.textContent = 'FALHOU';
+    title.classList.add('error'); icon.textContent = '❌';
+    const name = state.userName || 'Você';
+    $('modalMsg').textContent =
+      `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+    $('modalAction').textContent = 'TENTAR NOVAMENTE';
+    state.modalActionType = 'retryReset';
   }
-  $('modalAction').textContent = 'TENTAR SALVAR A DEMOCRACIA NOVAMENTE';
 }
 
-/** Controles */
+/** Controles **/
 $('startBtn').addEventListener('click', ()=>{ primeAudio(); playBgm(); startGame(); });
 
 const mobileBtn=$('mobileDropBtn');
 if(mobileBtn){
-  // vibração imediata no toque (pointerdown)
   mobileBtn.addEventListener('pointerdown', ()=>{ if(isMobile()) vibrateTap(); }, {passive:true});
-  // ação do jogo no clique
   mobileBtn.addEventListener('click', ()=>{ playBgm(); dropCage(); });
 }
 
@@ -621,22 +696,46 @@ document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
 
+/* Ação contextual do modal */
 $('modalAction').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-  if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; }
-  else if (state.lastWin === true) { state.level++; }
-  state.playing = true;
-  resetRound();
+
+  const act = state.modalActionType;
+  if(act === 'nextPhase'){
+    state.phase = Math.min(3, state.phase + 1);
+    state.capturesInPhase = 0;
+    applyAssets(); // troca BG
+    state.playing = true; resetRound();
+  }else if(act === 'continue'){
+    state.playing = true; resetRound();
+  }else if(act === 'resetToMenu'){
+    // reinicia tudo e volta ao menu
+    state.phase = 1;
+    state.capturesInPhase = 0;
+    state.playing = false;
+    applyAssets();
+    showMenu();
+  }else if(act === 'retryReset'){
+    // conta como nova tentativa, se desejar
+    window.incPlayed && window.incPlayed();
+    state.phase = 1;
+    state.capturesInPhase = 0;
+    applyAssets();
+    state.playing = true; resetRound();
+  }else{
+    // fallback
+    state.playing = true; resetRound();
+  }
 });
 
-/* Botão ACESSAR da splash: inicia BGM e vai para o menu */
+/* Botão ACESSAR da splash */
 $('accessBtn').addEventListener('click', ()=>{
   primeAudio();
   playBgm();
   showMenu();
 });
 
-/* Pausa/retoma BGM ao trocar de aba (respeitando efeitos e mute do usuário) */
+/* Pausa/retoma BGM ao trocar de aba */
 document.addEventListener('visibilitychange', () => {
   const a = $('bgm'); if(!a) return;
   if (document.hidden) a.pause();
@@ -645,21 +744,28 @@ document.addEventListener('visibilitychange', () => {
 
 function startGame(){
   state.userName = $('userName').value.trim();
-  state.level = state.level || 1;
-  state.playing = true;
+  state.phase = state.phase || 1;
+  state.capturesInPhase = 0;
   state.lastWin = null;
   window.incPlayed && window.incPlayed();
   $('overlay').classList.remove('show');
   showGame();
+  applyAssets(); // garante BG correto no começo
+  state.playing = true;
   resetRound();
 }
 
 /* Init */
 function init(){
-  preloadImages([ASSETS.bgDesktop, ASSETS.bgMobile, ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu]);
+  preloadImages([
+    ASSETS.bgDesktop, ASSETS.bgMobile,
+    ASSETS.bgDesktop2, ASSETS.bgMobile2,
+    ASSETS.bgDesktop3, ASSETS.bgMobile3,
+    ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu
+  ]);
   applyAssets();
   setBgmMuted(false); // BGM ligado por padrão
-  showSplash();       // começa na splash
+  showSplash();
   layoutSprites();
   loop(0);
 
