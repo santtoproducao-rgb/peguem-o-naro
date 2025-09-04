@@ -94,6 +94,29 @@
   .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
   .modal h2{margin:0 0 8px}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+
+  /* ====== MOBILE MOCK LAYOUT ====== */
+  @media (max-width: 767px){
+    .arena{ width: 95vw; height: 68vh; }
+
+    .top-right-actions{ top:8px; left:8px; right:8px; justify-content:center; gap:8px; }
+    .hud{ width:100%; display:flex; justify-content:center; gap:8px; flex-wrap:nowrap; }
+    .pill{ background:#fff; color:#111; border:0; padding:6px 12px; border-radius:12px; font-weight:800; text-shadow:none; }
+    .pill-speed{ display:none; } /* ficam 3 barras: tempo, score, nível */
+
+    .donate-btn{ padding:10px 12px; order:2; }
+
+    .brand-cluster{
+      top:58px; left:10px; right:10px;
+      flex-direction:row; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .logo-game-card{ padding:10px 12px; border-radius:18px; }
+    .logo-game-card img{ width:120px; height:auto; }
+    .logo-menu-small img{ width:72px; height:auto; }
+
+    .balloon{ bottom:188px; max-width:280px; }
+    .cage{ top:64px; }
+  }
 </style>
 </head>
 <body>
@@ -133,10 +156,10 @@
 
     <div class="top-right-actions">
       <div class="hud">
-        <div class="pill">⏱ <b id="time">00:00</b></div>
-        <div class="pill">⚡ <b id="speed">0</b></div>
-        <div class="pill">⭐ Score: <b id="score">0</b></div>
-        <div class="pill">🎯 Nível: <b id="level">1</b></div>
+        <div class="pill pill-time">⏱ <b id="time">00:00</b></div>
+        <div class="pill pill-speed">⚡ <b id="speed">0</b></div>
+        <div class="pill pill-score">⭐ <b id="score">0</b></div>
+        <div class="pill pill-level">🎯 <b id="level">1</b></div>
       </div>
       <a class="btn donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
     </div>
@@ -225,11 +248,11 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
 
-  // Gaiola: levemente menor e bem suspensa para aumentar a queda
+  // Gaiola proporcional e suspensa
   const cageH = isMobile()? Math.round(arena.height * 0.56) : Math.round(arena.height * 0.64);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
-  // Naro: altura proporcional (mantendo "encostado" no chão com bottom:2px no CSS)
+  // Naro proporcional; encosta no chão via CSS (bottom:2px)
   const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
   const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
@@ -240,10 +263,10 @@ function layoutSprites(){
   naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
   // MAIS PERTO DO TOPO (menor = mais alto)
-  state.suspendedTop = isMobile()? 40 : 22;
+  state.suspendedTop = isMobile() ? 52 : 22;
   cageEl.style.top = state.suspendedTop+'px';
 
-  // ajustar posições atuais aos limites
+  // limites
   state.x = clamp(state.x, 0, arena.width - naroW);
   naroEl.style.left = state.x+'px';
 
@@ -396,7 +419,7 @@ function showResult(win){
 
 /** CONTROLES **/
 $('startBtn').addEventListener('click', startGame);
-$('mobileDropBtn')?.addEventListener('click', dropCage);
+const mobileBtn = $('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
