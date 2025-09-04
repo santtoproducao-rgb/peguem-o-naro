@@ -17,12 +17,11 @@
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;background:#000;color:var(--text)}
   button{cursor:pointer}
   img{display:block;max-width:100%}
-
   .hidden{display:none!important}
   .page{position:relative;height:100vh;width:100vw;overflow:hidden}
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
-  /* ======= TELA INICIAL (desktop) ======= */
+  /* ======= TELA INICIAL ======= */
   .menu-logos{
     position:absolute;top:22px;left:22px;right:22px;z-index:6;
     display:flex;justify-content:space-between;gap:16px;align-items:flex-start;
@@ -32,19 +31,33 @@
   .menu-logo-right img{width:300px}
   @media (max-width:1024px){ .menu-logo-left img{width:120px}.menu-logo-right img{width:240px} }
 
-  /* contadores globais (início) */
-  .counters{
-    position:absolute; top:22px; left:50%; transform:translateX(-50%);
-    background:#fff; color:#111; border-radius:14px; padding:10px 14px;
-    display:flex; gap:18px; font-weight:800; z-index:8; box-shadow:0 8px 24px rgba(0,0,0,.18);
-  }
-  .counters b{font-variant-numeric:tabular-nums}
-
   .content{
     position:absolute; left:0; right:0; bottom:6vh;
-    display:flex; flex-direction:column; align-items:center; gap:16px; padding:16px;
+    display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
-  .card{background:rgba(255,255,255,.65);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)}
+
+  /* Contadores – ficam DENTRO da .content, acima do card */
+  .counters{
+    background:#fff; color:#111; border-radius:14px; padding:10px 14px;
+    display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
+  }
+  .counters b{font-variant-numeric:tabular-nums}
+  /* Desktop: sobe para o topo e centraliza */
+  @media (min-width:768px){
+    .counters{
+      position:absolute; top:22px; left:50%; transform:translateX(-50%);
+      z-index:8;
+    }
+  }
+  /* Mobile: fica no fluxo, colada no card */
+  @media (max-width:767px){
+    .counters{ position:relative; margin:0 0 6px 0; }
+  }
+
+  .card{
+    background:rgba(255,255,255,.75);backdrop-filter:blur(6px) saturate(1.2);
+    border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)
+  }
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
   .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
@@ -79,7 +92,7 @@
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
-  /* ======= MOBILE – EXATO AO MOCK ======= */
+  /* ======= MOBILE – HUD e logos conforme mock ======= */
   @media (max-width:767px){
     /* quatro caixas brancas no topo */
     .top-mobile-hud{
@@ -99,11 +112,15 @@
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:150px}
     .logo-arco img{width:92px}
-    /* esconder botão de doação no mobile (mock não tem) */
+    /* esconder botão de doação no mobile (para não poluir o topo) */
     .donate-btn{display:none}
-    /* HUD tradicional some no mobile (usamos as 4 caixas acima) */
+    /* HUD desktop some no mobile */
     .top-right{display:none}
     .balloon{bottom:188px;max-width:280px}
+  }
+  /* Garante que o HUD mobile NÃO apareça no desktop */
+  @media (min-width:768px){
+    .top-mobile-hud{ display:none !important; }
   }
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
@@ -121,18 +138,18 @@
 <section id="menuPage" class="page">
   <div id="menuBg" class="bg"></div>
 
-  <!-- Contadores globais -->
-  <div id="globalCounters" class="counters">
-    <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
-    <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
-  </div>
-
   <div class="menu-logos">
     <div class="menu-logo-left"><img id="menuLogoLeft" alt="Logo ARCO"></div>
     <div class="menu-logo-right card-white"><img id="menuLogoRight" alt="Logo do jogo"></div>
   </div>
 
   <div class="content">
+    <!-- Contadores globais (agora ficam acima do card; no desktop sobem para o topo via CSS) -->
+    <div id="globalCounters" class="counters">
+      <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
+      <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
+    </div>
+
     <div class="card">
       <div class="row" style="margin-bottom:10px">
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
@@ -142,6 +159,7 @@
         <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
       </div>
     </div>
+
     <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
   </div>
 </section>
@@ -150,12 +168,12 @@
 <section id="gamePage" class="page hidden">
   <div id="gameBg" class="bg"></div>
 
-  <!-- HUD MOBILE (4 caixas) -->
+  <!-- HUD MOBILE (4 caixas, só no mobile) -->
   <div class="top-mobile-hud">
-    <div class="box" id="hudTime">⏱ <span id="time">00:00</span></div>
-    <div class="box" id="hudSpeed">⚡ <span id="speed">0</span></div>
-    <div class="box" id="hudScore">⭐ <span id="score">0</span></div>
-    <div class="box" id="hudLevel">🎯 <span id="level">1</span></div>
+    <div class="box">⏱ <span id="time">00:00</span></div>
+    <div class="box">⚡ <span id="speed">0</span></div>
+    <div class="box">⭐ <span id="score">0</span></div>
+    <div class="box">🎯 <span id="level">1</span></div>
   </div>
 
   <!-- logos -->
@@ -217,10 +235,11 @@ const ASSETS = {
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/** RATIOS (ajuste fino) – mobile “pixel perfect” do mock */
-const RATIO_DESK = { cageH: 0.38, naroH: 0.26, cageTop: 0 };
-const RATIO_MOB  = { cageH: 0.50, naroH: 0.24, cageTop: 0 };
+/** RATIOS (ajuste fino) */
+const RATIO_DESK = { cageH: 0.38, naroH: 0.28, cageTop: 0 };  /* Naro um pouco maior */
+const RATIO_MOB  = { cageH: 0.44, naroH: 0.22, cageTop: 0 };  /* Gaiola menor; Naro não vaza */
 
+/** Estado */
 let state = {
   userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
@@ -229,8 +248,12 @@ let state = {
 };
 
 const params = {
-  baseSpeed:220, speedIncreasePerLevel:60, speedRampByTime:0.012,
-  cagePatrolSpeed:180, dropSpeed:980,
+  /* velocidades mais altas e progressivas */
+  baseSpeed: 360,
+  speedIncreasePerLevel: 90,
+  speedRampByTime: 0.018,
+  cagePatrolSpeed: 260,
+  dropSpeed: 1100,
   hitboxInnerPadding:14, minOverlapToCapture:0.33,
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
@@ -437,7 +460,7 @@ function showResult(win){
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
   if(win){
-    if (typeof countWinGlobal === 'function') countWinGlobal();
+    incWin();  // contador de acertos
     $('modalTitle').textContent='Parabéns!';
     $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     $('modalPrimary').textContent='Próximo nível';
@@ -447,7 +470,6 @@ function showResult(win){
     $('modalTitle').textContent='Falhou';
     $('modalMsg').textContent=`${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
     $('modalPrimary').textContent='Tentar novamente';
-    $('modalSecondary').textContent='SALVAR A DEMOCRACIA';
     $('modalSecondary').classList.remove('hidden');
   }
 }
@@ -461,7 +483,7 @@ document.addEventListener('keydown',(e)=>{
 });
 $('modalPrimary').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-  if (state.lastWin === false) { if (typeof countPlayedGlobal === 'function') countPlayedGlobal(); }
+  if (state.lastWin === false) { incPlayed(); }  // tentar novamente conta como jogado
   if(state.score>0){ state.level++; }
   state.playing=true; resetRound();
 });
@@ -472,13 +494,36 @@ function startGame(){
   state.level = state.level || 1;
   state.playing = true;
   state.lastWin = null;
-  if (typeof countPlayedGlobal === 'function') countPlayedGlobal();
+  incPlayed();  // conta JOGADO ao iniciar
   $('overlay').classList.remove('show');
   showGame(); resetRound();
 }
 
+/* ====== CONTADORES (GLOBAL via Firebase + FALLBACK localStorage) ====== */
+const STORAGE_KEYS = { plays: 'pegueonaro_plays', wins: 'pegueonaro_wins' };
+function lsGetCounters(){ return { plays:Number(localStorage.getItem(STORAGE_KEYS.plays)||0), wins:Number(localStorage.getItem(STORAGE_KEYS.wins)||0) }; }
+function lsSetCounters({plays,wins}){ localStorage.setItem(STORAGE_KEYS.plays,String(plays)); localStorage.setItem(STORAGE_KEYS.wins,String(wins)); }
+function renderCountersUI(plays, wins){ const pc=$('playedCount'), wc=$('winCount'); if(pc) pc.textContent=plays; if(wc) wc.textContent=wins; }
+function bootstrapCounters(){
+  const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
+  // se Firebase estiver disponível, ouvimos em tempo real
+  if (typeof firebase!=='undefined' && firebase.apps && firebase.apps.length){
+    const db=firebase.database(); const refPlays=db.ref("counters/plays"); const refWins=db.ref("counters/wins");
+    refPlays.on("value", s=>{ renderCountersUI(Number(s.val()??0), Number(window.__winsCache??wins)); window.__playsCache=Number(s.val()??0); });
+    refWins .on("value", s=>{ renderCountersUI(Number(window.__playsCache??plays), Number(s.val()??0)); window.__winsCache=Number(s.val()??0); });
+  }
+}
+async function incPlayed(){
+  const c=lsGetCounters(); c.plays++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
+  try{ if(typeof firebase!=='undefined'&&firebase.apps&&firebase.apps.length) await firebase.database().ref("counters/plays").transaction(v=>(Number(v)||0)+1);}catch(e){}
+}
+async function incWin(){
+  const c=lsGetCounters(); c.wins++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
+  try{ if(typeof firebase!=='undefined'&&firebase.apps&&firebase.apps.length) await firebase.database().ref("counters/wins").transaction(v=>(Number(v)||0)+1);}catch(e){}
+}
+
 /** boot */
-function init(){ loadImages(); showMenu(); loop(0); }
+function init(){ loadImages(); showMenu(); bootstrapCounters(); loop(0); }
 init();
 </script>
 
@@ -496,17 +541,7 @@ const firebaseConfig = {
   messagingSenderId: "XXXXXXXXXXXX",
   appId: "1:XXXXXXXXXXXX:web:YYYYYYYYYYYYYY"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const refPlays = db.ref("counters/plays");
-const refWins  = db.ref("counters/wins");
-
-refPlays.on("value", s => { (document.getElementById("playedCount")||{}).textContent = (s.val()??0); });
-refWins .on("value", s => { (document.getElementById("winCount")||{}).textContent = (s.val()??0); });
-
-function inc(ref){ return ref.transaction(cur => (Number(cur)||0)+1).catch(()=>{}); }
-async function countPlayedGlobal(){ await inc(refPlays); }
-async function countWinGlobal(){    await inc(refWins);  }
+try{ firebase.initializeApp(firebaseConfig); }catch(e){/* se já inicializado ou vazio, ignora */}
 </script>
 </body>
 </html>
