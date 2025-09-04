@@ -7,9 +7,9 @@
 <meta name="description" content="Jogo web: derrube a gaiola e prenda o Naro.">
 <style>
   :root{
-    --primary:#111827; --accent:#f59e0b; --text:#111111;
-    --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111111;
-    --modal-bg:rgba(0,0,0,.5); --modal-card:#ffffff; --modal-text:#111111;
+    --primary:#111827; --accent:#f59e0b; --text:#111;
+    --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111;
+    --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
     --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
   }
   *{box-sizing:border-box}
@@ -18,19 +18,32 @@
   button{cursor:pointer}
   img{display:block;max-width:100%}
 
-  .app{height:100vh;display:flex;flex-direction:column}
   .hidden{display:none!important}
   .page{position:relative;height:100vh;width:100vw;overflow:hidden}
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
-  /* ===== MENU (desktop mock) ===== */
-  .menu-logos{position:absolute;top:22px;left:22px;right:22px;z-index:6;display:flex;justify-content:space-between;gap:16px}
+  /* ======= TELA INICIAL (desktop) ======= */
+  .menu-logos{
+    position:absolute;top:22px;left:22px;right:22px;z-index:6;
+    display:flex;justify-content:space-between;gap:16px;align-items:flex-start;
+  }
   .card-white{background:#fff;border-radius:26px;box-shadow:var(--shadow);padding:16px 20px}
-  .menu-logo-left img{width:160px;height:auto}
-  .menu-logo-right img{width:300px;height:auto}
-  @media (max-width:1024px){ .menu-logoRight img{width:220px} .menu-logo-left img{width:120px} }
+  .menu-logo-left img{width:160px}
+  .menu-logo-right img{width:300px}
+  @media (max-width:1024px){ .menu-logo-left img{width:120px}.menu-logo-right img{width:240px} }
 
-  .content{position:absolute;left:0;right:0;bottom:6vh;display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px}
+  /* contadores globais (início) */
+  .counters{
+    position:absolute; top:22px; left:50%; transform:translateX(-50%);
+    background:#fff; color:#111; border-radius:14px; padding:10px 14px;
+    display:flex; gap:18px; font-weight:800; z-index:8; box-shadow:0 8px 24px rgba(0,0,0,.18);
+  }
+  .counters b{font-variant-numeric:tabular-nums}
+
+  .content{
+    position:absolute; left:0; right:0; bottom:6vh;
+    display:flex; flex-direction:column; align-items:center; gap:16px; padding:16px;
+  }
   .card{background:rgba(255,255,255,.65);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
@@ -39,54 +52,57 @@
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
-  /* ===== JOGO – DESKTOP (mock) ===== */
-  .brand-cluster-left{
-    position:absolute;top:24px;left:24px;z-index:7;display:flex;flex-direction:column;gap:18px;align-items:flex-start
+  /* ======= JOGO – DESKTOP ======= */
+  .brand-left{
+    position:absolute;top:24px;left:24px;z-index:7;
+    display:flex;flex-direction:column;gap:18px;align-items:flex-start
   }
-  .logo-game-card img{width:300px;height:auto}
-  .logo-arco img{width:140px;height:auto}
-  @media (max-width:1024px){ .logo-game-card img{width:240px} .logo-arco img{width:110px} }
+  .logo-game-card img{width:300px}
+  .logo-arco img{width:140px}
+  @media (max-width:1024px){ .logo-game-card img{width:240px}.logo-arco img{width:110px} }
 
-  .top-right-actions{
-    position:absolute;top:16px;left:16px;right:16px;z-index:7;
-    display:flex;gap:12px;align-items:center;justify-content:flex-end;flex-wrap:wrap
+  .top-right{
+    position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap
   }
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
-  .pill{background:var(--hud-chip);color:var(--hud-text);padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
-  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#0f172a}
+  .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
+  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#0f172a;color:#fff;text-decoration:none}
 
-  /* ===== A R E N A – cobre o BG inteiro ===== */
-  .arena{
-    position:absolute; inset:0; width:100vw; height:100vh;
-    overflow:hidden; /* corta fora o que passar das bordas */
-  }
+  /* BG/arena cobre 100% da tela */
+  .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
-  .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
+  .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  /* sprites */
   .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
   .cage{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
-  /* ===== MOBILE (mock) ===== */
-  @media (max-width: 767px){
-    /* HUD: chips brancos centrados no topo, botão à direita */
-    .top-right-actions{top:8px;left:8px;right:8px;justify-content:center;gap:8px}
-    .hud{width:100%;justify-content:center;background:transparent;box-shadow:none;padding:0}
-    .pill{background:#fff;color:#111;border:0;padding:6px 10px}
-    .donate-btn{padding:10px 12px;position:absolute;top:8px;right:8px}
-
-    /* Logos em linha sob os chips, como no mock móvel */
-    .brand-cluster-left{
-      position:absolute;top:58px;left:10px;right:10px;z-index:7;
-      flex-direction:row;align-items:center;justify-content:space-between;gap:10px
+  /* ======= MOBILE – EXATO AO MOCK ======= */
+  @media (max-width:767px){
+    /* quatro caixas brancas no topo */
+    .top-mobile-hud{
+      position:absolute;top:8px;left:8px;right:8px;z-index:9;
+      display:flex;gap:10px;justify-content:space-between;
+    }
+    .top-mobile-hud .box{
+      background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12);
+      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;
+      padding:0 8px;min-width:0;
+    }
+    /* logos em linha logo abaixo */
+    .brand-left{
+      top:58px; left:10px; right:10px;
+      flex-direction:row; justify-content:space-between; align-items:center; gap:10px;
     }
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
-    .logo-game-card img{width:150px;height:auto}
-    .logo-arco img{width:92px;height:auto}
-
+    .logo-game-card img{width:150px}
+    .logo-arco img{width:92px}
+    /* esconder botão de doação no mobile (mock não tem) */
+    .donate-btn{display:none}
+    /* HUD tradicional some no mobile (usamos as 4 caixas acima) */
+    .top-right{display:none}
     .balloon{bottom:188px;max-width:280px}
   }
 
@@ -101,65 +117,77 @@
 </style>
 </head>
 <body>
-<div class="app" id="app">
+<!-- ========== MENU ========== -->
+<section id="menuPage" class="page">
+  <div id="menuBg" class="bg"></div>
 
-  <!-- ===== MENU ===== -->
-  <section id="menuPage" class="page">
-    <div id="menuBg" class="bg"></div>
+  <!-- Contadores globais -->
+  <div id="globalCounters" class="counters">
+    <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
+    <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
+  </div>
 
-    <div class="menu-logos">
-      <div class="menu-logo-left"><img id="menuLogoLeft" alt="Logo ARCO"></div>
-      <div class="menu-logo-right card-white"><img id="menuLogoRight" alt="Logo do jogo"></div>
-    </div>
+  <div class="menu-logos">
+    <div class="menu-logo-left"><img id="menuLogoLeft" alt="Logo ARCO"></div>
+    <div class="menu-logo-right card-white"><img id="menuLogoRight" alt="Logo do jogo"></div>
+  </div>
 
-    <div class="content">
-      <div class="card">
-        <div class="row" style="margin-bottom:10px">
-          <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
-        </div>
-        <div class="row">
-          <button id="startBtn" class="btn">Iniciar</button>
-          <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
-        </div>
+  <div class="content">
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
-      <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
-    </div>
-  </section>
-
-  <!-- ===== JOGO ===== -->
-  <section id="gamePage" class="page hidden">
-    <div id="gameBg" class="bg"></div>
-
-    <!-- Logos (desktop: coluna esquerda; mobile: linha) -->
-    <div class="brand-cluster-left">
-      <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
-      <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
-    </div>
-
-    <div class="top-right-actions">
-      <div class="hud">
-        <div class="pill pill-time">⏱ <b id="time">00:00</b></div>
-        <div class="pill pill-speed">⚡ <b id="speed">0</b></div>
-        <div class="pill pill-score">⭐ <b id="score">0</b></div>
-        <div class="pill pill-level">🎯 <b id="level">1</b></div>
-      </div>
-      <a class="btn donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
-    </div>
-
-    <!-- A R E N A cobre 100% da tela -->
-    <div class="arena" id="arena">
-      <div class="layer">
-        <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
-        <div class="cage" id="cage"><img id="cageImg" class="sprite-img" alt="Gaiola"></div>
-        <div class="balloon" id="balloon"></div>
+      <div class="row">
+        <button id="startBtn" class="btn">Iniciar</button>
+        <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
       </div>
     </div>
+    <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
+  </div>
+</section>
 
-    <div class="mobile-drop">
-      <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+<!-- ========== JOGO ========== -->
+<section id="gamePage" class="page hidden">
+  <div id="gameBg" class="bg"></div>
+
+  <!-- HUD MOBILE (4 caixas) -->
+  <div class="top-mobile-hud">
+    <div class="box" id="hudTime">⏱ <span id="time">00:00</span></div>
+    <div class="box" id="hudSpeed">⚡ <span id="speed">0</span></div>
+    <div class="box" id="hudScore">⭐ <span id="score">0</span></div>
+    <div class="box" id="hudLevel">🎯 <span id="level">1</span></div>
+  </div>
+
+  <!-- logos -->
+  <div class="brand-left">
+    <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
+    <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
+  </div>
+
+  <!-- HUD desktop -->
+  <div class="top-right">
+    <div class="hud">
+      <div class="pill pill-time">⏱ <b id="timeDesk">00:00</b></div>
+      <div class="pill pill-speed">⚡ <b id="speedDesk">0</b></div>
+      <div class="pill pill-score">⭐ <b id="scoreDesk">0</b></div>
+      <div class="pill pill-level">🎯 <b id="levelDesk">1</b></div>
     </div>
-  </section>
-</div>
+    <a class="donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
+  </div>
+
+  <!-- arena ocupa 100% -->
+  <div class="arena" id="arena">
+    <div class="layer">
+      <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
+      <div class="cage" id="cage"><img id="cageImg" class="sprite-img" alt="Gaiola"></div>
+      <div class="balloon" id="balloon"></div>
+    </div>
+  </div>
+
+  <div class="mobile-drop">
+    <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+  </div>
+</section>
 
 <!-- MODAL -->
 <div id="overlay" class="overlay" role="dialog" aria-modal="true">
@@ -173,6 +201,7 @@
   </div>
 </div>
 
+<!-- ===== Scripts do jogo ===== -->
 <script>
 /** ====== ASSETS ====== **/
 const ASSETS = {
@@ -184,20 +213,21 @@ const ASSETS = {
   logoMenu:  './logo-menu.png'
 };
 
-/** Dimensões originais para escalas */
+/** dimensões originais */
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/** RATIOS (ajuste fino conforme mock) */
-const RATIO_DESK = { cageH: 0.38, naroH: 0.26, cageTop: 0 };   // desktop
-const RATIO_MOB  = { cageH: 0.50, naroH: 0.24, cageTop: 0 };   // mobile (sem respiro, colado no topo)
+/** RATIOS (ajuste fino) – mobile “pixel perfect” do mock */
+const RATIO_DESK = { cageH: 0.38, naroH: 0.26, cageTop: 0 };
+const RATIO_MOB  = { cageH: 0.50, naroH: 0.24, cageTop: 0 };
 
-/** Estado & parâmetros */
 let state = {
   userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
-  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0
+  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0,
+  lastWin:null
 };
+
 const params = {
   baseSpeed:220, speedIncreasePerLevel:60, speedRampByTime:0.012,
   cagePatrolSpeed:180, dropSpeed:980,
@@ -213,7 +243,7 @@ function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/** (opcional) tratar branco como transparente */
+/** trata branco como transparente (opcional) */
 function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   return new Promise((resolve)=>{
     const img = new Image(); img.crossOrigin = 'anonymous';
@@ -229,12 +259,11 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   });
 }
 
-/** Layout proporcional – USA A TELA TODA (arena = viewport) */
+/** layout – usa a tela inteira */
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
   const R = isMobile()? RATIO_MOB : RATIO_DESK;
 
-  // tamanhos
   const cageH = Math.round(arena.height * R.cageH);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
   const naroH = Math.round(arena.height * R.naroH);
@@ -242,22 +271,18 @@ function layoutSprites(){
 
   state.cageH=cageH; state.cageW=cageW; state.naroH=naroH; state.naroW=naroW;
 
-  const cageEl=$('cage'), naroEl=$('naro');
-  cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
-  naroEl.style.width=naroW+'px';  naroEl.style.height=naroH+'px';
+  $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px';
+  $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px';
 
-  state.suspendedTop = R.cageTop; // topo do BG
-  cageEl.style.top = state.suspendedTop+'px';
+  state.suspendedTop = R.cageTop; $('cage').style.top = state.suspendedTop+'px';
 
-  // clamp X dentro da tela atual
   const maxNaroX = arena.width - naroW;
-  state.x = clamp(state.x, 0, maxNaroX);
-  $('naro').style.left = state.x+'px';
+  state.x = clamp(state.x, 0, maxNaroX); $('naro').style.left = state.x+'px';
 
   const maxCageX = arena.width - cageW;
-  let x = Number(cageEl.dataset.x ?? Math.round(arena.width*0.72 - cageW/2));
+  let x = Number($('cage').dataset.x ?? Math.round(arena.width*0.72 - cageW/2));
   x = clamp(x, 0, maxCageX);
-  cageEl.dataset.x = x; cageEl.style.left = x+'px';
+  $('cage').dataset.x = x; $('cage').style.left = x+'px';
 }
 
 async function loadImages(){
@@ -278,10 +303,16 @@ async function loadImages(){
   window.addEventListener('resize', layoutSprites);
 }
 
-function showMenu(){ $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
+function showMenu(){ 
+  $('menuPage').classList.remove('hidden'); 
+  $('gamePage').classList.add('hidden'); 
+  $('overlay').classList.remove('show'); 
+  state.playing=false; state.cageDropping=false; 
+}
+
 function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
 
-/** Balões */
+/** balões */
 let balloonTimer=null;
 function scheduleBalloon(){
   clearTimeout(balloonTimer);
@@ -304,18 +335,14 @@ function showBalloon(t){
 }
 function hideBalloon(){ $('balloon').classList.remove('show'); }
 
-/** Hit test (centro/overlap) */
+/** hit test */
 function getInnerCageRect(){
   const cage=$('cage').getBoundingClientRect();
   const pad=params.hitboxInnerPadding;
-  return {
-    left:cage.left+pad, right:cage.right-pad, top:cage.top+pad, bottom:cage.bottom-pad,
-    width:Math.max(0,(cage.right-pad)-(cage.left+pad)),
-    height:Math.max(0,(cage.bottom-pad)-(cage.top+pad))
-  };
+  return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad};
 }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
-function centerOf(r){ return {x:(r.left+r.right)/2, y:(r.top+r.bottom)/2}; }
+function centerOf(r){ return {x:(r.left+r.right)/2,y:(r.top+r.bottom)/2}; }
 function intersectionArea(a,b){
   const left=Math.max(a.left,b.left), right=Math.min(a.right,b.right);
   const top=Math.max(a.top,b.top), bottom=Math.min(a.bottom,b.bottom);
@@ -323,13 +350,16 @@ function intersectionArea(a,b){
 }
 function naroCaptured(){
   const inner=getInnerCageRect(), naro=getNaroRect();
-  if(naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom) return true;
+  const fully = (naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom);
+  if(fully) return true;
   const c=centerOf(naro);
-  if(c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom) return true;
-  return intersectionArea(inner,naro)/(naro.width*naro.height||1) >= params.minOverlapToCapture;
+  if(c.x>=inner.left&&c.x<=inner.right&&c.y>=inner.top&&c.y<=inner.bottom) return true;
+  const inter=intersectionArea(inner,naro);
+  const area=(naro.width*naro.height)||1;
+  return inter/area >= params.minOverlapToCapture;
 }
 
-/** Jogo */
+/** jogo */
 function resetRound(){
   state.startedAt=performance.now(); state.elapsed=0;
   state.dir = Math.random()<0.5 ? -1 : 1;
@@ -345,14 +375,16 @@ function currentSpeed(){
   return base*ramp;
 }
 function updateHUD(){
-  $('time').textContent = fmtTime(state.elapsed/1000);
-  $('level').textContent = state.level;
-  $('speed').textContent = Math.round(currentSpeed());
-  $('score').textContent = state.score;
+  const t = fmtTime(state.elapsed/1000);
+  const sp = Math.round(currentSpeed());
+  $('time').textContent=t; $('timeDesk').textContent=t;
+  $('level').textContent=state.level; $('levelDesk').textContent=state.level;
+  $('speed').textContent=sp; $('speedDesk').textContent=sp;
+  $('score').textContent=state.score; $('scoreDesk').textContent=state.score;
 }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
 
-/** Loop principal */
+/** loop */
 let raf=null;
 function loop(ts){
   if(!state.playing){ raf=requestAnimationFrame(loop); return; }
@@ -362,7 +394,7 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // NARO: patrulha bate-e-volta usando a largura inteira da tela
+  // NARO bate-e-volta
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
@@ -370,7 +402,7 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // GAIOLA: patrulha bate-e-volta enquanto suspensa
+  // GAIOLA bate-e-volta enquanto suspensa
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
     const maxCageX = arena.width - state.cageW;
@@ -378,14 +410,15 @@ function loop(ts){
     x += patrolV*state.cageDir;
     if(x < 0){ x = 0; state.cageDir = 1; }
     else if(x > maxCageX){ x = maxCageX; state.cageDir = -1; }
-    cageEl.dataset.x = x; cageEl.style.left = Math.round(x)+'px';
+    cageEl.dataset.x = x;
+    cageEl.style.left = Math.round(x)+'px';
   }
 
-  // Queda da gaiola
+  // queda
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
-    const ground=arena.height - state.cageH + 6; // “chão”
+    const ground=arena.height - state.cageH + 6;
     const next=Math.min(curTop+step, ground);
     cageEl.style.top=next+'px';
     if(next>=ground){
@@ -400,9 +433,11 @@ function loop(ts){
 
 function showResult(win){
   state.playing=false;
+  state.lastWin = win;
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
   if(win){
+    if (typeof countWinGlobal === 'function') countWinGlobal();
     $('modalTitle').textContent='Parabéns!';
     $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     $('modalPrimary').textContent='Próximo nível';
@@ -417,27 +452,61 @@ function showResult(win){
   }
 }
 
-/** Controles */
+/** controles */
 $('startBtn').addEventListener('click', startGame);
 const mobileBtn=$('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
-$('modalPrimary').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); if(state.score>0){ state.level++; } state.playing=true; resetRound(); });
+$('modalPrimary').addEventListener('click', ()=>{
+  $('overlay').classList.remove('show');
+  if (state.lastWin === false) { if (typeof countPlayedGlobal === 'function') countPlayedGlobal(); }
+  if(state.score>0){ state.level++; }
+  state.playing=true; resetRound();
+});
 $('modalSecondary').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); state.playing=true; resetRound(); });
 
 function startGame(){
   state.userName = $('userName').value.trim();
   state.level = state.level || 1;
   state.playing = true;
+  state.lastWin = null;
+  if (typeof countPlayedGlobal === 'function') countPlayedGlobal();
   $('overlay').classList.remove('show');
   showGame(); resetRound();
 }
 
-/** Boot */
+/** boot */
 function init(){ loadImages(); showMenu(); loop(0); }
 init();
+</script>
+
+<!-- ===== Firebase para contadores globais ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* PREENCHA COM SEU PROJETO FIREBASE */
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
+  projectId: "SEU_PROJETO",
+  storageBucket: "SEU_PROJETO.appspot.com",
+  messagingSenderId: "XXXXXXXXXXXX",
+  appId: "1:XXXXXXXXXXXX:web:YYYYYYYYYYYYYY"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const refPlays = db.ref("counters/plays");
+const refWins  = db.ref("counters/wins");
+
+refPlays.on("value", s => { (document.getElementById("playedCount")||{}).textContent = (s.val()??0); });
+refWins .on("value", s => { (document.getElementById("winCount")||{}).textContent = (s.val()??0); });
+
+function inc(ref){ return ref.transaction(cur => (Number(cur)||0)+1).catch(()=>{}); }
+async function countPlayedGlobal(){ await inc(refPlays); }
+async function countWinGlobal(){    await inc(refWins);  }
 </script>
 </body>
 </html>
