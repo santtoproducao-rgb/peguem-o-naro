@@ -31,8 +31,8 @@
   @media (max-width:767px){.menu-logo-fixed img{width:90px}}
 
   .content{width:100%;max-width:1024px;padding:16px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
-  .logo-game-wrap{background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .logo-game{max-width:320px;max-height:320px}
+  .logo-game-wrap{background:#fff;border-radius:24px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .logo-game{max-width:340px;max-height:340px}
   @media (max-width:767px){.logo-game{max-width:240px;max-height:240px}}
 
   .card{background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:0 10px 30px rgba(0,0,0,.25)}
@@ -44,27 +44,41 @@
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
   /* ==== JOGO ==== */
-  .topbar{position:absolute;top:10px;left:10px;right:10px;z-index:7;display:flex;align-items:center;justify-content:space-between}
-  .game-logo-left img{width:140px;height:auto}
-  @media (max-width:767px){.game-logo-left img{width:100px}}
-  .donate-btn{white-space:nowrap}
+  /* cluster de marcas no topo esquerdo do jogo */
+  .brand-cluster{
+    position:absolute;top:14px;left:14px;z-index:7;display:flex;flex-direction:column;gap:12px;align-items:flex-start
+  }
+  .logo-game-card{
+    background:#fff;border-radius:24px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)
+  }
+  .logo-game-card img{width:260px;height:auto}
+  .logo-menu-small img{width:120px;height:auto}
+  @media (max-width:767px){
+    .logo-game-card img{width:200px}
+    .logo-menu-small img{width:90px}
+  }
 
-  .hud-top{position:absolute;top:10px;right:10px;z-index:7;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .top-right-actions{
+    position:absolute;top:10px;right:10px;z-index:7;display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:flex-end
+  }
+  .hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .pill{color:var(--hud-text);background:var(--hud-bg);border:1px solid rgba(255,255,255,.18);padding:8px 12px;border-radius:12px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.35);backdrop-filter:blur(8px) saturate(1.25);display:flex;gap:6px;align-items:center}
+  .donate-btn{white-space:nowrap}
 
   .arena{position:relative;width:min(1200px,90vw);height:min(74vh,780px);border-radius:16px;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
-
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
 
+  /* posições base */
   .naro{position:absolute;bottom:4px;left:0;display:flex;align-items:flex-end;justify-content:center}
-  .cage{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
+  .cage{position:absolute;top:90px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap}
   .balloon.show{opacity:1;transform:translateY(0)}
   @media (max-width:767px){
     .arena{width:95vw;height:66vh}
     .balloon{max-width:300px;bottom:210px;white-space:normal}
+    .cage{top:70px}
   }
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
@@ -94,7 +108,7 @@
         </div>
         <div class="row">
           <button id="startBtn" class="btn">Iniciar</button>
-          <a id="donateMenu" class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
+          <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
         </div>
       </div>
 
@@ -106,16 +120,20 @@
   <section id="gamePage" class="page hidden">
     <div id="gameBg" class="bg"></div>
 
-    <div class="topbar">
-      <div class="game-logo-left"><img id="gameLogoLeft" alt="Logo do projeto"></div>
-      <a id="donateGame" class="btn donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
+    <!-- cluster topo-esquerdo (como no mock) -->
+    <div class="brand-cluster">
+      <div class="logo-game-card"><img id="gameLogoCard" alt="Logo do jogo"></div>
+      <div class="logo-menu-small"><img id="gameLogoLeft" alt="Logo ARCO"></div>
     </div>
 
-    <div class="hud-top">
-      <div class="pill">⏱ <b id="time">00:00</b></div>
-      <div class="pill">⚡ Vel: <b id="speed">0</b></div>
-      <div class="pill">⭐ Score: <b id="score">0</b></div>
-      <div class="pill">🎯 Nível: <b id="level">1</b></div>
+    <div class="top-right-actions">
+      <div class="hud">
+        <div class="pill">⏱ <b id="time">00:00</b></div>
+        <div class="pill">⚡ <b id="speed">0</b></div>
+        <div class="pill">⭐ Score: <b id="score">0</b></div>
+        <div class="pill">🎯 Nível: <b id="level">1</b></div>
+      </div>
+      <a class="btn donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
     </div>
 
     <div class="arena" id="arena">
@@ -145,7 +163,7 @@
 </div>
 
 <script>
-/** ====== ARQUIVOS ====== **/
+/** ====== ASSETS ====== **/
 const ASSETS = {
   bgDesktop: './bg-desktop.jpg',
   bgMobile:  './bg-mobile.jpg',
@@ -155,25 +173,22 @@ const ASSETS = {
   logoMenu:  './logo-menu.png'
 };
 
-/** ====== DIMENSÕES ORIGINAIS (fornecidas) ====== **/
+/** ====== DIMENSÕES ORIGINAIS ====== **/
 const NARO_W0 = 480, NARO_H0 = 1080;
 const CAGE_W0 = 864, CAGE_H0 = 1080;
 
 /** ====== ESTADO / PARÂMETROS ====== **/
 let state = {
-  userName:'', level:1, score:0,
-  startedAt:0, elapsed:0, playing:false,
-  // Naro
+  userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
-  // Gaiola
-  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:60
+  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:90
 };
 
 const params = {
   baseSpeed:220, speedIncreasePerLevel:60, speedRampByTime:0.012,
   cagePatrolSpeed:180,
   dropSpeed:980,
-  hitboxInnerPadding:14,  // borda interna da gaiola p/ considerar “dentro”
+  hitboxInnerPadding:14,
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
   transparentWhiteThreshold: 242
@@ -185,82 +200,68 @@ function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/** Transparência de segurança (se houver branco residual) **/
+/** (opcional) remove branco quase puro para garantir transparência **/
 function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   return new Promise((resolve)=>{
     const img = new Image(); img.crossOrigin = 'anonymous';
     img.onload = ()=>{
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width; canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img,0,0);
-      const data = ctx.getImageData(0,0,canvas.width,canvas.height);
-      const d = data.data; let changed=false;
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i], g=d[i+1], b=d[i+2];
-        if(r>=threshold && g>=threshold && b>=threshold){ d[i+3]=0; changed=true; }
-      }
-      if(changed){ ctx.putImageData(data,0,0); resolve(canvas.toDataURL('image/png')); }
-      else resolve(url);
+      const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+      const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+      const data=ctx.getImageData(0,0,c.width,c.height); const d=data.data; let changed=false;
+      for(let i=0;i<d.length;i+=4){ const r=d[i],g=d[i+1],b=d[i+2]; if(r>=threshold&&g>=threshold&&b>=threshold){d[i+3]=0;changed=true;} }
+      if(changed){ ctx.putImageData(data,0,0); resolve(c.toDataURL('image/png')); } else resolve(url);
     };
-    img.onerror = ()=>resolve(url);
-    img.src = url + '?v=' + Date.now();
+    img.onerror=()=>resolve(url);
+    img.src=url+'?v='+Date.now();
   });
 }
 
-/** Layout responsivo dos sprites preservando proporções originais **/
+/** Layout proporcional dos sprites (base 480×1080 e 864×1080) **/
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
-  // Alturas “alvo” por plataforma (percentual da arena)
   const cageH = isMobile()? Math.round(arena.height * 0.58) : Math.round(arena.height * 0.66);
-  const sCage = cageH / CAGE_H0;
-  const cageW = Math.round(CAGE_W0 * sCage);
+  const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
   const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
-  const sNaro = naroH / NARO_H0;
-  const naroW = Math.round(NARO_W0 * sNaro);
+  const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
-  state.cageH = cageH; state.cageW = cageW;
-  state.naroH = naroH; state.naroW = naroW;
+  state.cageH=cageH; state.cageW=cageW; state.naroH=naroH; state.naroW=naroW;
 
-  // Aplicar tamanhos
-  const cageEl = $('cage'), naroEl = $('naro');
-  cageEl.style.width = cageW + 'px';  cageEl.style.height = cageH + 'px';
-  naroEl.style.width = naroW + 'px';  naroEl.style.height = naroH + 'px';
+  const cageEl=$('cage'), naroEl=$('naro');
+  cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
+  naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
-  // Atualizar limites iniciais
-  // Naro começa na esquerda, no chão
+  state.suspendedTop = isMobile()? 70 : 90;
+  cageEl.style.top = state.suspendedTop+'px';
+
+  // ajustar posições atuais aos limites
   state.x = clamp(state.x, 0, arena.width - naroW);
-  naroEl.style.left = state.x + 'px';
-  // Gaiola suspensa no topo, centralizada
-  state.suspendedTop = isMobile()? 50 : 60;
-  cageEl.style.top = state.suspendedTop + 'px';
+  naroEl.style.left = state.x+'px';
 
-  // Centraliza gaiola na primeira execução
   if(!cageEl.dataset.x){
-    const startX = Math.max(0, Math.min(arena.width - cageW, (arena.width/2 - cageW/2)));
-    cageEl.dataset.x = startX;
-    cageEl.style.left = startX + 'px';
-  } else {
+    const start = clamp(Math.round(arena.width*0.70 - cageW/2), 0, arena.width - cageW);
+    cageEl.dataset.x = start; cageEl.style.left = start + 'px';
+  }else{
     const x = clamp(Number(cageEl.dataset.x), 0, arena.width - cageW);
-    cageEl.dataset.x = x; cageEl.style.left = x + 'px';
+    cageEl.dataset.x = x; cageEl.style.left = x+'px';
   }
 }
 
 async function loadImages(){
-  const bg = currentBg();
-  $('menuBg').style.backgroundImage = `url(${bg})`;
-  $('gameBg').style.backgroundImage = `url(${bg})`;
+  const bg=currentBg();
+  $('menuBg').style.backgroundImage=`url(${bg})`;
+  $('gameBg').style.backgroundImage=`url(${bg})`;
 
-  $('menuLogoTop').src   = ASSETS.logoMenu;
-  $('menuLogoGame').src  = ASSETS.logoGame;
-  $('gameLogoLeft').src  = ASSETS.logoMenu;
+  $('menuLogoTop').src=ASSETS.logoMenu;
+  $('menuLogoGame').src=ASSETS.logoGame;
 
-  $('naroImg').src = await makeWhiteTransparent(ASSETS.naro);
-  $('cageImg').src = await makeWhiteTransparent(ASSETS.cage);
+  $('gameLogoCard').src=ASSETS.logoGame;   // cartão branco
+  $('gameLogoLeft').src=ASSETS.logoMenu;   // ARCO sem container
 
-  // Quando as imagens carregarem, ajusta layout
-  setTimeout(layoutSprites, 50);
+  $('naroImg').src=await makeWhiteTransparent(ASSETS.naro);
+  $('cageImg').src=await makeWhiteTransparent(ASSETS.cage);
+
+  setTimeout(layoutSprites,50);
   window.addEventListener('resize', layoutSprites);
 }
 
@@ -292,17 +293,13 @@ function hideBalloon(){ $('balloon').classList.remove('show'); }
 
 /** Jogo **/
 function resetRound(){
-  state.startedAt=performance.now();
-  state.elapsed=0;
+  state.startedAt=performance.now(); state.elapsed=0;
   state.dir=1; state.vx=0;
-  state.cageDir = Math.random() < 0.5 ? -1 : 1;
+  state.cageDir = Math.random()<0.5 ? -1 : 1;
   state.cageDropping=false;
 
-  const cageEl=$('cage');
-  cageEl.style.top = state.suspendedTop + 'px';
-
-  layoutSprites();
-  updateHUD(); scheduleBalloon();
+  $('cage').style.top = state.suspendedTop+'px';
+  layoutSprites(); updateHUD(); scheduleBalloon();
 }
 function currentSpeed(){
   const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
@@ -320,19 +317,8 @@ function naroInsideCageFully(){
   const cage=$('cage').getBoundingClientRect();
   const naro=$('naro').getBoundingClientRect();
   const pad=params.hitboxInnerPadding;
-
-  const innerLeft   = cage.left + pad;
-  const innerRight  = cage.right - pad;
-  const innerTop    = cage.top + pad;
-  const innerBottom = cage.bottom - pad;
-
-  // Contenção total (todas as bordas do Naro dentro da área interna da gaiola)
-  return (
-    naro.left   >= innerLeft  &&
-    naro.right  <= innerRight &&
-    naro.top    >= innerTop   &&
-    naro.bottom <= innerBottom
-  );
+  const innerLeft=cage.left+pad, innerRight=cage.right-pad, innerTop=cage.top+pad, innerBottom=cage.bottom-pad;
+  return (naro.left>=innerLeft && naro.right<=innerRight && naro.top>=innerTop && naro.bottom<=innerBottom);
 }
 
 let raf=null;
@@ -344,37 +330,35 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // === Movimento horizontal do Naro (ping-pong) ===
+  // Movimento do Naro
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
-  if(state.x < 0){ state.x=0; state.dir=1; }
-  if(state.x > maxNaroX){ state.x=maxNaroX; state.dir=-1; }
-  naroEl.style.left = `${state.x}px`;
+  if(state.x<0){ state.x=0; state.dir=1; }
+  if(state.x>maxNaroX){ state.x=maxNaroX; state.dir=-1; }
+  naroEl.style.left = state.x+'px';
 
-  // === Patrulha da gaiola (se não estiver caindo) ===
+  // Patrulha da gaiola
   if(!state.cageDropping){
-    const patrolV = (params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
-    const maxCageX = arena.width - state.cageW;
-    let x = Number(cageEl.dataset.x || (arena.width/2 - state.cageW/2));
+    const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
+    const maxCageX=arena.width - state.cageW;
+    let x=Number(cageEl.dataset.x || (arena.width/2 - state.cageW/2));
     x += patrolV*state.cageDir;
-    if(x < 0){ x=0; state.cageDir=1; }
-    if(x > maxCageX){ x=maxCageX; state.cageDir=-1; }
-    cageEl.dataset.x = x;
-    cageEl.style.left = x + 'px';
+    if(x<0){ x=0; state.cageDir=1; }
+    if(x>maxCageX){ x=maxCageX; state.cageDir=-1; }
+    cageEl.dataset.x=x; cageEl.style.left=x+'px';
   }
 
-  // === Queda da gaiola ===
+  // Queda da gaiola
   if(state.cageDropping){
-    const curTop = parseFloat(getComputedStyle(cageEl).top);
-    const step = params.dropSpeed*(1/60);
-    const ground = arena.height - state.cageH + 6;
-    const next = Math.min(curTop + step, ground);
-    cageEl.style.top = next + 'px';
+    const curTop=parseFloat(getComputedStyle(cageEl).top);
+    const step=params.dropSpeed*(1/60);
+    const ground=arena.height - state.cageH + 6;
+    const next=Math.min(curTop+step, ground);
+    cageEl.style.top=next+'px';
     if(next>=ground){
       state.cageDropping=false;
-      const win = naroInsideCageFully();
-      showResult(win);
+      showResult(naroInsideCageFully());
     }
   }
 
@@ -401,7 +385,7 @@ function showResult(win){
   }
 }
 
-/** ====== CONTROLES ====== **/
+/** CONTROLES **/
 $('startBtn').addEventListener('click', startGame);
 $('mobileDropBtn')?.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
@@ -419,12 +403,13 @@ function startGame(){
   showGame(); resetRound();
 }
 
-/** ====== BOOT ====== **/
+/** BOOT **/
 function init(){ loadImages(); showMenu(); loop(0); }
 init();
 </script>
 </body>
 </html>
+
 
 
 
