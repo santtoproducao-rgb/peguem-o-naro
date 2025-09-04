@@ -112,8 +112,8 @@
       flex-direction:row; justify-content:space-between; align-items:center; gap:10px;
     }
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
-    .logo-game-card img{width:150px}
-    .logo-arco img{width:92px}
+    .logo-game-card img{width:100px}
+    .logo-arco img{width:60px}
     .top-right{display:none}
 /* Sobe o Naro no mobile para alinhar com a base do botão */
   .naro{ bottom: 110px; }  /* ajuste fino: teste 86–110px até bater com o mock */
@@ -122,6 +122,21 @@
   @media (min-width:768px){
     .top-mobile-hud{ display:none !important; }
   }
+/* Mostrar o DOAR no mobile, fixo acima do botão "Pegue o Naro" */
+.donate-btn{
+  display:inline-flex !important;
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:72px;           /* fica acima do "Pegue o Naro" */
+  z-index:31;
+  padding:12px 18px;
+  border-radius:16px;
+  background:#00a307;    /* mude a cor aqui se quiser */
+  color:#fff;
+  text-decoration:none;
+  box-shadow:var(--shadow);
+}
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
   @media (min-width:768px){.mobile-drop{display:none}}
