@@ -70,11 +70,11 @@
 
   /* posições base */
   .naro{
-    position:absolute;bottom:2px;left:0; /* mantém o Naro colado no “chão” em 2px */
+    position:absolute;bottom:2px;left:0;
     display:flex;align-items:flex-end;justify-content:center
   }
   .cage{
-    position:absolute;top:90px;left:50%;transform:translateX(-50%);
+    position:absolute;top:0;left:50%;transform:translateX(-50%); /* topo do BG no desktop */
     display:flex;align-items:flex-end;justify-content:center
   }
 
@@ -83,7 +83,7 @@
   @media (max-width:767px){
     .arena{width:95vw;height:66vh}
     .balloon{max-width:300px;bottom:210px;white-space:normal}
-    .cage{top:70px}
+    .cage{top:64px} /* no mobile deixamos um respiro do topo */
   }
 
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
@@ -95,7 +95,7 @@
   .modal h2{margin:0 0 8px}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
-  /* ====== MOBILE MOCK LAYOUT ====== */
+  /* ====== MOBILE HUD compacto ====== */
   @media (max-width: 767px){
     .arena{ width: 95vw; height: 68vh; }
 
@@ -115,7 +115,6 @@
     .logo-menu-small img{ width:72px; height:auto; }
 
     .balloon{ bottom:188px; max-width:280px; }
-    .cage{ top:64px; }
   }
 </style>
 </head>
@@ -209,7 +208,7 @@ const CAGE_W0 = 864, CAGE_H0 = 1080;
 let state = {
   userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
-  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:90
+  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0
 };
 
 const params = {
@@ -217,7 +216,7 @@ const params = {
   cagePatrolSpeed:180,
   dropSpeed:980,
   hitboxInnerPadding:14,
-  minOverlapToCapture:0.33, // << porcentagem do Naro dentro da gaiola para contar ACERTO
+  minOverlapToCapture:0.33, // % do Naro que precisa estar sob a gaiola p/ contar ACERTO
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
   transparentWhiteThreshold: 242
@@ -245,15 +244,14 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   });
 }
 
-/** Layout proporcional dos sprites (base 480×1080 e 864×1080) **/
+/** Layout proporcional dos sprites **/
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
 
-  // Gaiola proporcional e suspensa (mais perto do topo, proporcional à altura da arena)
+  // Tamanhos proporcionais
   const cageH = isMobile()? Math.round(arena.height * 0.56) : Math.round(arena.height * 0.64);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
-  // Naro proporcional; encosta no chão via CSS (bottom:2px)
   const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
   const sNaro = naroH / NARO_H0; const naroW = Math.round(NARO_W0 * sNaro);
 
@@ -263,20 +261,23 @@ function layoutSprites(){
   cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
   naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
-  // MAIS PERTO DO TOPO (relativo ao tamanho da arena)
-  const topPct = isMobile()? 0.06 : 0.035; // 6% no mobile, 3.5% no desktop
-  state.suspendedTop = Math.max(Math.round(arena.height * topPct), 8);
+  // topo no desktop; um respiro no mobile
+  state.suspendedTop = isMobile()? 64 : 0;
   cageEl.style.top = state.suspendedTop+'px';
 
-  // limites
-  state.x = clamp(state.x, 0, arena.width - naroW);
+  // manter X válidos
+  const maxNaroX = arena.width - naroW;
+  state.x = clamp(state.x, 0, maxNaroX);
   naroEl.style.left = state.x+'px';
 
-  if(!cageEl.dataset.x){
-    const start = clamp(Math.round(arena.width*0.70 - cageW/2), 0, arena.width - cageW);
-    cageEl.dataset.x = start; cageEl.style.left = start + 'px';
+  const maxCageX = arena.width - cageW;
+  if(cageEl.dataset.x===undefined){
+    // começa aleatório para variar
+    const start = Math.round(Math.random()*maxCageX);
+    cageEl.dataset.x = start;
+    cageEl.style.left = start + 'px';
   }else{
-    const x = clamp(Number(cageEl.dataset.x), 0, arena.width - cageW);
+    const x = clamp(Number(cageEl.dataset.x), 0, maxCageX);
     cageEl.dataset.x = x; cageEl.style.left = x+'px';
   }
 }
@@ -289,8 +290,8 @@ async function loadImages(){
   $('menuLogoTop').src=ASSETS.logoMenu;
   $('menuLogoGame').src=ASSETS.logoGame;
 
-  $('gameLogoCard').src=ASSETS.logoGame;   // cartão branco
-  $('gameLogoLeft').src=ASSETS.logoMenu;   // ARCO sem container
+  $('gameLogoCard').src=ASSETS.logoGame;
+  $('gameLogoLeft').src=ASSETS.logoMenu;
 
   $('naroImg').src=await makeWhiteTransparent(ASSETS.naro);
   $('cageImg').src=await makeWhiteTransparent(ASSETS.cage);
@@ -325,7 +326,7 @@ function showBalloon(t){
 }
 function hideBalloon(){ $('balloon').classList.remove('show'); }
 
-/** ==== HIT TEST: captura por inclusão, centro ou overlap mínimo ==== **/
+/** ====== HIT TEST ====== **/
 function getInnerCageRect(){
   const cage=$('cage').getBoundingClientRect();
   const pad=params.hitboxInnerPadding;
@@ -339,9 +340,7 @@ function getInnerCageRect(){
   };
 }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
-
 function centerOf(rect){ return { x:(rect.left+rect.right)/2, y:(rect.top+rect.bottom)/2 }; }
-
 function intersectionArea(a,b){
   const left=Math.max(a.left,b.left);
   const right=Math.min(a.right,b.right);
@@ -351,37 +350,34 @@ function intersectionArea(a,b){
   const h=Math.max(0, bottom-top);
   return w*h;
 }
-
 function naroCaptured(){
   const inner=getInnerCageRect();
   const naro=getNaroRect();
 
-  // 1) totalmente dentro
   const fullyInside = (naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom);
   if(fullyInside) return true;
 
-  // 2) centro do Naro dentro
   const c=centerOf(naro);
   const centerInside = (c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom);
   if(centerInside) return true;
 
-  // 3) overlap suficiente
   const inter=intersectionArea(inner, naro);
   const naroArea=naro.width*naro.height || 1;
-  const ratio=inter/naroArea;
-  return ratio >= params.minOverlapToCapture;
+  return (inter/naroArea) >= params.minOverlapToCapture;
 }
 
-/** Jogo **/
+/** ====== JOGO ====== **/
 function resetRound(){
   state.startedAt=performance.now(); state.elapsed=0;
-  state.dir=1; state.vx=0;
+  state.dir = Math.random()<0.5 ? -1 : 1;
+  state.vx=0;
   state.cageDir = Math.random()<0.5 ? -1 : 1;
   state.cageDropping=false;
 
   $('cage').style.top = state.suspendedTop+'px';
   layoutSprites(); updateHUD(); scheduleBalloon();
 }
+
 function currentSpeed(){
   const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
   const ramp=1 + params.speedRampByTime * (state.elapsed/1000);
@@ -393,6 +389,7 @@ function updateHUD(){
   $('speed').textContent = Math.round(currentSpeed());
   $('score').textContent = state.score;
 }
+
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
 
 let raf=null;
@@ -404,26 +401,29 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // Movimento do Naro
+  // ----- Movimento do Naro com WRAP-AROUND -----
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
-  if(state.x<0){ state.x=0; state.dir=1; }
-  if(state.x>maxNaroX){ state.x=maxNaroX; state.dir=-1; }
-  naroEl.style.left = state.x+'px';
+  if(state.x > maxNaroX){ state.x = -state.naroW + 1; }        // saiu à direita, entra pela esquerda
+  if(state.x < -state.naroW){ state.x = maxNaroX - 1; }         // saiu à esquerda, entra pela direita
+  naroEl.style.left = Math.round(state.x)+'px';
 
-  // Patrulha da gaiola
+  // ----- Patrulha da gaiola com WRAP-AROUND (quando suspensa) -----
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
-    const maxCageX=arena.width - state.cageW;
-    let x=Number(cageEl.dataset.x || (arena.width/2 - state.cageW/2));
+    const maxCageX = arena.width - state.cageW;
+    let x = Number(cageEl.dataset.x ?? (arena.width/2 - state.cageW/2));
     x += patrolV*state.cageDir;
-    if(x<0){ x=0; state.cageDir=1; }
-    if(x>maxCageX){ x=maxCageX; state.cageDir=-1; }
-    cageEl.dataset.x=x; cageEl.style.left=x+'px';
+
+    if(x > maxCageX){ x = -state.cageW + 1; }   // sai à direita, volta pela esquerda
+    if(x < -state.cageW){ x = maxCageX - 1; }   // sai à esquerda, volta pela direita
+
+    cageEl.dataset.x = x;
+    cageEl.style.left = Math.round(x)+'px';
   }
 
-  // Queda da gaiola
+  // ----- Queda da gaiola -----
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
@@ -483,3 +483,4 @@ init();
 </script>
 </body>
 </html>
+
