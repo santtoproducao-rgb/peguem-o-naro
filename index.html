@@ -11,6 +11,7 @@
     --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
     --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
+    --naro-bottom:2px; /* desktop padrão; no mobile setamos via JS para 16px */
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -36,20 +37,17 @@
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
 
-  /* Contadores – ficam DENTRO da .content, acima do card */
   .counters{
     background:#fff; color:#111; border-radius:14px; padding:10px 14px;
     display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
   }
   .counters b{font-variant-numeric:tabular-nums}
-  /* Desktop: sobe para o topo e centraliza */
   @media (min-width:768px){
     .counters{
-      position:absolute; top:5px; left:50%; transform:translateX(-50%);
+      position:absolute; top:15px; left:50%; transform:translateX(-50%);
       z-index:8;
     }
   }
-  /* Mobile: fica no fluxo, colada no card */
   @media (max-width:767px){
     .counters{ position:relative; margin:0 0 6px 0; }
   }
@@ -81,24 +79,20 @@
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
   .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#0f172a;color:#fff;text-decoration:none}
 
-  /* BG/arena cobre 100% da tela */
   .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
- .cage{
-  position:absolute;top:0;left:0;          /* ← de 50% para 0 */
-  transform:none;                           /* ← remove o translate */
-  display:flex;align-items:flex-end;justify-content:center
-}
+  .naro{position:absolute;bottom:var(--naro-bottom,2px);left:0;display:flex;align-items:flex-end;justify-content:center}
+  .cage{
+    position:absolute;top:0;left:0;transform:none;
+    display:flex;align-items:flex-end;justify-content:center
+  }
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
-  /* ======= MOBILE – HUD e logos conforme mock ======= */
   @media (max-width:767px){
-    /* quatro caixas brancas no topo */
     .top-mobile-hud{
       position:absolute;top:8px;left:8px;right:8px;z-index:9;
       display:flex;gap:10px;justify-content:space-between;
@@ -108,7 +102,6 @@
       display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;
       padding:0 8px;min-width:0;
     }
-    /* logos em linha logo abaixo */
     .brand-left{
       top:58px; left:10px; right:10px;
       flex-direction:row; justify-content:space-between; align-items:center; gap:10px;
@@ -116,13 +109,10 @@
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:150px}
     .logo-arco img{width:92px}
-    /* esconder botão de doação no mobile (para não poluir o topo) */
     .donate-btn{display:none}
-    /* HUD desktop some no mobile */
     .top-right{display:none}
     .balloon{bottom:188px;max-width:280px}
   }
-  /* Garante que o HUD mobile NÃO apareça no desktop */
   @media (min-width:768px){
     .top-mobile-hud{ display:none !important; }
   }
@@ -135,9 +125,22 @@
   .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
   .modal h2{margin:0 0 8px}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+
+  /* ===== ADMIN ===== */
+  .admin-wrap{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;padding:12px;background:#0b0b0bcc;color:#fff}
+  .admin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .admin-bar .btn{background:#2563eb}
+  .admin-grid{display:grid;grid-template-columns:320px 1fr;gap:12px;align-items:start}
+  .admin-card{background:#111827;border:1px solid #2b364b;border-radius:12px;padding:12px}
+  .admin-field{display:flex;gap:8px;align-items:center;margin:8px 0}
+  .admin-field label{width:120px}
+  .admin-preview{position:relative;background:#222;height:60vh;border-radius:12px;overflow:hidden}
+  .admin-preview .arena{position:absolute;inset:0}
+  .draggable{position:absolute;border:2px dashed #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;pointer-events:auto;user-select:none}
 </style>
 </head>
 <body>
+
 <!-- ========== MENU ========== -->
 <section id="menuPage" class="page">
   <div id="menuBg" class="bg"></div>
@@ -148,7 +151,6 @@
   </div>
 
   <div class="content">
-    <!-- Contadores globais (agora ficam acima do card; no desktop sobem para o topo via CSS) -->
     <div id="globalCounters" class="counters">
       <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
       <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
@@ -172,7 +174,6 @@
 <section id="gamePage" class="page hidden">
   <div id="gameBg" class="bg"></div>
 
-  <!-- HUD MOBILE (4 caixas, só no mobile) -->
   <div class="top-mobile-hud">
     <div class="box">⏱ <span id="time">00:00</span></div>
     <div class="box">⚡ <span id="speed">0</span></div>
@@ -180,13 +181,11 @@
     <div class="box">🎯 <span id="level">1</span></div>
   </div>
 
-  <!-- logos -->
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
   </div>
 
-  <!-- HUD desktop -->
   <div class="top-right">
     <div class="hud">
       <div class="pill pill-time">⏱ <b id="timeDesk">00:00</b></div>
@@ -197,7 +196,6 @@
     <a class="donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
   </div>
 
-  <!-- arena ocupa 100% -->
   <div class="arena" id="arena">
     <div class="layer">
       <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
@@ -208,6 +206,56 @@
 
   <div class="mobile-drop">
     <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+  </div>
+</section>
+
+<!-- ========== ADMIN (opcional via ?admin=1) ========== -->
+<section id="adminPage" class="page hidden" aria-label="Admin">
+  <div class="admin-wrap">
+    <div class="admin-bar">
+      <strong>Admin de Layout</strong>
+      <button id="adminBack" class="btn">Voltar ao jogo</button>
+      <button id="adminApply" class="btn">Aplicar agora</button>
+      <button id="adminSave" class="btn">Salvar</button>
+      <span id="adminStatus" style="margin-left:auto;opacity:.8"></span>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-field">
+          <label>Modo</label>
+          <select id="adminMode">
+            <option value="desk">Desktop</option>
+            <option value="mob">Mobile</option>
+          </select>
+        </div>
+
+        <div class="admin-field"><label>Gaiola (altura % tela)</label>
+          <input id="inpCageH" type="range" min="0.05" max="0.70" step="0.01"><span id="labCageH" style="min-width:60px;display:inline-block"></span>
+        </div>
+        <div class="admin-field"><label>Gaiola (top px)</label>
+          <input id="inpCageTop" type="range" min="0" max="120" step="1"><span id="labCageTop" style="min-width:60px;display:inline-block"></span>
+        </div>
+
+        <hr style="border-color:#344;border-style:solid;border-width:1px;margin:10px 0">
+
+        <div class="admin-field"><label>Naro (altura % tela)</label>
+          <input id="inpNaroH" type="range" min="0.10" max="0.60" step="0.01"><span id="labNaroH" style="min-width:60px;display:inline-block"></span>
+        </div>
+        <div class="admin-field"><label>Naro (bottom px)</label>
+          <input id="inpNaroBottom" type="range" min="0" max="120" step="1"><span id="labNaroBottom" style="min-width:60px;display:inline-block"></span>
+        </div>
+        <p style="opacity:.75;font-size:12px;margin-top:8px">Dica: arraste os blocos no preview para ajustar <b>top</b> (gaiola) e <b>bottom</b> (naro).</p>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-preview" id="adminPreview">
+          <div class="arena">
+            <div id="prevCage" class="draggable" style="left:20%;top:0;width:30%;height:30%;">GAIOLA</div>
+            <div id="prevNaro" class="draggable" style="left:10%;bottom:16px;width:18%;height:24%;">NARO</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -239,9 +287,22 @@ const ASSETS = {
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/** RATIOS (ajuste fino) */
-const RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0 };  /* Naro um pouco maior */
-const RATIO_MOB  = { cageH: 0.22, naroH: 0.20, cageTop: 0 };  /* Gaiola menor; Naro não vaza */
+/** RATIOS (ajuste fino) — valores padrão; podem ser sobrescritos pelo Admin */
+let RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0, naroBottom: 2 };
+let RATIO_MOB  = { cageH: 0.11, naroH: 0.20, cageTop: 0, naroBottom: 16 }; /* mobile: gaiola 50% menor, naro alinhado ao botão */
+
+/** Carregar overrides salvos pelo Admin (localStorage) */
+const LS_LAYOUT_KEY = 'pegueonaro_layout_overrides';
+function loadLayoutOverrides(){
+  try{
+    const raw = localStorage.getItem(LS_LAYOUT_KEY);
+    if(!raw) return;
+    const o = JSON.parse(raw);
+    if(o.desk){ RATIO_DESK = {...RATIO_DESK, ...o.desk}; }
+    if(o.mob ){ RATIO_MOB  = {...RATIO_MOB , ...o.mob }; }
+  }catch(e){}
+}
+loadLayoutOverrides();
 
 /** Estado */
 let state = {
@@ -252,7 +313,6 @@ let state = {
 };
 
 const params = {
-  /* velocidades mais altas e progressivas */
   baseSpeed: 360,
   speedIncreasePerLevel: 90,
   speedRampByTime: 0.018,
@@ -301,7 +361,11 @@ function layoutSprites(){
   $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px';
   $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px';
 
-  state.suspendedTop = R.cageTop; $('cage').style.top = state.suspendedTop+'px';
+  state.suspendedTop = R.cageTop|0; $('cage').style.top = state.suspendedTop+'px';
+
+  /* Alinha a base do Naro: desktop 2px, mobile 16px (ou override do Admin) */
+  const naroBottom = (R.naroBottom!=null) ? R.naroBottom : (isMobile()?16:2);
+  $('naro').style.setProperty('--naro-bottom', naroBottom+'px');
 
   const maxNaroX = arena.width - naroW;
   state.x = clamp(state.x, 0, maxNaroX); $('naro').style.left = state.x+'px';
@@ -333,11 +397,12 @@ async function loadImages(){
 function showMenu(){ 
   $('menuPage').classList.remove('hidden'); 
   $('gamePage').classList.add('hidden'); 
+  $('adminPage').classList.add('hidden');
   $('overlay').classList.remove('show'); 
   state.playing=false; state.cageDropping=false; 
 }
-
-function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
+function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('adminPage').classList.add('hidden'); $('overlay').classList.remove('show'); }
+function showAdmin(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('adminPage').classList.remove('hidden'); }
 
 /** balões */
 let balloonTimer=null;
@@ -464,7 +529,7 @@ function showResult(win){
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
   if(win){
-    incWin();  // contador de acertos
+    incWin();
     $('modalTitle').textContent='Parabéns!';
     $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     $('modalPrimary').textContent='Próximo nível';
@@ -487,7 +552,7 @@ document.addEventListener('keydown',(e)=>{
 });
 $('modalPrimary').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-  if (state.lastWin === false) { incPlayed(); }  // tentar novamente conta como jogado
+  if (state.lastWin === false) { incPlayed(); }
   if(state.score>0){ state.level++; }
   state.playing=true; resetRound();
 });
@@ -498,7 +563,7 @@ function startGame(){
   state.level = state.level || 1;
   state.playing = true;
   state.lastWin = null;
-  incPlayed();  // conta JOGADO ao iniciar
+  incPlayed();
   $('overlay').classList.remove('show');
   showGame(); resetRound();
 }
@@ -514,40 +579,32 @@ function renderCountersUI(plays, wins){
 }
 function hasFirebase(){ return (typeof firebase!=='undefined' && firebase.apps && firebase.apps.length); }
 
-/* Lê do Firebase primeiro (global) e já exibe na primeira carga; senão, fallback local */
 async function bootstrapCounters(){
   if (hasFirebase()){
     try{
       const db = firebase.database();
       const refPlays = db.ref("counters/plays");
       const refWins  = db.ref("counters/wins");
-
-      // leitura inicial (mostra, por ex., 80 assim que abrir)
       const [snapP, snapW] = await Promise.all([refPlays.get(), refWins.get()]);
       const plays0 = Number(snapP.val() ?? 0);
       const wins0  = Number(snapW.val() ?? 0);
       renderCountersUI(plays0, wins0);
-
-      // listeners em tempo real
       refPlays.on("value", s => renderCountersUI(Number(s.val() ?? plays0), Number(window.__lastWinsVal ?? wins0)));
       refWins .on("value", s => { window.__lastWinsVal = Number(s.val() ?? wins0);
                                   const curPlays = Number((window.__lastPlaysVal ?? plays0));
                                   renderCountersUI(curPlays, window.__lastWinsVal); });
       refPlays.on("value", s => { window.__lastPlaysVal = Number(s.val() ?? plays0); });
     }catch(e){
-      // erro na leitura → usa localStorage
       const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
     }
   }else{
     const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
   }
 }
-
-/* Incrementos: preferir SEMPRE o Firebase; localStorage só se não houver Firebase */
 async function incPlayed(){
   if (hasFirebase()){
     try{ await firebase.database().ref("counters/plays").transaction(v => (Number(v)||0)+1); }
-    catch(_){}  // não duplica no local; mantemos a fonte única
+    catch(_){} 
   }else{
     const c=lsGetCounters(); c.plays++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
   }
@@ -561,8 +618,123 @@ async function incWin(){
   }
 }
 
+/** ===== ADMIN JS ===== */
+function qs(name){ return new URLSearchParams(location.search).get(name); }
+function setupAdmin(){
+  if(qs('admin')!=='1'){ return; }
+  // mostrar admin
+  showAdmin(); state.playing=false;
+
+  const modeSel = $('adminMode');
+  const inpCageH=$('inpCageH'), inpCageTop=$('inpCageTop'), inpNaroH=$('inpNaroH'), inpNaroBottom=$('inpNaroBottom');
+  const labCageH=$('labCageH'), labCageTop=$('labCageTop'), labNaroH=$('labNaroH'), labNaroBottom=$('labNaroBottom');
+  const prev=$('adminPreview'), prevCage=$('prevCage'), prevNaro=$('prevNaro');
+  const status=$('adminStatus');
+
+  const getR = ()=> modeSel.value==='desk'? RATIO_DESK : RATIO_MOB;
+
+  function syncInputs(){
+    const R=getR();
+    inpCageH.value=R.cageH; labCageH.textContent=Math.round(R.cageH*100)+'%';
+    inpCageTop.value=R.cageTop|0; labCageTop.textContent=R.cageTop|0+'px';
+    inpNaroH.value=R.naroH; labNaroH.textContent=Math.round(R.naroH*100)+'%';
+    inpNaroBottom.value=(R.naroBottom!=null?R.naroBottom:(modeSel.value==='mob'?16:2));
+    labNaroBottom.textContent=inpNaroBottom.value+'px';
+
+    // preview sizes
+    const rect=prev.getBoundingClientRect();
+    prevCage.style.height=Math.round(rect.height*R.cageH)+'px';
+    prevNaro.style.height=Math.round(rect.height*R.naroH)+'px';
+    prevCage.style.top=(R.cageTop|0)+'px';
+    prevNaro.style.bottom=((R.naroBottom!=null)?R.naroBottom:(modeSel.value==='mob'?16:2))+'px';
+  }
+
+  function applyFromInputs(){
+    const R=getR();
+    R.cageH=parseFloat(inpCageH.value||R.cageH);
+    R.cageTop=parseInt(inpCageTop.value||R.cageTop,10)|0;
+    R.naroH=parseFloat(inpNaroH.value||R.naroH);
+    R.naroBottom=parseInt(inpNaroBottom.value,10)|0;
+    syncInputs();
+  }
+
+  function save(){
+    const data={ desk:RATIO_DESK, mob:RATIO_MOB };
+    localStorage.setItem(LS_LAYOUT_KEY, JSON.stringify(data));
+    status.textContent='Salvo!';
+    setTimeout(()=>status.textContent='',1500);
+  }
+
+  function applyNow(){
+    // aplica no jogo atual
+    layoutSprites();
+    status.textContent='Aplicado no jogo';
+    setTimeout(()=>status.textContent='',1200);
+  }
+
+  // drag vertical dos blocos no preview
+  function makeVertDrag(el, onMove){
+    let dragging=false, startY=0, startTop=0, startBottom=0;
+    el.addEventListener('mousedown', e=>{
+      dragging=true; startY=e.clientY;
+      const s=getComputedStyle(el);
+      startTop=parseInt(s.top||'0'); startBottom=parseInt(s.bottom||'0');
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', e=>{
+      if(!dragging) return;
+      const dy=e.clientY-startY;
+      onMove(dy, {startTop, startBottom});
+    });
+    window.addEventListener('mouseup', ()=> dragging=false);
+    // touch
+    el.addEventListener('touchstart', e=>{
+      dragging=true; startY=e.touches[0].clientY;
+      const s=getComputedStyle(el);
+      startTop=parseInt(s.top||'0'); startBottom=parseInt(s.bottom||'0');
+    }, {passive:false});
+    window.addEventListener('touchmove', e=>{
+      if(!dragging) return;
+      const dy=e.touches[0].clientY-startY;
+      onMove(dy, {startTop, startBottom});
+    }, {passive:false});
+    window.addEventListener('touchend', ()=> dragging=false);
+  }
+
+  makeVertDrag(prevCage, (dy,st)=>{
+    const R=getR();
+    R.cageTop = Math.max(0, st.startTop + dy)|0;
+    syncInputs();
+  });
+  makeVertDrag(prevNaro, (dy,st)=>{
+    const R=getR();
+    R.naroBottom = Math.max(0, st.startBottom - dy)|0; // invertido (drag p/ baixo diminui bottom)
+    syncInputs();
+  });
+
+  // eventos
+  [modeSel, inpCageH, inpCageTop, inpNaroH, inpNaroBottom].forEach(el=>{
+    el.addEventListener('input', applyFromInputs);
+  });
+  $('adminSave').addEventListener('click', save);
+  $('adminApply').addEventListener('click', applyNow);
+  $('adminBack').addEventListener('click', ()=>{ showMenu(); });
+
+  syncInputs();
+}
+
 /** boot */
-function init(){ loadImages(); showMenu(); bootstrapCounters(); loop(0); }
+function init(){
+  loadImages(); showMenu(); bootstrapCounters(); loop(0);
+  // setar bottom do Naro conforme contexto (alinha à base do botão no mobile)
+  if (isMobile()){
+    document.documentElement.style.setProperty('--naro-bottom', (RATIO_MOB.naroBottom!=null?RATIO_MOB.naroBottom:16)+'px');
+  }else{
+    document.documentElement.style.setProperty('--naro-bottom', (RATIO_DESK.naroBottom!=null?RATIO_DESK.naroBottom:2)+'px');
+  }
+  // Admin
+  setupAdmin();
+}
 init();
 </script>
 
@@ -580,7 +752,7 @@ const firebaseConfig = {
   messagingSenderId: "XXXXXXXXXXXX",
   appId: "1:XXXXXXXXXXXX:web:YYYYYYYYYYYYYY"
 };
-try{ firebase.initializeApp(firebaseConfig); }catch(e){/* se já inicializado ou vazio, ignora */}
+try{ firebase.initializeApp(firebaseConfig); }catch(e){}
 </script>
 </body>
 </html>
