@@ -45,7 +45,7 @@
   /* Desktop: sobe para o topo e centraliza */
   @media (min-width:768px){
     .counters{
-      position:absolute; top:30px; left:50%; transform:translateX(-50%);
+      position:absolute; top:15px; left:50%; transform:translateX(-50%);
       z-index:8;
     }
   }
@@ -87,7 +87,11 @@
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
   .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
-  .cage{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
+ .cage{
+  position:absolute;top:0;left:0;          /* ← de 50% para 0 */
+  transform:none;                           /* ← remove o translate */
+  display:flex;align-items:flex-end;justify-content:center
+}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
@@ -236,8 +240,8 @@ const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
 /** RATIOS (ajuste fino) */
-const RATIO_DESK = { cageH: 0.38, naroH: 0.28, cageTop: 0 };  /* Naro um pouco maior */
-const RATIO_MOB  = { cageH: 0.44, naroH: 0.22, cageTop: 0 };  /* Gaiola menor; Naro não vaza */
+const RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0 };  /* Naro um pouco maior */
+const RATIO_MOB  = { cageH: 0.22, naroH: 0.20, cageTop: 0 };  /* Gaiola menor; Naro não vaza */
 
 /** Estado */
 let state = {
