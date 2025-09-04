@@ -210,6 +210,24 @@
   }
   .credit:hover{ text-decoration: underline; }
 
+  /* ===== Botão DOAR (desktop) — verde com texto branco e escondido no mobile ===== */
+  .donate-btn-desktop{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px 18px;
+    border-radius:16px;
+    background: var(--donate) !important;
+    color:#fff !important;
+    text-decoration:none;
+    box-shadow: var(--shadow);
+    font-weight:800;
+  }
+  .donate-btn-desktop:hover{ filter: brightness(0.95); }
+  @media (max-width:767px){
+    .donate-btn-desktop{ display:none !important; }
+  }
+
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 </style>
 </head>
@@ -403,7 +421,8 @@ let state = {
 
 const params = {
   baseSpeed: 360,
-  speedRampByTime: 0.018,
+  /* ramp por tempo levemente maior para dificultar */
+  speedRampByTime: 0.024,
   cagePatrolSpeed: 260,
   dropSpeed: 1100,
   hitboxInnerPadding:14,
@@ -412,7 +431,9 @@ const params = {
   balloonIntervalRangeMs:[4000,9000],
   balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
-  transparentWhiteThreshold:242
+  transparentWhiteThreshold:242,
+  /* novo: acelera a cada captura dentro da fase */
+  speedRampPerCapture: 0.12
 };
 
 function $(id){return document.getElementById(id)}
@@ -430,6 +451,11 @@ function currentFinalBg(){
   return isMobile()? (m||d) : (d||m);
 }
 function phaseSpeedMult(){ return (phaseConf().speedMult || 1); }
+
+/* ramp dentro da fase (tempo + capturas) */
+function rampWithinPhase(){
+  return 1 + params.speedRampByTime * (state.elapsed/1000) + (state.capturesInPhase * params.speedRampPerCapture);
+}
 
 /* ===== Música de fundo (BGM) — mudo durante efeitos ===== */
 let audioPrimed = false;
@@ -590,19 +616,46 @@ function resetRound(){
   state.cageDropping=false;
 
   const cageEl = $('cage');
-  if (cageEl){ cageEl.style.top = ''; delete cageEl.dataset.x; }
-  state.x = 0;
+  if (cageEl){ cageEl.style.top = ''; }
 
   layoutSprites();
+
+  /* ===== Novos pontos iniciais por fase (aleatórios e distintos) ===== */
+  const arena = $('arena').getBoundingClientRect();
+  const maxNaroX = arena.width - state.naroW;
+  const maxCageX = arena.width - state.cageW;
+
+  const conf = (()=>{
+    if(state.phase===1) return { n:[0.05,0.85], c:[0.15,0.75,0.50] };
+    if(state.phase===2) return { n:[0.08,0.92], c:[0.10,0.90,0.35,0.65] };
+    return { n:[0.02,0.96], c:[0.08,0.92,0.25,0.75] }; // fase 3
+  })();
+
+  // Naro: posição randômica dentro do intervalo da fase
+  const nFrac = conf.n[0] + Math.random()*(conf.n[1]-conf.n[0]);
+  let nX = Math.round(nFrac*arena.width - state.naroW/2);
+  nX = Math.min(Math.max(0,nX), maxNaroX);
+  state.x = nX;
+  const naroEl = $('naro');
+  if(naroEl) naroEl.style.left = state.x+'px';
+
+  // Cage: escolhe um dos pontos característicos da fase
+  const cChoice = conf.c[Math.floor(Math.random()*conf.c.length)];
+  let cX = Math.round(cChoice*arena.width - state.cageW/2);
+  cX = Math.min(Math.max(0,cX), maxCageX);
+  if(cageEl){
+    cageEl.dataset.x = cX;
+    cageEl.style.left = cX+'px';
+  }
+
   updateHUD();
   scheduleBalloon();
 }
 
-/* Velocidades influenciadas pela fase */
+/* Velocidades influenciadas pela fase e pela rodada */
 function currentSpeed(){
   const base=params.baseSpeed;
-  const ramp=1 + params.speedRampByTime * (state.elapsed/1000);
-  return base * ramp * phaseSpeedMult(); // velocidade do Naro
+  return base * rampWithinPhase() * phaseSpeedMult(); // velocidade do Naro
 }
 
 function updateHUD(){
@@ -650,9 +703,9 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // Cage (patrulha horizontal) — acelera por fase
+  // Cage (patrulha horizontal) — acelera por tempo/capturas e por fase
   if(!state.cageDropping){
-    const patrolV=(params.cagePatrolSpeed * phaseSpeedMult())*(1/60);
+    const patrolV=(params.cagePatrolSpeed * phaseSpeedMult() * rampWithinPhase())*(1/60);
     const maxCageX = arena.width - state.cageW;
     let x = Number(cageEl.dataset.x ?? (arena.width*0.72 - state.cageW/2));
     x += patrolV*state.cageDir;
@@ -665,7 +718,7 @@ function loop(ts){
   // Cage (queda)
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
-    const step=params.dropSpeed*(1/60);
+    const step=params.dropSpeed*(1/60); // queda mantém velocidade base para não facilitar
     const ground = cageGroundY();
     const next=Math.min(curTop+step, ground);
     cageEl.style.top=next+'px';
@@ -897,5 +950,3 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
-
-
