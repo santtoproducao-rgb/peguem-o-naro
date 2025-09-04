@@ -70,7 +70,7 @@
 
   /* posições base */
   .naro{
-    position:absolute;bottom:2px;left:0;
+    position:absolute;bottom:2px;left:0; /* mantém o Naro colado no “chão” em 2px */
     display:flex;align-items:flex-end;justify-content:center
   }
   .cage{
@@ -78,7 +78,7 @@
     display:flex;align-items:flex-end;justify-content:center
   }
 
-  .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap}
+  .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
   @media (max-width:767px){
     .arena{width:95vw;height:66vh}
@@ -217,6 +217,7 @@ const params = {
   cagePatrolSpeed:180,
   dropSpeed:980,
   hitboxInnerPadding:14,
+  minOverlapToCapture:0.33, // << porcentagem do Naro dentro da gaiola para contar ACERTO
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
   transparentWhiteThreshold: 242
@@ -248,7 +249,7 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
 
-  // Gaiola proporcional e suspensa
+  // Gaiola proporcional e suspensa (mais perto do topo, proporcional à altura da arena)
   const cageH = isMobile()? Math.round(arena.height * 0.56) : Math.round(arena.height * 0.64);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
 
@@ -262,8 +263,9 @@ function layoutSprites(){
   cageEl.style.width=cageW+'px'; cageEl.style.height=cageH+'px';
   naroEl.style.width=naroW+'px'; naroEl.style.height=naroH+'px';
 
-  // MAIS PERTO DO TOPO (menor = mais alto)
-  state.suspendedTop = isMobile() ? 52 : 22;
+  // MAIS PERTO DO TOPO (relativo ao tamanho da arena)
+  const topPct = isMobile()? 0.06 : 0.035; // 6% no mobile, 3.5% no desktop
+  state.suspendedTop = Math.max(Math.round(arena.height * topPct), 8);
   cageEl.style.top = state.suspendedTop+'px';
 
   // limites
@@ -323,6 +325,53 @@ function showBalloon(t){
 }
 function hideBalloon(){ $('balloon').classList.remove('show'); }
 
+/** ==== HIT TEST: captura por inclusão, centro ou overlap mínimo ==== **/
+function getInnerCageRect(){
+  const cage=$('cage').getBoundingClientRect();
+  const pad=params.hitboxInnerPadding;
+  return {
+    left:cage.left+pad,
+    right:cage.right-pad,
+    top:cage.top+pad,
+    bottom:cage.bottom-pad,
+    width:Math.max(0,(cage.right-pad)-(cage.left+pad)),
+    height:Math.max(0,(cage.bottom-pad)-(cage.top+pad))
+  };
+}
+function getNaroRect(){ return $('naro').getBoundingClientRect(); }
+
+function centerOf(rect){ return { x:(rect.left+rect.right)/2, y:(rect.top+rect.bottom)/2 }; }
+
+function intersectionArea(a,b){
+  const left=Math.max(a.left,b.left);
+  const right=Math.min(a.right,b.right);
+  const top=Math.max(a.top,b.top);
+  const bottom=Math.min(a.bottom,b.bottom);
+  const w=Math.max(0, right-left);
+  const h=Math.max(0, bottom-top);
+  return w*h;
+}
+
+function naroCaptured(){
+  const inner=getInnerCageRect();
+  const naro=getNaroRect();
+
+  // 1) totalmente dentro
+  const fullyInside = (naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom);
+  if(fullyInside) return true;
+
+  // 2) centro do Naro dentro
+  const c=centerOf(naro);
+  const centerInside = (c.x>=inner.left && c.x<=inner.right && c.y>=inner.top && c.y<=inner.bottom);
+  if(centerInside) return true;
+
+  // 3) overlap suficiente
+  const inter=intersectionArea(inner, naro);
+  const naroArea=naro.width*naro.height || 1;
+  const ratio=inter/naroArea;
+  return ratio >= params.minOverlapToCapture;
+}
+
 /** Jogo **/
 function resetRound(){
   state.startedAt=performance.now(); state.elapsed=0;
@@ -345,13 +394,6 @@ function updateHUD(){
   $('score').textContent = state.score;
 }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
-function naroInsideCageFully(){
-  const cage=$('cage').getBoundingClientRect();
-  const naro=$('naro').getBoundingClientRect();
-  const pad=params.hitboxInnerPadding;
-  const innerLeft=cage.left+pad, innerRight=cage.right-pad, innerTop=cage.top+pad, innerBottom=cage.bottom-pad;
-  return (naro.left>=innerLeft && naro.right<=innerRight && naro.top>=innerTop && naro.bottom<=innerBottom);
-}
 
 let raf=null;
 function loop(ts){
@@ -390,7 +432,7 @@ function loop(ts){
     cageEl.style.top=next+'px';
     if(next>=ground){
       state.cageDropping=false;
-      showResult(naroInsideCageFully());
+      showResult(naroCaptured());
     }
   }
 
