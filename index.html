@@ -12,6 +12,11 @@
     --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
     --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
     --donate:#00a307; --ok:#16a34a; --err:#dc2626;
+
+    /* Layout do crédito e offsets de segurança (iOS etc.) */
+    --credit-h: 28px;                       /* altura aproximada do crédito */
+    --credit-gap: 8px;                      /* espaço entre crédito e outros botões */
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -36,6 +41,12 @@
     position:absolute; left:0; right:0; bottom:14vh;
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
+  /* Empurra a área de conteúdo um pouco para cima no MOBILE para não colidir com o crédito */
+  @media (max-width:767px){
+    .content{
+      bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));
+    }
+  }
 
   /* Contadores */
   .counters{
@@ -49,7 +60,7 @@
       z-index:1000;
     }
   }
-  /* MOBILE: forçar em 1 linha e compacto */
+  /* MOBILE: compacto em 1 linha */
   @media (max-width:767px){
     .counters{
       position:relative; margin:0 0 6px 0;
@@ -105,7 +116,7 @@
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .naro{position:absolute;left:0;display:flex;align-items:flex-end;justify-content:center;bottom:110px} /* mobile align (será igual no desktop pois desktop usa top-right HUD) */
+  .naro{position:absolute;left:0;display:flex;align-items:flex-end;justify-content:center;bottom:110px}
   .cage{position:absolute;top:0;left:0;transform:none;display:flex;align-items:flex-end;justify-content:center}
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
@@ -143,8 +154,11 @@
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
+  /* Sobe os botões mobile para não colidir com o crédito */
   .mobile-drop{
-    position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:90vw;max-width:560px;z-index:30;
+    position:fixed;left:50%;transform:translateX(-50%);
+    bottom: calc(16px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));
+    width:90vw;max-width:560px;z-index:30;
   }
   @media (min-width:768px){.mobile-drop{display:none}}
 
@@ -156,13 +170,16 @@
   .modal h2.error{color:var(--err)}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
-  /* Crédito fixo (todas as telas) */
+  /* Crédito fixo (todas as telas) — 1 linha, fundo branco, texto preto */
   .credit{
-    position:fixed; left:50%; bottom:2px; transform:translateX(-50%);
-    z-index:60; font-size:11px; font-weight:700; color:#fff; text-decoration:none;
-    padding:2px 6px; border-radius:6px; background:rgba(0,0,0,.35); opacity:.95;
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom: max(2px, var(--safe-bottom));
+    z-index:60;
+    font-size:12px; font-weight:800; color:#111; text-decoration:none;
+    padding:4px 8px; border-radius:8px; background:#fff; border:1px solid #e5e7eb;
+    white-space:nowrap;
   }
-  .credit:hover{opacity:1}
+  .credit:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -299,8 +316,8 @@ const params = {
   cagePatrolSpeed: 260,
   dropSpeed: 1100,
   hitboxInnerPadding:14,
-  minOverlapToCaptureMobile:0.60,  // mobile (mais tolerante)
-  minOverlapToCaptureDesktop:0.75, // desktop (MAIS rígido, como você pediu)
+  minOverlapToCaptureMobile:0.60,
+  minOverlapToCaptureDesktop:0.75,  // MAIS rígido no desktop
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
   transparentWhiteThreshold:242
@@ -412,8 +429,6 @@ function getInnerCageRect(){
   return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad};
 }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
-/* Captura só se o Naro estiver TOTALMENTE dentro
-   ou se o centro estiver dentro E a sobreposição vertical cobrir >= limiar (mobile x desktop). */
 function naroCaptured(){
   const inner=getInnerCageRect(), n=getNaroRect();
   const fully = (n.left>=inner.left && n.right<=inner.right && n.top>=inner.top && n.bottom<=inner.bottom);
