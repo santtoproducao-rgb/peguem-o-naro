@@ -35,19 +35,13 @@
     --mobile-btn-fg-hover:#ffffff;
   }
 
-  /* Desktop aplica fontes desktop */
+  /* Desktop */
   @media (min-width:768px){
-    :root{
-      --naro-bottom: var(--naro-bottom-desktop);
-      --cage-top:    var(--cage-top-desktop);
-    }
+    :root{ --naro-bottom: var(--naro-bottom-desktop); --cage-top: var(--cage-top-desktop); }
   }
-  /* Mobile aplica fontes mobile */
+  /* Mobile */
   @media (max-width:767px){
-    :root{
-      --naro-bottom: var(--naro-bottom-mobile);
-      --cage-top:    var(--cage-top-mobile);
-    }
+    :root{ --naro-bottom: var(--naro-bottom-mobile); --cage-top: var(--cage-top-mobile); }
   }
 
   *{box-sizing:border-box}
@@ -63,10 +57,7 @@
   #splashPage{background:#fff; color:#111; display:flex; align-items:center; justify-content:center;}
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
   .splash-logo{width:min(320px,60vw); height:auto;}
-  .splash-btn{
-    background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px;
-    font-weight:800; box-shadow:var(--shadow);
-  }
+  .splash-btn{ background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px; font-weight:800; box-shadow:var(--shadow); }
   .splash-btn:hover{ background:#f59e0b; color:#111; }
 
   /* ======= TELA INICIAL ======= */
@@ -79,40 +70,16 @@
   .menu-logo-right img{width:300px}
   @media (max-width:1024px){ .menu-logo-left img{width:120px}.menu-logo-right img{width:240px} }
 
-  .content{
-    position:absolute; left:0; right:0; bottom:14vh;
-    display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
-  }
-  @media (max-width:767px){
-    .content{
-      bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));
-    }
-  }
+  .content{ position:absolute; left:0; right:0; bottom:14vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px; }
+  @media (max-width:767px){ .content{ bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom)); } }
 
   /* Contadores */
-  .counters{
-    background:#fff; color:#111; border-radius:14px; padding:10px 14px;
-    display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
-  }
+  .counters{ background:#fff; color:#111; border-radius:14px; padding:10px 14px; display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18); }
   .counters b{font-variant-numeric:tabular-nums}
-  @media (min-width:768px){
-    .counters{
-      position:fixed; top:250px; left:50%; transform:translateX(-50%);
-      z-index:1000;
-    }
-  }
-  @media (max-width:767px){
-    .counters{
-      position:relative; margin:0 0 6px 0;
-      flex-wrap:nowrap; justify-content:center;
-      gap:10px; padding:6px 10px; font-size:12px; white-space:nowrap; max-width:92vw;
-    }
-  }
+  @media (min-width:768px){ .counters{ position:fixed; top:250px; left:50%; transform:translateX(-50%); z-index:1000; } }
+  @media (max-width:767px){ .counters{ position:relative; margin:0 0 6px 0; flex-wrap:nowrap; justify-content:center; gap:10px; padding:6px 10px; font-size:12px; white-space:nowrap; max-width:92vw; } }
 
-  .card{
-    background:rgba(255,255,255,.75);backdrop-filter:blur(6px) saturate(1.2);
-    border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:var(--shadow)
-  }
+  .card{ background:rgba(255,255,255,.75); backdrop-filter:blur(6px) saturate(1.2); border-radius:16px; padding:16px; width:min(560px,92vw); box-shadow:var(--shadow) }
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
   .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
@@ -123,32 +90,20 @@
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px;text-align:center}
   .helper .only-desk{display:inline}
   .helper .only-mob{display:none}
-  @media (max-width:767px){
-    .helper .only-desk{display:none}
-    .helper .only-mob{display:inline}
-  }
+  @media (max-width:767px){.helper .only-desk{display:none}.helper .only-mob{display:inline}}
 
   /* ======= JOGO – DESKTOP ======= */
-  .brand-left{
-    position:absolute;top:24px;left:24px;z-index:7;
-    display:flex;flex-direction:column;gap:12px;align-items:flex-start
-  }
+  .brand-left{ position:absolute;top:24px;left:24px;z-index:7; display:flex;flex-direction:column;gap:12px;align-items:flex-start }
   .logo-game-card img{width:300px}
   .logo-arco img{width:140px}
   @media (max-width:1024px){ .logo-game-card img{width:240px}.logo-arco img{width:110px} }
 
-  .top-right{
-    position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap
-  }
+  .top-right{ position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap }
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
 
   /* DOAR desktop */
-  .donate-btn-desktop{
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:12px 18px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;
-    box-shadow:var(--shadow); font-weight:800;
-  }
+  .donate-btn-desktop{ display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none; box-shadow:var(--shadow); font-weight:800; }
   @media (max-width:767px){ .donate-btn-desktop{ display:none; } }
 
   /* Arena */
@@ -195,15 +150,17 @@
 
   /* Estilo do botão mobile customizável */
   @media (max-width:767px){
-    #mobileDropBtn{
-      background:var(--mobile-btn-bg);
-      color:var(--mobile-btn-fg);
-      border:0;
-    }
-    #mobileDropBtn:hover{
-      background:var(--mobile-btn-bg-hover);
-      color:var(--mobile-btn-fg-hover);
-    }
+    #mobileDropBtn{ background:var(--mobile-btn-bg); color:var(--mobile-btn-fg); border:0; }
+    #mobileDropBtn:hover{ background:var(--mobile-btn-bg-hover); color:var(--mobile-btn-fg-hover); }
+  }
+
+  /* ===== Botão de som (fixo, pequeno) ===== */
+  .sound-toggle{
+    position:fixed; top:16px; right:16px; z-index:9999;
+    width:36px; height:36px; border-radius:999px;
+    background:#fff; color:#111; border:1px solid #e5e7eb;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; line-height:1; box-shadow:var(--shadow);
   }
 </style>
 </head>
@@ -212,7 +169,6 @@
 <!-- ========== SPLASH (ACESSAR) ========== -->
 <section id="splashPage" class="page">
   <div class="splash-wrap">
-    <!-- usa a mesma marca do jogo -->
     <img id="splashLogo" class="splash-logo" alt="Logo do jogo">
     <button id="accessBtn" class="splash-btn">ACESSAR</button>
   </div>
@@ -306,22 +262,19 @@
   </div>
 </div>
 
+<!-- Botão global de som -->
+<button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Som ligado" title="Som: ligado">🔊</button>
+
 <a class="credit" href="https://www.instagram.com/umcarlossantos/" target="_blank" rel="noopener">
   DESENVOLVIDO POR: @umcarlossantos
 </a>
 
 <!-- ===== ÁUDIO (sons) ===== -->
-<audio id="sOK" preload="auto">
-  <source src="success.mp3" type="audio/mpeg">
-</audio>
-<audio id="sBad" preload="auto">
-  <source src="fail.mp3" type="audio/mpeg">
-</audio>
+<audio id="sOK" preload="auto"><source src="success.mp3" type="audio/mpeg"></audio>
+<audio id="sBad" preload="auto"><source src="fail.mp3" type="audio/mpeg"></audio>
 
 <!-- ===== TRILHA (música de fundo) ===== -->
-<audio id="bgm" preload="auto" loop>
-  <source src="remix.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgm" preload="auto" loop><source src="remix.mp3" type="audio/mpeg"></audio>
 
 <!-- ========== SCRIPT DO JOGO ========== -->
 <script>
@@ -352,11 +305,12 @@ function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
 /* ===== Música de fundo (BGM) ===== */
-const BGM_BASE_VOL = 1.0;    // volume normal
-const BGM_DUCK_VOL = 0.5;    // 50% durante efeitos
+const BGM_BASE_VOL = 1.0;
+const BGM_DUCK_VOL = 0.5;
 let audioPrimed = false;
 let ducking = false;
 let duckTimeout = null;
+let muted = false;
 
 function getBgm(){ return $('bgm'); }
 function setBgmVolume(v){ const a=getBgm(); if(a) a.volume=Math.max(0,Math.min(1,v)); }
@@ -385,7 +339,6 @@ function primeAudio(){
   [ok,bad,bgm].forEach(a=>{
     if(!a) return;
     try{
-      if (a===bgm) setBgmVolume(BGM_BASE_VOL);
       const p=a.play();
       if(p && p.then){ p.then(()=>a.pause()).catch(()=>{}); } else { a.pause(); }
     }catch(e){}
@@ -397,6 +350,23 @@ function playBad(){ const a=$('sBad'); if(!a) return; duckForAudio(a); a.play().
 
 /* === Vibração (tap) === */
 function vibrateTap(){ try{ if(navigator.vibrate) navigator.vibrate([20]); }catch(e){} }
+
+/* === Mute/Unmute global === */
+function setMuted(flag){
+  muted = !!flag;
+  const els = [ $('bgm'), $('sOK'), $('sBad') ];
+  els.forEach(a=>{ if(a) a.muted = muted; });
+  const btn = $('soundToggle');
+  if(btn){
+    btn.textContent = muted ? '🔇' : '🔊';
+    btn.title = muted ? 'Som: mutado' : 'Som: ligado';
+    btn.setAttribute('aria-label', muted ? 'Som desligado' : 'Som ligado');
+  }
+}
+$('soundToggle').addEventListener('click', ()=>{
+  setMuted(!muted);
+  if(!muted){ playBgm(); }   // se religar o som, garante bgm tocando
+});
 
 /* Aplica src nos <img> e background-images */
 function applyAssets(){
@@ -422,7 +392,8 @@ function preloadImages(paths){ paths.forEach(p => { const i = new Image(); i.src
 
 /** Sprites */
 function layoutSprites(){
-  const arena = $('arena').getBoundingClientRect();
+  const arena = $('arena')?.getBoundingClientRect?.();
+  if(!arena){ return; }
   const R = isMobile()? RATIO_MOB : RATIO_DESK;
 
   const cageH = Math.round(arena.height * R.cageH);
@@ -432,8 +403,8 @@ function layoutSprites(){
 
   state.cageH=cageH; state.cageW=cageW; state.naroH=naroH; state.naroW=naroW;
 
-  $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px';
-  $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px';
+  if($('cage')){ $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px'; }
+  if($('naro')){ $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px'; }
 }
 
 function showSplash(){ $('splashPage').classList.remove('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); }
@@ -449,7 +420,8 @@ function scheduleBalloon(){
   const wait=Math.floor(min + Math.random()*(max-min));
   balloonTimer=setTimeout(()=>{
     const t=params.balloons[Math.floor(Math.random()*params.balloons.length)];
-    const b=$('balloon'); b.textContent=t; b.classList.add('show');
+    const b=$('balloon'); if(!b) return;
+    b.textContent=t; b.classList.add('show');
     setTimeout(()=>b.classList.remove('show'), params.balloonDurationMs);
     scheduleBalloon();
   }, wait);
@@ -480,14 +452,8 @@ function resetRound(){
   state.cageDir = Math.random()<0.5 ? -1 : 1;
   state.cageDropping=false;
 
-  // Reset da gaiola para o topo e sem X anterior
   const cageEl = $('cage');
-  if (cageEl){
-    cageEl.style.top = '';          // volta ao CSS: top: var(--cage-top)
-    delete cageEl.dataset.x;        // reseta posição horizontal inicial
-  }
-
-  // Naro volta ao início da esquerda
+  if (cageEl){ cageEl.style.top = ''; delete cageEl.dataset.x; }
   state.x = 0;
 
   layoutSprites();
@@ -495,13 +461,13 @@ function resetRound(){
   scheduleBalloon();
 }
 function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
-function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); $('time').textContent=t; $('timeDesk').textContent=t; $('level').textContent=state.level; $('levelDesk').textContent=state.level; $('speed').textContent=sp; $('speedDesk').textContent=sp; $('score').textContent=state.score; $('scoreDesk').textContent=state.score; }
+function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); if($('time')){$('time').textContent=t;} if($('timeDesk')){$('timeDesk').textContent=t;} if($('level')){$('level').textContent=state.level;} if($('levelDesk')){$('levelDesk').textContent=state.level;} if($('speed')){$('speed').textContent=sp;} if($('speedDesk')){$('speedDesk').textContent=sp;} if($('score')){$('score').textContent=state.score;} if($('scoreDesk')){$('scoreDesk').textContent=state.score;} }
 
 /* Queda da gaiola */
 function dropCage(){
   if(state.playing && !state.cageDropping){
     state.cageDropping=true;
-    primeAudio(); // garantia
+    primeAudio();
   }
 }
 function cageGroundY(){
@@ -580,25 +546,23 @@ function showResult(win){
 }
 
 /** Controles */
-$('startBtn').addEventListener('click', ()=>{
-  primeAudio();
-  playBgm();    // garante BGM ativa
-  startGame();
-});
+$('startBtn').addEventListener('click', ()=>{ primeAudio(); playBgm(); startGame(); });
+
 const mobileBtn=$('mobileDropBtn');
 if(mobileBtn){
-  mobileBtn.addEventListener('click', ()=>{
-    vibrateTap();
-    playBgm();  // garante BGM ativa
-    dropCage();
-  });
+  // vibração imediata no toque (pointerdown) — melhor compatibilidade
+  mobileBtn.addEventListener('pointerdown', ()=>{ if(isMobile()) vibrateTap(); }, {passive:true});
+  // ação do jogo no clique
+  mobileBtn.addEventListener('click', ()=>{ playBgm(); dropCage(); });
 }
+
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){
     e.preventDefault(); primeAudio(); playBgm(); startGame(); return;
   }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
+
 $('modalAction').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
   if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; }
@@ -609,16 +573,16 @@ $('modalAction').addEventListener('click', ()=>{
 
 /* Botão ACESSAR da splash: inicia BGM e vai para o menu */
 $('accessBtn').addEventListener('click', ()=>{
-  primeAudio();    // destrava áudio
-  playBgm();       // inicia trilha (loop)
-  showMenu();      // mostra tela inicial (nome + iniciar)
+  primeAudio();
+  playBgm();
+  showMenu();
 });
 
 /* Pausa/retoma BGM ao trocar de aba */
 document.addEventListener('visibilitychange', () => {
   const a = $('bgm'); if(!a) return;
   if (document.hidden) a.pause();
-  else playBgm();
+  else if(!muted) playBgm();
 });
 
 function startGame(){
@@ -636,7 +600,8 @@ function startGame(){
 function init(){
   preloadImages([ASSETS.bgDesktop, ASSETS.bgMobile, ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu]);
   applyAssets();
-  showSplash();   // começa na splash
+  setMuted(false);     // som ligado por padrão
+  showSplash();        // começa na splash
   layoutSprites();
   loop(0);
 
@@ -674,3 +639,4 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
+
