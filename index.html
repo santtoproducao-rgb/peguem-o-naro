@@ -11,6 +11,9 @@
     --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
     --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
+    --donate:#00a307;
+    --ok:#16a34a;
+    --err:#dc2626;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -36,20 +39,18 @@
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
 
-  /* Contadores – ficam DENTRO da .content, acima do card */
+  /* Contadores */
   .counters{
     background:#fff; color:#111; border-radius:14px; padding:10px 14px;
     display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
   }
   .counters b{font-variant-numeric:tabular-nums}
-  /* Desktop: sobe para o topo e centraliza */
   @media (min-width:768px){
     .counters{
       position:absolute; top:1px; left:50%; transform:translateX(-50%);
       z-index:8;
     }
   }
-  /* Mobile: fica no fluxo, colada no card */
   @media (max-width:767px){
     .counters{ position:relative; margin:0 0 6px 0; }
   }
@@ -68,7 +69,7 @@
   /* ======= JOGO – DESKTOP ======= */
   .brand-left{
     position:absolute;top:24px;left:24px;z-index:7;
-    display:flex;flex-direction:column;gap:18px;align-items:flex-start
+    display:flex;flex-direction:column;gap:12px;align-items:flex-start
   }
   .logo-game-card img{width:300px}
   .logo-arco img{width:140px}
@@ -79,14 +80,21 @@
   }
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
-  .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#00a307;color:#fff;text-decoration:none}
 
-  /* BG/arena cobre 100% da tela */
+  /* DOAR (desktop): abaixo do logo-menu */
+  .donate-btn-desktop{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:12px 18px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;
+    box-shadow:var(--shadow); font-weight:800;
+  }
+  @media (max-width:767px){ .donate-btn-desktop{ display:none; } }
+
+  /* BG/arena */
   .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
+  .naro{position:absolute;left:0;display:flex;align-items:flex-end;justify-content:center;bottom:2px}
   .cage{
     position:absolute;top:0;left:0;
     transform:none;
@@ -114,37 +122,38 @@
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:100px}
     .logo-arco img{width:60px}
-    .top-right{display:none}
-/* Sobe o Naro no mobile para alinhar com a base do botão */
-  .naro{ bottom: 110px; }  /* ajuste fino: teste 86–110px até bater com o mock */
+
+    .top-right .hud{display:none}
+
+    .naro{ bottom:110px; }
     .balloon{bottom:188px;max-width:280px}
+
+    /* barra de ações mobile: "Pegue o Naro" + "Doar" lado a lado */
+    .mobile-drop .row-mobile-actions{
+      display:flex; gap:10px; align-items:center; justify-content:center;
+    }
+    .mobile-drop .row-mobile-actions .btn{ flex:1; }
+    .donate-btn-mobile{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 16px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;
+      box-shadow:var(--shadow); font-weight:800; white-space:nowrap;
+    }
   }
   @media (min-width:768px){
     .top-mobile-hud{ display:none !important; }
   }
-/* Mostrar o DOAR no mobile, fixo acima do botão "Pegue o Naro" */
-.donate-btn{
-  display:inline-flex !important;
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:72px;           /* fica acima do "Pegue o Naro" */
-  z-index:31;
-  padding:12px 18px;
-  border-radius:16px;
-  background:#00a307;    /* mude a cor aqui se quiser */
-  color:#fff;
-  text-decoration:none;
-  box-shadow:var(--shadow);
-}
 
-  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
+  .mobile-drop{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:90vw;max-width:560px;z-index:30;
+  }
   @media (min-width:768px){.mobile-drop{display:none}}
 
   .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
   .overlay.show{display:flex}
   .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
-  .modal h2{margin:0 0 8px}
+  .modal h2{margin:0 0 8px; display:flex; gap:8px; align-items:center; justify-content:center;}
+  .modal h2.success{color:var(--ok)}
+  .modal h2.error{color:var(--err)}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 </style>
 </head>
@@ -190,10 +199,11 @@
     <div class="box">🎯 <span id="level">1</span></div>
   </div>
 
-  <!-- logos -->
+  <!-- logos + DOAR (desktop) -->
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
+    <a class="donate-btn-desktop" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
   </div>
 
   <!-- HUD desktop -->
@@ -204,10 +214,9 @@
       <div class="pill pill-score">⭐ <b id="scoreDesk">0</b></div>
       <div class="pill pill-level">🎯 <b id="levelDesk">1</b></div>
     </div>
-    <a class="donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
   </div>
 
-  <!-- arena ocupa 100% -->
+  <!-- arena -->
   <div class="arena" id="arena">
     <div class="layer">
       <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
@@ -216,19 +225,25 @@
     </div>
   </div>
 
+  <!-- AÇÕES MOBILE -->
   <div class="mobile-drop">
-    <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+    <div class="row-mobile-actions">
+      <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+      <a class="donate-btn-mobile" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR</a>
+    </div>
   </div>
 </section>
 
 <!-- MODAL -->
 <div id="overlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <h2 id="modalTitle">Resultado</h2>
+    <h2 id="modalTitle" class="">
+      <span id="modalIcon" aria-hidden="true">ℹ️</span>
+      <span id="modalTitleText">Resultado</span>
+    </h2>
     <p id="modalMsg">Mensagem</p>
     <div class="actions">
-      <button id="modalPrimary" class="btn">Próximo nível</button>
-      <button id="modalSecondary" class="btn secondary">SALVAR A DEMOCRACIA</button>
+      <button id="modalAction" class="btn">TENTAR SALVAR A DEMOCRACIA NOVAMENTE</button>
     </div>
   </div>
 </div>
@@ -267,7 +282,8 @@ const params = {
   speedRampByTime: 0.018,
   cagePatrolSpeed: 260,
   dropSpeed: 1100,
-  hitboxInnerPadding:14, minOverlapToCapture:0.33,
+  hitboxInnerPadding:14,
+  minOverlapToCapture:0.60,   // mais rigoroso (usado só na regra vertical nova)
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
   transparentWhiteThreshold:242
@@ -372,28 +388,28 @@ function showBalloon(t){
 }
 function hideBalloon(){ $('balloon').classList.remove('show'); }
 
-/** hit test */
+/** hit test (mais rigoroso) */
 function getInnerCageRect(){
   const cage=$('cage').getBoundingClientRect();
   const pad=params.hitboxInnerPadding;
   return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad};
 }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
-function centerOf(r){ return {x:(r.left+r.right)/2,y:(r.top+r.bottom)/2}; }
-function intersectionArea(a,b){
-  const left=Math.max(a.left,b.left), right=Math.min(a.right,b.right);
-  const top=Math.max(a.top,b.top), bottom=Math.min(a.bottom,b.bottom);
-  const w=Math.max(0,right-left), h=Math.max(0,bottom-top); return w*h;
-}
+/* Captura só se o Naro estiver TOTALMENTE dentro
+   ou se o centro estiver dentro E a sobreposição vertical cobrir >= 60% da altura do Naro.
+   (Remove a antiga regra de “área 33%” que podia dar falso positivo no mobile.) */
 function naroCaptured(){
-  const inner=getInnerCageRect(), naro=getNaroRect();
-  const fully = (naro.left>=inner.left && naro.right<=inner.right && naro.top>=inner.top && naro.bottom<=inner.bottom);
+  const inner=getInnerCageRect(), n=getNaroRect();
+  const fully = (n.left>=inner.left && n.right<=inner.right && n.top>=inner.top && n.bottom<=inner.bottom);
   if(fully) return true;
-  const c=centerOf(naro);
-  if(c.x>=inner.left&&c.x<=inner.right&&c.y>=inner.top&&c.y<=inner.bottom) return true;
-  const inter=intersectionArea(inner,naro);
-  const area=(naro.width*naro.height)||1;
-  return inter/area >= params.minOverlapToCapture;
+
+  const cx=(n.left+n.right)/2, cy=(n.top+n.bottom)/2;
+  const centerInside = (cx>=inner.left && cx<=inner.right && cy>=inner.top && cy<=inner.bottom);
+  if(!centerInside) return false;
+
+  const vOverlap = Math.max(0, Math.min(inner.bottom, n.bottom) - Math.max(inner.top, n.top));
+  const nH = (n.bottom - n.top) || 1;
+  return (vOverlap / nH) >= params.minOverlapToCapture; // 60%
 }
 
 /** jogo */
@@ -420,12 +436,11 @@ function updateHUD(){
   $('score').textContent=state.score; $('scoreDesk').textContent=state.score;
 }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
-// Calcula a posição final (chão) da gaiola considerando a altura em que o Naro está no mobile.
+/* chão da gaiola no mobile: para na mesma altura que o Naro */
 function cageGroundY(){
   const arena = $('arena').getBoundingClientRect();
-  // Lê o bottom atual do Naro no CSS (no mobile você colocou 94px, por exemplo)
   const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
-  const pad = 0; // ajuste fino se quiser 1–2 px
+  const pad = 0;
   return arena.height - state.cageH - naroBottom - pad;
 }
 
@@ -481,19 +496,29 @@ function showResult(win){
   state.lastWin = win;
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
+
+  const title = $('modalTitle');
+  const icon  = $('modalIcon');
+  const ttext = $('modalTitleText');
+  title.classList.remove('success','error');
+
   if(win){
-    window.incWin && window.incWin();     // contador global
-    $('modalTitle').textContent='Parabéns!';
-    $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
-    $('modalPrimary').textContent='Próximo nível';
-    $('modalSecondary').classList.add('hidden');
-    state.score+=100;
+    window.incWin && window.incWin();     // conta ACERTO global
+    ttext.textContent = 'Parabéns!';
+    title.classList.add('success');
+    icon.textContent = '✅';
+    $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
+    state.score += 100;                   // soma pontos apenas no acerto
   }else{
-    $('modalTitle').textContent='Falhou';
-    $('modalMsg').textContent=`${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
-    $('modalPrimary').textContent='Tentar novamente';
-    $('modalSecondary').classList.remove('hidden');
+    // ERRO: não soma pontos e reseta dificuldade para velocidade inicial
+    state.level = 1;
+    ttext.textContent = 'FALHOU';
+    title.classList.add('error');
+    icon.textContent = '❌';
+    $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
   }
+
+  $('modalAction').textContent = 'TENTAR SALVAR A DEMOCRACIA NOVAMENTE';
 }
 
 /** controles */
@@ -503,20 +528,30 @@ document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
-$('modalPrimary').addEventListener('click', ()=>{
+
+// Botão único do modal
+$('modalAction').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-  if (state.lastWin === false) { window.incPlayed && window.incPlayed(); }
-  if(state.score>0){ state.level++; }
-  state.playing=true; resetRound();
+
+  if (state.lastWin === false) {
+    // errou: conta jogado, volta para velocidade inicial
+    window.incPlayed && window.incPlayed();
+    state.level = 1;
+  } else if (state.lastWin === true) {
+    // acertou: próxima fase
+    state.level++;
+  }
+
+  state.playing = true;
+  resetRound(); // reseta tempo (ramp = 0) e reposiciona tudo
 });
-$('modalSecondary').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); state.playing=true; resetRound(); });
 
 function startGame(){
   state.userName = $('userName').value.trim();
   state.level = state.level || 1;
   state.playing = true;
   state.lastWin = null;
-  window.incPlayed && window.incPlayed();  // contador global
+  window.incPlayed && window.incPlayed();  // conta jogado ao iniciar
   $('overlay').classList.remove('show');
   showGame(); resetRound();
 }
@@ -528,8 +563,7 @@ function init(){ loadImages(); showMenu(); bootstrapCounters(); loop(0); }
 init();
 </script>
 
-<!-- ========== FIREBASE (MÓDULO) — contadores globais ==========
-     Mantém os números sincronizados para todo mundo, em tempo real. -->
+<!-- ========== FIREBASE (MÓDULO) — contadores globais ========== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
   import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
@@ -550,7 +584,6 @@ init();
   const playsRef = ref(db, "counters/plays");
   const winsRef  = ref(db, "counters/wins");
 
-  // Render em tempo real
   onValue(playsRef, (snap)=>{
     const v = snap.val() ?? 0;
     const el = document.getElementById("playedCount");
@@ -562,7 +595,6 @@ init();
     if (el) el.textContent = v;
   });
 
-  // Expor funções globais para o script do jogo
   window.incPlayed = () => runTransaction(playsRef, (cur)=> (cur||0)+1);
   window.incWin    = () => runTransaction(winsRef,  (cur)=> (cur||0)+1);
 </script>
