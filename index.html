@@ -24,9 +24,9 @@
     --naro-bottom-mobile:   110px;
     --cage-top-mobile:      12px;
 
-    /* Variáveis efetivas */
-    --naro-bottom: 200px; /* fallback */
-    --cage-top:     10px; /* fallback */
+    /* Variáveis efetivas (fallbacks) */
+    --naro-bottom: 200px;
+    --cage-top:     10px;
 
     /* === CORES DO BOTÃO MOBILE (já definidas) === */
     --mobile-btn-bg:#ffffff;
@@ -103,10 +103,6 @@
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
 
-  /* DOAR desktop */
-  .donate-btn-desktop{ display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none; box-shadow:var(--shadow); font-weight:800; }
-  @media (max-width:767px){ .donate-btn-desktop{ display:none; } }
-
   /* Arena */
   .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
@@ -137,24 +133,6 @@
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(200px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
-  .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
-  .overlay.show{display:flex}
-  .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
-  .modal h2{margin:0 0 8px; display:flex; gap:8px; align-items:center; justify-content:center;}
-  .modal h2.success{color:var(--ok)}
-  .modal h2.error{color:var(--err)}
-  .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-
-  /* Créditos */
-  .credit{position:fixed; left:50%; transform:translateX(-50%); bottom: max(2px, var(--safe-bottom)); z-index:60; font-size:12px; font-weight:800; color:#111; text-decoration:none; padding:4px 8px; border-radius:8px; background:#fff; border:1px solid #e5e7eb; white-space:nowrap;}
-  .credit:hover{text-decoration:underline}
-
-  /* Estilo do botão mobile customizável */
-  @media (max-width:767px){
-    #mobileDropBtn{ background:var(--mobile-btn-bg); color:var(--mobile-btn-fg); border:0; }
-    #mobileDropBtn:hover{ background:var(--mobile-btn-bg-hover); color:var(--mobile-btn-fg-hover); }
-  }
-
   /* ===== Botão de som (fixo, pequeno) ===== */
   .sound-toggle{
     position:fixed; top:50px; right:16px; z-index:9999;
@@ -163,12 +141,8 @@
     display:flex; align-items:center; justify-content:center;
     font-size:18px; line-height:1; box-shadow:var(--shadow);
   }
-  @media (min-width:768px){
-    .sound-toggle{ top: 50px; right: 16px; bottom:auto; left:auto; }
-  }
-  @media (max-width:767px){
-    .sound-toggle{ top: 135px; right: 12px; bottom:auto; left:auto; }
-  }
+  @media (min-width:768px){ .sound-toggle{ top: 50px; right: 16px; bottom:auto; left:auto; } }
+  @media (max-width:767px){ .sound-toggle{ top: 135px; right: 12px; bottom:auto; left:auto; } }
 
   /* ===== Overrides — Splash ===== */
   #splashLogoMenu { width: 220px; }
@@ -189,6 +163,29 @@
     #splashLogo     { width: 280px; }
     #splashPage .splash-wrap { transform: translateY(-40px); }
   }
+
+  /* ===== Modal melhorado ===== */
+  .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
+  .overlay.show{display:flex}
+  .modal{
+    background:var(--modal-card);color:var(--modal-text);border-radius:18px;
+    width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)
+  }
+  .modal h2{margin:0 0 8px; display:flex; gap:8px; align-items:center; justify-content:center;}
+  .modal h2.success{color:var(--ok)}
+  .modal h2.error{color:var(--err)}
+  .modal .modal-meta{
+    display:flex; align-items:center; justify-content:center; gap:10px; margin:8px 0 10px;
+    flex-wrap:wrap;
+  }
+  .chip{ background:#111; color:#fff; padding:6px 10px; border-radius:999px; font-weight:900; font-size:12px; }
+  .points-badge{ font-weight:900; font-size:24px; background:#16a34a; color:#fff; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow); }
+  .progress-wrap{ margin:8px 0 12px; text-align:left; }
+  .progress-label{ font-size:13px; font-weight:700; margin-bottom:6px; display:flex; gap:6px; align-items:center; }
+  .progress{ width:100%; height:10px; background:#eee; border-radius:999px; overflow:hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.05); }
+  .progress-bar{ height:100%; width:0%; background:linear-gradient(90deg,#f59e0b,#16a34a); }
+  .score-total{ font-size:12px; color:#444; margin:8px 0 0; font-weight:800; }
+  .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 </style>
 </head>
 <body>
@@ -276,14 +273,47 @@
   </div>
 </section>
 
-<!-- MODAL -->
+<!-- ========== TELA FINAL (GIF) ========== -->
+<section id="finalPage" class="page hidden">
+  <div id="finalBg" class="bg"></div>
+
+  <!-- Mantém logos nas MESMAS posições (brand-left) -->
+  <div class="brand-left">
+    <div class="logo-game-card card-white"><img id="finalLogoGame" alt="Logo do jogo"></div>
+    <div class="logo-arco"><img id="finalLogoMenu" alt="Logo ARCO"></div>
+  </div>
+
+  <!-- Ações centrais -->
+  <div class="content">
+    <div class="row">
+      <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
+      <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR</a>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL (melhorado) -->
 <div id="overlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
     <h2 id="modalTitle" class="">
       <span id="modalIcon" aria-hidden="true">ℹ️</span>
       <span id="modalTitleText">Resultado</span>
     </h2>
+
+    <div class="modal-meta">
+      <span id="phaseChip" class="chip">Fase 1/3</span>
+      <span id="pointsBadge" class="points-badge hidden">+100</span>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">Capturas nesta fase: <b id="capCount">0</b>/3</div>
+      <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+
     <p id="modalMsg">Mensagem</p>
+
+    <div class="score-total">Pontuação total: <b id="scoreTotal">0</b></div>
+
     <div class="actions">
       <button id="modalAction" class="btn">TENTAR SALVAR A DEMOCRACIA NOVAMENTE</button>
     </div>
@@ -308,16 +338,18 @@
 <script>
 /** ====== ASSETS ====== **/
 const ASSETS = {
-  bgDesktop: 'bg-desktop.jpg',
-  bgMobile:  'bg-mobile.jpg',
-  bgDesktop2: 'bg-desktop-fase2.jpg',  // << ajuste o nome se necessário
+  bgDesktop:  'bg-desktop.jpg',
+  bgMobile:   'bg-mobile.jpg',
+  bgDesktop2: 'bg-desktop-fase2.jpg',
   bgMobile2:  'bg-mobile-fase2.jpg',
   bgDesktop3: 'bg-desktop-fase3.jpg',
   bgMobile3:  'bg-mobile-fase3.jpg',
-  naro:      'naro.png',
-  logoGame:  'logo-game.png',
-  cage:      'cage.png',
-  logoMenu:  'logo-menu.png'
+  finalDesktop: 'final-desktop.gif',
+  finalMobile:  'final-mobile.gif',
+  naro:       'naro.png',
+  logoGame:   'logo-game.png',
+  cage:       'cage.png',
+  logoMenu:   'logo-menu.png'
 };
 
 /* Fases: BG por fase + multiplicador de velocidade */
@@ -336,12 +368,12 @@ const RATIO_MOB  = { cageH: 0.22, naroH: 0.20 };
 
 let state = {
   userName:'', score:0,
-  phase:1, capturesInPhase:0,        // << NOVO: controle de fase
+  phase:1, capturesInPhase:0,
   startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
   cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0,
   suspendedTop:0, lastWin:null,
-  modalActionType:'continue'         // 'continue' | 'nextPhase' | 'resetToMenu' | 'retryReset'
+  modalActionType:'continue'  // 'continue' | 'nextPhase' | 'retryPhase' | 'resetToMenu'
 };
 
 const params = {
@@ -366,6 +398,10 @@ function currentBg(){
   const ph = phaseConf();
   const d = ph.bgDesktop || ASSETS.bgDesktop;
   const m = ph.bgMobile  || ASSETS.bgMobile;
+  return isMobile()? (m||d) : (d||m);
+}
+function currentFinalBg(){
+  const d = ASSETS.finalDesktop, m = ASSETS.finalMobile;
   return isMobile()? (m||d) : (d||m);
 }
 function phaseSpeedMult(){ return (phaseConf().speedMult || 1); }
@@ -443,6 +479,9 @@ function applyAssets(){
   if(menuBg) menuBg.style.backgroundImage = bgUrl;
   if(gameBg) gameBg.style.backgroundImage = bgUrl;
 
+  const finalBg = $('finalBg');
+  if(finalBg){ finalBg.style.backgroundImage = `url("${currentFinalBg()}")`; }
+
   const logoArco = $('menuLogoLeft');  if(logoArco) logoArco.src = ASSETS.logoMenu;
   const logoGameMenu = $('menuLogoRight'); if(logoGameMenu) logoGameMenu.src = ASSETS.logoGame;
 
@@ -451,6 +490,9 @@ function applyAssets(){
 
   const splashLogoMenu = $('splashLogoMenu'); if(splashLogoMenu) splashLogoMenu.src = ASSETS.logoMenu;
   const splashLogo = $('splashLogo');         if(splashLogo)      splashLogo.src      = ASSETS.logoGame;
+
+  const finalLogoGame = $('finalLogoGame'); if(finalLogoGame) finalLogoGame.src = ASSETS.logoGame;
+  const finalLogoMenu = $('finalLogoMenu'); if(finalLogoMenu) finalLogoMenu.src = ASSETS.logoMenu;
 
   const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
   const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
@@ -476,9 +518,10 @@ function layoutSprites(){
 }
 
 /* Vistas */
-function showSplash(){ $('splashPage').classList.remove('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); }
-function showMenu(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
-function showGame(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
+function showSplash(){ $('splashPage').classList.remove('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('finalPage').classList.add('hidden'); $('overlay').classList.remove('show'); }
+function showMenu(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('finalPage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
+function showGame(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('finalPage').classList.add('hidden'); $('overlay').classList.remove('show'); }
+function showFinal(){ $('splashPage').classList.add('hidden'); $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('finalPage').classList.remove('hidden'); $('overlay').classList.remove('show'); state.playing=false; }
 
 /** Balões */
 let balloonTimer=null;
@@ -612,17 +655,29 @@ function loop(ts){
   raf=requestAnimationFrame(loop);
 }
 
-/* Mensagens e fluxo por fase/capturas */
+/* Ajuda de pluralização */
 function plural(n){ return n===1 ? 'vez' : 'vezes'; }
 
+/* Atualiza componentes do modal */
+function refreshModalUI(){
+  const phaseChip = $('phaseChip'); if (phaseChip) phaseChip.textContent = `Fase ${state.phase}/3`;
+  const c = state.capturesInPhase;
+  const pct = Math.min(100, Math.max(0, (c/3)*100));
+  const capCount = $('capCount'); const pbar = $('progressBar');
+  if (capCount) capCount.textContent = c;
+  if (pbar) pbar.style.width = pct + '%';
+  const scoreTotal = $('scoreTotal'); if (scoreTotal) scoreTotal.textContent = state.score;
+}
+
+/* Resultado / fluxo */
 function showResult(win){
   state.playing=false;
   state.lastWin = win;
-  $('overlay').classList.add('show');
 
   const title = $('modalTitle');
   const icon  = $('modalIcon');
   const ttext = $('modalTitleText');
+  const badge = $('pointsBadge');
   title.classList.remove('success','error');
 
   if(win){
@@ -630,8 +685,20 @@ function showResult(win){
     state.score += 100;
     playOk();
 
+    if (badge){ badge.textContent = '+100'; badge.classList.remove('hidden'); }
+
     // Progresso da fase
     state.capturesInPhase = Math.min(3, state.capturesInPhase + 1);
+
+    // FINAL: fase 3 completa → mostra tela final com GIF (sem modal)
+    if(state.phase === 3 && state.capturesInPhase >= 3){
+      $('overlay').classList.remove('show');
+      showFinal();
+      return;
+    }
+
+    // Demais casos: usa modal
+    $('overlay').classList.add('show');
     const c = state.capturesInPhase;
     const remaining = 3 - c;
 
@@ -650,34 +717,30 @@ function showResult(win){
         $('modalAction').textContent = 'PRÓXIMA FASE';
         state.modalActionType = 'nextPhase';
       }
-    }else{ // Fase 3 (última)
-      if(c < 3){
-        $('modalMsg').textContent =
-          `Parabéns, você prendeu o Naro ${c} ${plural(c)}, prenda mais ${remaining} ` +
-          `para salvar a democracia de vez.`;
-        $('modalAction').textContent = 'CONTINUAR';
-        state.modalActionType = 'continue';
-      }else{
-        $('modalMsg').textContent =
-          `Parabéns, você prendeu o Naro definitivamente e salvou a democracia.`;
-        $('modalAction').textContent = 'VOLTAR AO INÍCIO';
-        state.modalActionType = 'resetToMenu';
-      }
+    }else{ // fase 3, mas ainda não completou (c < 3)
+      $('modalMsg').textContent =
+        `Parabéns, você prendeu o Naro ${c} ${plural(c)}, prenda mais ${remaining} para salvar a democracia de vez.`;
+      $('modalAction').textContent = 'CONTINUAR';
+      state.modalActionType = 'continue';
     }
   }else{
-    // Derrota: volta para a fase 1
+    // Erro: recomeça a MESMA fase (2 ou 3 mantêm)
+    if (badge){ badge.classList.add('hidden'); }
     playBad();
-    state.phase = 1;
-    state.capturesInPhase = 0;
+
+    state.capturesInPhase = 0; // zera progresso desta fase (mantém a fase)
+    $('overlay').classList.add('show');
 
     ttext.textContent = 'FALHOU';
     title.classList.add('error'); icon.textContent = '❌';
     const name = state.userName || 'Você';
     $('modalMsg').textContent =
-      `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+      `${name} VOCÊ FALHOU. TENTE NOVAMENTE NESTA FASE.`;
     $('modalAction').textContent = 'TENTAR NOVAMENTE';
-    state.modalActionType = 'retryReset';
+    state.modalActionType = 'retryPhase';
   }
+
+  refreshModalUI();
 }
 
 /** Controles **/
@@ -696,11 +759,11 @@ document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
 
-/* Ação contextual do modal */
+/* Botões do modal */
 $('modalAction').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-
   const act = state.modalActionType;
+
   if(act === 'nextPhase'){
     state.phase = Math.min(3, state.phase + 1);
     state.capturesInPhase = 0;
@@ -708,24 +771,29 @@ $('modalAction').addEventListener('click', ()=>{
     state.playing = true; resetRound();
   }else if(act === 'continue'){
     state.playing = true; resetRound();
-  }else if(act === 'resetToMenu'){
-    // reinicia tudo e volta ao menu
-    state.phase = 1;
-    state.capturesInPhase = 0;
-    state.playing = false;
-    applyAssets();
-    showMenu();
-  }else if(act === 'retryReset'){
-    // conta como nova tentativa, se desejar
+  }else if(act === 'retryPhase'){
     window.incPlayed && window.incPlayed();
-    state.phase = 1;
+    // mantém state.phase, apenas recomeça esta fase
     state.capturesInPhase = 0;
-    applyAssets();
+    applyAssets(); // mantém BG desta fase
     state.playing = true; resetRound();
+  }else if(act === 'resetToMenu'){
+    state.phase = 1; state.capturesInPhase = 0; state.playing = false;
+    applyAssets(); showMenu();
   }else{
-    // fallback
     state.playing = true; resetRound();
   }
+});
+
+/* Botões da TELA FINAL */
+$('playAgainBtn').addEventListener('click', ()=>{
+  // Reinicia “de verdade”
+  state.userName = '';
+  state.score = 0;
+  state.phase = 1;
+  state.capturesInPhase = 0;
+  applyAssets();
+  showMenu();
 });
 
 /* Botão ACESSAR da splash */
@@ -761,6 +829,7 @@ function init(){
     ASSETS.bgDesktop, ASSETS.bgMobile,
     ASSETS.bgDesktop2, ASSETS.bgMobile2,
     ASSETS.bgDesktop3, ASSETS.bgMobile3,
+    ASSETS.finalDesktop, ASSETS.finalMobile,
     ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu
   ]);
   applyAssets();
@@ -803,3 +872,4 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
+
