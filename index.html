@@ -24,9 +24,15 @@
     --naro-bottom-mobile:   110px;
     --cage-top-mobile:      12px;
 
-    /* Variáveis efetivas (são mapeadas pelo breakpoint) */
+    /* Variáveis efetivas (mapeadas pelo breakpoint) */
     --naro-bottom: 200px; /* fallback */
     --cage-top:     10px; /* fallback */
+
+    /* === CORES DO BOTÃO MOBILE (edite aqui) === */
+    --mobile-btn-bg:#111;
+    --mobile-btn-fg:#fff;
+    --mobile-btn-bg-hover:#f59e0b;
+    --mobile-btn-fg-hover:#111;
   }
 
   /* Desktop aplica fontes desktop */
@@ -176,6 +182,19 @@
   /* Créditos */
   .credit{position:fixed; left:50%; transform:translateX(-50%); bottom: max(2px, var(--safe-bottom)); z-index:60; font-size:12px; font-weight:800; color:#111; text-decoration:none; padding:4px 8px; border-radius:8px; background:#fff; border:1px solid #e5e7eb; white-space:nowrap;}
   .credit:hover{text-decoration:underline}
+
+  /* Estilo do botão mobile customizável */
+  @media (max-width:767px){
+    #mobileDropBtn{
+      background:var(--mobile-btn-bg);
+      color:var(--mobile-btn-fg);
+      border:0;
+    }
+    #mobileDropBtn:hover{
+      background:var(--mobile-btn-bg-hover);
+      color:var(--mobile-btn-fg-hover);
+    }
+  }
 </style>
 </head>
 <body>
@@ -271,6 +290,14 @@
   DESENVOLVIDO POR: @umcarlossantos
 </a>
 
+<!-- ===== ÁUDIO (sons) ===== -->
+<audio id="sOK" preload="auto">
+  <source src="success.mpe" type="audio/mpeg">
+</audio>
+<audio id="sBad" preload="auto">
+  <source src="fail.mp3" type="audio/mpeg">
+</audio>
+
 <!-- ========== SCRIPT DO JOGO ========== -->
 <script>
 /** ====== ASSETS ====== **/
@@ -298,6 +325,28 @@ function $(id){return document.getElementById(id)}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
+
+/* ===== Áudio: helpers ===== */
+let audioPrimed = false;
+function primeAudio(){
+  if (audioPrimed) return;
+  const ok = $('sOK'), bad = $('sBad');
+  [ok,bad].forEach(a=>{
+    if(!a) return;
+    try{
+      a.volume = 1.0;
+      const p = a.play();
+      if (p && typeof p.then === 'function'){
+        p.then(()=>a.pause()).catch(()=>{ /* ignore bloqueios */ });
+      } else {
+        a.pause();
+      }
+    }catch(e){}
+  });
+  audioPrimed = true;
+}
+function playOk(){ const a=$('sOK'); a && a.play().catch(()=>{}); }
+function playBad(){ const a=$('sBad'); a && a.play().catch(()=>{}); }
 
 /* Aplica src nos <img> e background-images */
 function applyAssets(){
@@ -393,7 +442,20 @@ function resetRound(){
 }
 function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
 function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); $('time').textContent=t; $('timeDesk').textContent=t; $('level').textContent=state.level; $('levelDesk').textContent=state.level; $('speed').textContent=sp; $('speedDesk').textContent=sp; $('score').textContent=state.score; $('scoreDesk').textContent=state.score; }
-function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
+
+/* Vibração + queda */
+function dropCage(){
+  if(state.playing && !state.cageDropping){
+    state.cageDropping=true;
+    // Vibração no mobile (ignora se não suportado)
+    if (navigator.vibrate){
+      navigator.vibrate([30]);
+    }
+    // garantir que áudio esteja destravado por gesto do usuário
+    primeAudio();
+  }
+}
+
 function cageGroundY(){
   const arena = $('arena').getBoundingClientRect();
   const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
@@ -437,7 +499,8 @@ function loop(ts){
     cageEl.style.top=next+'px';
     if(next>=ground){
       state.cageDropping=false;
-      showResult(naroCaptured());
+      const win = naroCaptured();
+      showResult(win);
     }
   }
 
@@ -452,24 +515,30 @@ function showResult(win){
   $('overlay').classList.add('show');
   const title = $('modalTitle'); const icon  = $('modalIcon'); const ttext = $('modalTitleText');
   title.classList.remove('success','error');
+
   if(win){
     window.incWin && window.incWin();
     ttext.textContent = 'Parabéns!'; title.classList.add('success'); icon.textContent = '✅';
     $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     state.score += 100;
+    playOk();
   }else{
     state.level = 1;
     ttext.textContent = 'FALHOU'; title.classList.add('error'); icon.textContent = '❌';
     $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+    playBad();
   }
   $('modalAction').textContent = 'TENTAR SALVAR A DEMOCRACIA NOVAMENTE';
 }
 
 /** Controles */
-$('startBtn').addEventListener('click', startGame);
+$('startBtn').addEventListener('click', ()=>{
+  primeAudio();  // destrava áudio no primeiro clique
+  startGame();
+});
 const mobileBtn=$('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
-  if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
+  if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); primeAudio(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
 $('modalAction').addEventListener('click', ()=>{
