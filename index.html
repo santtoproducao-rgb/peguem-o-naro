@@ -357,32 +357,37 @@ function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/* ===== Música de fundo (BGM) ===== */
-const BGM_BASE_VOL = 1.0;
-const BGM_DUCK_VOL = 0.5;
+/* ===== Música de fundo (BGM) — mudo durante efeitos ===== */
 let audioPrimed = false;
-let ducking = false;
-let duckTimeout = null;
-let bgmMuted = false; // agora só o BGM é mutado
+let bgmMuted = false;   // preferência do usuário (🔊/🔇) — só BGM
+let fxInProgress = 0;   // quantos efeitos estão tocando agora
 
 function getBgm(){ return $('bgm'); }
-function setBgmVolume(v){ const a=getBgm(); if(a) a.volume=Math.max(0,Math.min(1,v)); }
+function ensureBgmMuteState(){
+  const a = getBgm(); if(!a) return;
+  a.muted = bgmMuted || (fxInProgress > 0);
+}
 function playBgm(){
   const a=getBgm(); if(!a) return;
-  if (bgmMuted) return;                 // não toca se mutado
   a.loop = true;
-  setBgmVolume(ducking ? BGM_DUCK_VOL : BGM_BASE_VOL);
   const p=a.play(); if(p && p.catch) p.catch(()=>{});
+  ensureBgmMuteState();
 }
-/* Reduz o volume do BGM durante um efeito; restaura ao final */
-function duckForAudio(effectEl){
-  const a=getBgm(); if(!a || bgmMuted) return; // se mutado, ignora ducking
-  ducking = true;
-  setBgmVolume(BGM_DUCK_VOL);
-  if (duckTimeout){ clearTimeout(duckTimeout); duckTimeout=null; }
-  const restore = ()=>{ ducking=false; setBgmVolume(BGM_BASE_VOL); };
-  effectEl.addEventListener('ended', restore, {once:true});
-  duckTimeout = setTimeout(restore, 2000); // fallback
+/* Enquanto um efeito toca, o BGM fica mudo. Ao terminar, restaura conforme preferência do usuário */
+function muteBgmWhile(effectEl){
+  const a = getBgm(); if(!a || !effectEl) return;
+  fxInProgress++;
+  ensureBgmMuteState();
+
+  let restored = false;
+  const restore = ()=>{
+    if (restored) return;
+    restored = true;
+    fxInProgress = Math.max(0, fxInProgress - 1);
+    ensureBgmMuteState();
+  };
+  effectEl.addEventListener('ended', restore, { once:true });
+  setTimeout(restore, 8000); // fallback de segurança
 }
 
 /* ===== Áudio: helpers ===== */
@@ -398,8 +403,8 @@ function primeAudio(){
   });
   audioPrimed = true;
 }
-function playOk(){ const a=$('sOK'); if(!a) return; duckForAudio(a); a.play().catch(()=>{}); }
-function playBad(){ const a=$('sBad'); if(!a) return; duckForAudio(a); a.play().catch(()=>{}); }
+function playOk(){ const a=$('sOK'); if(!a) return; a.currentTime=0; muteBgmWhile(a); a.play().catch(()=>{}); }
+function playBad(){ const a=$('sBad'); if(!a) return; a.currentTime=0; muteBgmWhile(a); a.play().catch(()=>{}); }
 
 /* === Vibração (tap) === */
 function vibrateTap(){ try{ if(navigator.vibrate) navigator.vibrate([20]); }catch(e){} }
@@ -407,7 +412,7 @@ function vibrateTap(){ try{ if(navigator.vibrate) navigator.vibrate([20]); }catc
 /* === Mute/Unmute apenas do BGM === */
 function setBgmMuted(flag){
   bgmMuted = !!flag;
-  const a = $('bgm'); if (a) a.muted = bgmMuted;
+  ensureBgmMuteState();
   const btn = $('soundToggle');
   if(btn){
     btn.textContent = bgmMuted ? '🔇' : '🔊';
@@ -417,7 +422,7 @@ function setBgmMuted(flag){
 }
 $('soundToggle').addEventListener('click', ()=>{
   setBgmMuted(!bgmMuted);
-  if(!bgmMuted){ playBgm(); }   // ao religar, garante a trilha rodando
+  if(!bgmMuted){ playBgm(); }   // ao religar, garante a trilha rodando (respeitando efeitos)
 });
 
 /* Aplica src nos <img> e background-images */
@@ -434,7 +439,7 @@ function applyAssets(){
   const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame) logoArcoGame.src = ASSETS.logoMenu;
 
   /* SPLASH: define as duas marcas */
-  const splashLogoMenu = $('splashLogoMenu'); if(splashLogoMenu) splashLogoMenu.src = ASSETS.logoMenu; /* NOVO */
+  const splashLogoMenu = $('splashLogoMenu'); if(splashLogoMenu) splashLogoMenu.src = ASSETS.logoMenu;
   const splashLogo = $('splashLogo');         if(splashLogo)      splashLogo.src      = ASSETS.logoGame;
 
   const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
@@ -631,11 +636,11 @@ $('accessBtn').addEventListener('click', ()=>{
   showMenu();
 });
 
-/* Pausa/retoma BGM ao trocar de aba */
+/* Pausa/retoma BGM ao trocar de aba (respeitando efeitos e mute do usuário) */
 document.addEventListener('visibilitychange', () => {
   const a = $('bgm'); if(!a) return;
   if (document.hidden) a.pause();
-  else if(!bgmMuted) playBgm();
+  else { playBgm(); ensureBgmMuteState(); }
 });
 
 function startGame(){
