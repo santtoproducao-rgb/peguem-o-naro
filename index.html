@@ -35,7 +35,7 @@
   @media (max-width:1024px){ .menu-logo-left img{width:120px}.menu-logo-right img{width:240px} }
 
   .content{
-    position:absolute; left:0; right:0; bottom:12vh;
+    position:absolute; left:0; right:0; bottom:14vh;
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
 
@@ -56,7 +56,12 @@
   }
   @media (max-width:767px){
     .counters{ position:relative; margin:0 0 6px 0; }
+  /* Quebra a mensagem em duas linhas no mobile */
+  .helper{
+    white-space: pre-line; /* respeita o ENTER no HTML */
+    text-align: center;
   }
+}
 
   .card{
     background:rgba(255,255,255,.75);backdrop-filter:blur(6px) saturate(1.2);
@@ -186,7 +191,10 @@
       </div>
     </div>
 
-    <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
+<div class="helper">
+  PC: use a <b>Barra de Espaço</b>
+  Celular: toque em <b>Pegue o Naro</b>
+</div>
   </div>
 </section>
 
