@@ -22,107 +22,59 @@
   .app{height:100vh;display:flex;flex-direction:column}
   .hidden{display:none!important}
 
-  .page{
-    position:relative; height:100vh; width:100vw;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    overflow:hidden;
-  }
-  .bg{position:absolute; inset:0; z-index:-2; background:#000 center/cover no-repeat}
+  .page{position:relative;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+  .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
   /* ==== MENU ==== */
-  .menu-logo-fixed{
-    position:absolute; top:14px; left:14px; z-index:5;
-    background:var(--glass-strong); border-radius:12px; padding:6px;
-    backdrop-filter:blur(6px) saturate(1.2);
-  }
-  .menu-logo-fixed img{width:120px; height:auto}
-  @media (max-width:767px){ .menu-logo-fixed img{width:90px} }
+  .menu-logo-fixed{position:absolute;top:14px;left:14px;z-index:5}
+  .menu-logo-fixed img{width:120px;height:auto}
+  @media (max-width:767px){.menu-logo-fixed img{width:90px}}
 
-  .content{
-    width:100%;max-width:1024px;padding:16px;
-    display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center
-  }
+  .content{width:100%;max-width:1024px;padding:16px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
+  .logo-game-wrap{background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .logo-game{max-width:320px;max-height:320px}
-  @media (max-width:767px){ .logo-game{max-width:240px;max-height:240px} }
+  @media (max-width:767px){.logo-game{max-width:240px;max-height:240px}}
 
-  .card{
-    background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);
-    border-radius:16px; padding:16px; width:min(560px,92vw);
-    box-shadow:0 10px 30px rgba(0,0,0,.25)
-  }
+  .card{background:var(--glass-strong);backdrop-filter:blur(6px) saturate(1.2);border-radius:16px;padding:16px;width:min(560px,92vw);box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .input{width:100%; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #e5e7eb; outline:0}
-  .btn{background:var(--primary); color:#fff; padding:14px 20px; border:0; border-radius:var(--btn-radius); font-weight:var(--btn-weight); font-size:16px; transition:.15s}
+  .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
+  .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
   .btn:hover{background:var(--accent)}
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
-  .helper{color:#f9fafb;font-size:14px;opacity:.95;margin-top:6px;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+  .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
   /* ==== JOGO ==== */
-  .topbar{
-    position:absolute; top:10px; left:10px; right:10px; z-index:7;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .game-logo-left{
-    background:var(--glass-strong); border-radius:12px; padding:6px;
-    backdrop-filter:blur(6px) saturate(1.2);
-  }
-  .game-logo-left img{width:140px; height:auto}
-  @media (max-width:767px){ .game-logo-left img{width:100px} }
-
+  .topbar{position:absolute;top:10px;left:10px;right:10px;z-index:7;display:flex;align-items:center;justify-content:space-between}
+  .game-logo-left img{width:140px;height:auto}
+  @media (max-width:767px){.game-logo-left img{width:100px}}
   .donate-btn{white-space:nowrap}
 
-  /* HUD moderno no topo direito */
-  .hud-top{
-    position:absolute; top:10px; right:10px; z-index:7;
-    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-  }
-  .pill{
-    color:var(--hud-text);
-    background:var(--hud-bg); border:1px solid rgba(255,255,255,.18);
-    padding:8px 12px; border-radius:12px; font-weight:800;
-    text-shadow:0 1px 2px rgba(0,0,0,.35); backdrop-filter:blur(8px) saturate(1.25);
-    display:flex; gap:6px; align-items:center;
-  }
+  .hud-top{position:absolute;top:10px;right:10px;z-index:7;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pill{color:var(--hud-text);background:var(--hud-bg);border:1px solid rgba(255,255,255,.18);padding:8px 12px;border-radius:12px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.35);backdrop-filter:blur(8px) saturate(1.25);display:flex;gap:6px;align-items:center}
 
-  /* Arena */
-  .arena{position:relative; width:min(1200px, 90vw); height:min(74vh, 780px); border-radius:16px; overflow:hidden}
-  .arena .layer{position:absolute; inset:0}
+  .arena{position:relative;width:min(1200px,90vw);height:min(74vh,780px);border-radius:16px;overflow:hidden}
+  .arena .layer{position:absolute;inset:0}
 
-  .sprite-img{max-width:100%; max-height:100%; object-fit:contain; background:transparent}
+  .sprite-img{max-width:100%;max-height:100%;object-fit:contain;background:transparent}
 
-  .naro{
-    position:absolute; bottom:12px; left:0;
-    width:190px; height:auto; display:flex; align-items:flex-end; justify-content:center;
-  }
+  .naro{position:absolute;bottom:4px;left:0;display:flex;align-items:flex-end;justify-content:center}
+  .cage{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:center}
 
-  .cage{
-    position:absolute; top:8px; /* sempre visível no topo */
-    left:50%; transform:translateX(-50%);
-    width:380px; height:460px; display:flex; align-items:flex-end; justify-content:center;
-  }
-
-  .balloon{
-    position:absolute; bottom:240px; padding:10px 12px; max-width:420px; border-radius:12px;
-    background:#fff; border:1px solid rgba(17,17,17,.1); box-shadow:0 6px 20px rgba(0,0,0,.18);
-    opacity:0; transform:translateY(6px); transition:.25s; white-space:nowrap;
-  }
-  .balloon.show{opacity:1; transform:translateY(0)}
+  .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.1);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap}
+  .balloon.show{opacity:1;transform:translateY(0)}
   @media (max-width:767px){
-    .arena{width:95vw; height:66vh}
-    .naro{width:160px}
-    .cage{width:310px; height:380px}
-    .balloon{max-width:300px; bottom:210px; white-space:normal}
+    .arena{width:95vw;height:66vh}
+    .balloon{max-width:300px;bottom:210px;white-space:normal}
   }
 
-  .mobile-drop{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; width:80vw; max-width:480px; z-index:30}
-  @media (min-width:768px){ .mobile-drop{display:none} }
+  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:80vw;max-width:480px;z-index:30}
+  @media (min-width:768px){.mobile-drop{display:none}}
 
-  /* Modal */
-  .overlay{position:fixed; inset:0; background:var(--modal-bg); display:none; align-items:center; justify-content:center; z-index:50}
+  .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
   .overlay.show{display:flex}
-  .modal{background:var(--modal-card); color:var(--modal-text); border-radius:18px; width:min(520px,92vw); padding:22px; text-align:center; box-shadow:0 14px 50px rgba(0,0,0,.35)}
+  .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
   .modal h2{margin:0 0 8px}
-  .modal .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px}
+  .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 </style>
 </head>
 <body>
@@ -131,14 +83,10 @@
   <section id="menuPage" class="page">
     <div id="menuBg" class="bg"></div>
 
-    <!-- logo-menu no topo esquerdo -->
-    <div class="menu-logo-fixed">
-      <img id="menuLogoTop" alt="Logo pequeno">
-    </div>
+    <div class="menu-logo-fixed"><img id="menuLogoTop" alt="Logo pequeno"></div>
 
     <div class="content">
-      <!-- apenas o logo do jogo no centro -->
-      <img id="menuLogoGame" class="logo-game" alt="Logo do jogo">
+      <div class="logo-game-wrap"><img id="menuLogoGame" class="logo-game" alt="Logo do jogo"></div>
 
       <div class="card">
         <div class="row" style="margin-bottom:10px">
@@ -149,6 +97,7 @@
           <a id="donateMenu" class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
         </div>
       </div>
+
       <div class="helper">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></div>
     </div>
   </section>
@@ -157,13 +106,11 @@
   <section id="gamePage" class="page hidden">
     <div id="gameBg" class="bg"></div>
 
-    <!-- Logo à esquerda + botão doar à direita -->
     <div class="topbar">
       <div class="game-logo-left"><img id="gameLogoLeft" alt="Logo do projeto"></div>
       <a id="donateGame" class="btn donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
     </div>
 
-    <!-- HUD moderno topo direito -->
     <div class="hud-top">
       <div class="pill">⏱ <b id="time">00:00</b></div>
       <div class="pill">⚡ Vel: <b id="speed">0</b></div>
@@ -208,24 +155,28 @@ const ASSETS = {
   logoMenu:  './logo-menu.png'
 };
 
+/** ====== DIMENSÕES ORIGINAIS (fornecidas) ====== **/
+const NARO_W0 = 480, NARO_H0 = 1080;
+const CAGE_W0 = 864, CAGE_H0 = 1080;
+
 /** ====== ESTADO / PARÂMETROS ====== **/
 let state = {
   userName:'', level:1, score:0,
   startedAt:0, elapsed:0, playing:false,
   // Naro
-  dir:1, x:0, vx:0,
+  dir:1, x:0, vx:0, naroW:0, naroH:0,
   // Gaiola
-  cageDir:1, cageX:0, cageDropping:false
+  cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:60
 };
 
 const params = {
   baseSpeed:220, speedIncreasePerLevel:60, speedRampByTime:0.012,
-  cagePatrolSpeed:180,   // velocidade horizontal da gaiola
-  dropSpeed:980,         // velocidade vertical da queda
-  hitboxPadding:10,
+  cagePatrolSpeed:180,
+  dropSpeed:980,
+  hitboxInnerPadding:14,  // borda interna da gaiola p/ considerar “dentro”
   balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500,
   balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"],
-  transparentWhiteThreshold: 242 // para “garantir” transparência se houver branco residual
+  transparentWhiteThreshold: 242
 };
 
 function $(id){return document.getElementById(id)}
@@ -234,30 +185,22 @@ function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/** ====== GARANTIA DE TRANSPARÊNCIA ======
- * Converte branco “quase puro” em alfa 0 (caso exista). Mantém PNG com alfa.
- */
+/** Transparência de segurança (se houver branco residual) **/
 function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   return new Promise((resolve)=>{
     const img = new Image(); img.crossOrigin = 'anonymous';
     img.onload = ()=>{
-      // Verifica rapidamente se já há alfa – se sim, retorna direto
       const canvas = document.createElement('canvas');
       canvas.width = img.width; canvas.height = img.height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img,0,0);
-      const imgData = ctx.getImageData(0,0,1,1).data;
-      // Não há jeito 100% simples de detectar alfa global, então aplicamos filtro leve
-      const full = ctx.getImageData(0,0,canvas.width,canvas.height);
-      const d = full.data;
-      let changed = false;
+      const data = ctx.getImageData(0,0,canvas.width,canvas.height);
+      const d = data.data; let changed=false;
       for(let i=0;i<d.length;i+=4){
         const r=d[i], g=d[i+1], b=d[i+2];
-        if(r>=threshold && g>=threshold && b>=threshold){
-          d[i+3]=0; changed = true;
-        }
+        if(r>=threshold && g>=threshold && b>=threshold){ d[i+3]=0; changed=true; }
       }
-      if(changed){ ctx.putImageData(full,0,0); resolve(canvas.toDataURL('image/png')); }
+      if(changed){ ctx.putImageData(data,0,0); resolve(canvas.toDataURL('image/png')); }
       else resolve(url);
     };
     img.onerror = ()=>resolve(url);
@@ -265,7 +208,45 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
   });
 }
 
-/** ====== UI ====== **/
+/** Layout responsivo dos sprites preservando proporções originais **/
+function layoutSprites(){
+  const arena = $('arena').getBoundingClientRect();
+  // Alturas “alvo” por plataforma (percentual da arena)
+  const cageH = isMobile()? Math.round(arena.height * 0.58) : Math.round(arena.height * 0.66);
+  const sCage = cageH / CAGE_H0;
+  const cageW = Math.round(CAGE_W0 * sCage);
+
+  const naroH = isMobile()? Math.round(arena.height * 0.44) : Math.round(arena.height * 0.50);
+  const sNaro = naroH / NARO_H0;
+  const naroW = Math.round(NARO_W0 * sNaro);
+
+  state.cageH = cageH; state.cageW = cageW;
+  state.naroH = naroH; state.naroW = naroW;
+
+  // Aplicar tamanhos
+  const cageEl = $('cage'), naroEl = $('naro');
+  cageEl.style.width = cageW + 'px';  cageEl.style.height = cageH + 'px';
+  naroEl.style.width = naroW + 'px';  naroEl.style.height = naroH + 'px';
+
+  // Atualizar limites iniciais
+  // Naro começa na esquerda, no chão
+  state.x = clamp(state.x, 0, arena.width - naroW);
+  naroEl.style.left = state.x + 'px';
+  // Gaiola suspensa no topo, centralizada
+  state.suspendedTop = isMobile()? 50 : 60;
+  cageEl.style.top = state.suspendedTop + 'px';
+
+  // Centraliza gaiola na primeira execução
+  if(!cageEl.dataset.x){
+    const startX = Math.max(0, Math.min(arena.width - cageW, (arena.width/2 - cageW/2)));
+    cageEl.dataset.x = startX;
+    cageEl.style.left = startX + 'px';
+  } else {
+    const x = clamp(Number(cageEl.dataset.x), 0, arena.width - cageW);
+    cageEl.dataset.x = x; cageEl.style.left = x + 'px';
+  }
+}
+
 async function loadImages(){
   const bg = currentBg();
   $('menuBg').style.backgroundImage = `url(${bg})`;
@@ -275,14 +256,18 @@ async function loadImages(){
   $('menuLogoGame').src  = ASSETS.logoGame;
   $('gameLogoLeft').src  = ASSETS.logoMenu;
 
-  // sprites com garantia de transparência
   $('naroImg').src = await makeWhiteTransparent(ASSETS.naro);
   $('cageImg').src = await makeWhiteTransparent(ASSETS.cage);
+
+  // Quando as imagens carregarem, ajusta layout
+  setTimeout(layoutSprites, 50);
+  window.addEventListener('resize', layoutSprites);
 }
+
 function showMenu(){ $('menuPage').classList.remove('hidden'); $('gamePage').classList.add('hidden'); $('overlay').classList.remove('show'); state.playing=false; state.cageDropping=false; }
 function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
 
-/** ====== BALÕES ====== **/
+/** Balões **/
 let balloonTimer=null;
 function scheduleBalloon(){
   clearTimeout(balloonTimer);
@@ -301,30 +286,22 @@ function showBalloon(t){
   const naro=$('naro').getBoundingClientRect();
   const arena=$('arena').getBoundingClientRect();
   const left=clamp((naro.left-arena.left)+naro.width/2-120, 8, arena.width-250);
-  b.style.left=left+'px';
-  b.classList.add('show');
+  b.style.left=left+'px'; b.classList.add('show');
 }
 function hideBalloon(){ $('balloon').classList.remove('show'); }
 
-/** ====== JOGO ====== **/
+/** Jogo **/
 function resetRound(){
   state.startedAt=performance.now();
   state.elapsed=0;
-  state.dir=1; state.x=0; state.vx=0;
+  state.dir=1; state.vx=0;
   state.cageDir = Math.random() < 0.5 ? -1 : 1;
   state.cageDropping=false;
 
-  $('naro').style.left='0px';
-  $('cage').style.top='8px';
+  const cageEl=$('cage');
+  cageEl.style.top = state.suspendedTop + 'px';
 
-  // posiciona gaiola no centro ao iniciar
-  const arena=$('arena').getBoundingClientRect();
-  const cageW = $('cage').getBoundingClientRect().width || 380;
-  const startX = (arena.width/2 - cageW/2);
-  $('cage').dataset.x = startX;
-  $('cage').style.left = startX + 'px';
-  $('cage').style.transform = ''; // sem translate
-
+  layoutSprites();
   updateHUD(); scheduleBalloon();
 }
 function currentSpeed(){
@@ -339,14 +316,23 @@ function updateHUD(){
   $('score').textContent = state.score;
 }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
-function rectsIntersect(a,b){ return !(b.left>a.right || b.right<a.left || b.top>a.bottom || b.bottom<a.top); }
-function checkResult(){
+function naroInsideCageFully(){
   const cage=$('cage').getBoundingClientRect();
   const naro=$('naro').getBoundingClientRect();
-  const pad=params.hitboxPadding||0;
-  const cageBase={left:cage.left+pad, right:cage.right-pad, top:cage.bottom-30, bottom:cage.bottom};
-  const naroBox={left:naro.left+pad, right:naro.right-pad, top:naro.top+pad, bottom:naro.bottom};
-  return rectsIntersect(cageBase, naroBox);
+  const pad=params.hitboxInnerPadding;
+
+  const innerLeft   = cage.left + pad;
+  const innerRight  = cage.right - pad;
+  const innerTop    = cage.top + pad;
+  const innerBottom = cage.bottom - pad;
+
+  // Contenção total (todas as bordas do Naro dentro da área interna da gaiola)
+  return (
+    naro.left   >= innerLeft  &&
+    naro.right  <= innerRight &&
+    naro.top    >= innerTop   &&
+    naro.bottom <= innerBottom
+  );
 }
 
 let raf=null;
@@ -358,37 +344,37 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // Naro ping-pong
+  // === Movimento horizontal do Naro (ping-pong) ===
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
-  const maxX = arena.width - naroEl.getBoundingClientRect().width - 6;
-  if(state.x<0){ state.x=0; state.dir=1; }
-  if(state.x>maxX){ state.x=maxX; state.dir=-1; }
+  const maxNaroX = arena.width - state.naroW;
+  if(state.x < 0){ state.x=0; state.dir=1; }
+  if(state.x > maxNaroX){ state.x=maxNaroX; state.dir=-1; }
   naroEl.style.left = `${state.x}px`;
 
-  // Patrulha da gaiola (se não estiver caindo)
+  // === Patrulha da gaiola (se não estiver caindo) ===
   if(!state.cageDropping){
     const patrolV = (params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
-    const cageW = cageEl.getBoundingClientRect().width;
-    const minX = 0; const maxX2 = arena.width - cageW;
-    let x = Number(cageEl.dataset.x || (arena.width/2 - cageW/2));
+    const maxCageX = arena.width - state.cageW;
+    let x = Number(cageEl.dataset.x || (arena.width/2 - state.cageW/2));
     x += patrolV*state.cageDir;
-    if(x < minX){ x=minX; state.cageDir=1; }
-    if(x > maxX2){ x=maxX2; state.cageDir=-1; }
+    if(x < 0){ x=0; state.cageDir=1; }
+    if(x > maxCageX){ x=maxCageX; state.cageDir=-1; }
     cageEl.dataset.x = x;
     cageEl.style.left = x + 'px';
   }
 
-  // Queda da gaiola
+  // === Queda da gaiola ===
   if(state.cageDropping){
     const curTop = parseFloat(getComputedStyle(cageEl).top);
     const step = params.dropSpeed*(1/60);
-    const ground = arena.height - cageEl.getBoundingClientRect().height + 6;
+    const ground = arena.height - state.cageH + 6;
     const next = Math.min(curTop + step, ground);
     cageEl.style.top = next + 'px';
     if(next>=ground){
       state.cageDropping=false;
-      showResult(checkResult());
+      const win = naroInsideCageFully();
+      showResult(win);
     }
   }
 
@@ -439,6 +425,7 @@ init();
 </script>
 </body>
 </html>
+
 
 
 
