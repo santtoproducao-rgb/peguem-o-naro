@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PEGUEM O NARO – BANDIDO BOM É BANDIDO PRESO</title>
+<meta name="description" content="Jogo web: derrube a gaiola e prenda o Naro.">
+<style>
+  :root{
+    --primary:#111827;       /* cor principal (botões) */
+    --accent:#f59e0b;        /* destaques/hover */
+    --text:#111111;          /* texto padrão */
+    --hud-bg:rgba(255,255,255,.82);
+    --hud-text:#111111;
+    --modal-bg:rgba(0,0,0,.5);
+    --modal-card:#ffffff;
+    --modal-text:#111111;
+    --btn-radius:12px;
+    --btn-weight:700;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;color:var(--text);background:#000}
+  button{cursor:pointer}
+  img{display:block;max-width:100%}
+  .app{min-height:100vh;display:flex;flex-direction:column}
+  .hidden{display:none !important}
+  .page{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+  .bg{position:absolute; inset:0; z-index:-2; background:#000 center/cover no-repeat}
+
+  /* ====== TELA INICIAL ====== */
+  .content{
+    width:100%;max-width:1024px;padding:24px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;text-align:center
+  }
+  .logo-stack{display:flex;flex-direction:column;align-items:center;gap:10px;margin:8px 0 6px}
+  .logo-menu-top{max-width:140px;max-height:140px; padding:6px}
+  .logo-game-below{max-width:260px;max-height:260px; padding:6px}
+  @media (max-width:767px){
+    .logo-menu-top{max-width:110px;max-height:110px}
+    .logo-game-below{max-width:200px;max-height:200px}
+  }
+  .title{
+    font-weight:900; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.45);
+    font-size:clamp(20px,3.5vw,42px); letter-spacing:.2px
+  }
+  .card{
+    background:rgba(255,255,255,.9);
+    border-radius:16px; padding:20px; width:min(560px,92vw);
+    box-shadow:0 10px 30px rgba(0,0,0,.25)
+  }
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .input{
+    width:100%; padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid #e5e7eb; outline:0
+  }
+  .btn{
+    background:var(--primary); color:#fff; padding:14px 20px; border:0; border-radius:var(--btn-radius);
+    font-weight:var(--btn-weight); font-size:16px; transition:.15s transform, .15s opacity, .15s background;
+  }
+  .btn:hover{background:var(--accent)}
+  .btn.secondary{background:#fff;color:#111;border:1px solid #111}
+  .helper{color:#f9fafb;font-size:14px;opacity:.95}
+
+  /* ====== JOGO ====== */
+  .hud{
+    position:absolute; left:0; right:0; bottom:0; padding:10px 14px;
+    display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;
+    background:var(--hud-bg); color:var(--hud-text); z-index:5
+  }
+  .hud .pill{background:rgba(0,0,0,.06); padding:6px 10px; border-radius:999px}
+  .game-topbar{
+    position:absolute; top:8px; left:8px; right:8px; display:flex; align-items:center; justify-content:space-between; z-index:6;
+  }
+  .game-logo{
+    max-width:140px; max-height:140px; padding:6px; background:rgba(255,255,255,.6);
+    border-radius:12px; backdrop-filter:saturate(1.2) blur(2px)
+  }
+  @media (max-width:767px){
+    .game-logo{max-width:100px; max-height:100px}
+  }
+  .donate-btn{white-space:nowrap}
+  .mobile-drop{
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom:16px; width:80vw; max-width:480px; z-index:30;
+  }
+  @media (min-width:768px){
+    .mobile-drop{display:none}
+  }
+
+  /* área de jogo */
+  .arena{
+    position:relative; width:min(1100px,95vw); height:min(62vh,640px);
+    background:transparent; border-radius:16px; overflow:hidden;
+  }
+  .arena .layer{position:absolute; inset:0}
+  .naro{
+    position:absolute; bottom:12px; left:0;
+    /* Tamanho do Naro (aprox. como sua referência) */
+    width:160px; height:auto;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .naro img{max-width:100%; max-height:100%; object-fit:contain}
+  .cage{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:360px; height:420px; display:flex; align-items:flex-end; justify-content:center;
+  }
+  .cage img{max-width:100%; max-height:100%; object-fit:contain}
+  .balloon{
+    position:absolute; bottom:220px; padding:10px 12px; max-width:420px; border-radius:12px;
+    background:#fff; border:1px solid rgba(17,17,17,.1); box-shadow:0 6px 20px rgba(0,0,0,.18);
+    opacity:0; transform:translateY(6px); transition:.25s;
+  }
+  .balloon.show{opacity:1; transform:translateY(0)}
+  @media (max-width:767px){
+    .naro{width:140px}
+    .cage{width:280px;height:340px}
+    .balloon{max-width:300px; bottom:200px}
+  }
+
+  /* modais */
+  .overlay{position:fixed; inset:0; background:var(--modal-bg); display:none; align-items:center; justify-content:center; z-index:50}
+  .overlay.show{display:flex}
+  .modal{background:var(--modal-card); color:var(--modal-text); border-radius:18px; width:min(520px,92vw); padding:22px; text-align:center; box-shadow:0 14px 50px rgba(0,0,0,.35)}
+  .modal h2{margin:0 0 8px}
+  .modal .actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- TELA INICIAL -->
+  <section id="menuPage" class="page">
+    <div id="menuBg" class="bg"></div>
+    <div class="content">
+      <div class="logo-stack">
+        <img id="menuLogoTop" class="logo-menu-top" alt="Logo do projeto (pequeno)">
+        <img id="menuLogoGame" class="logo-game-below" alt="Logo do jogo (maior)">
+      </div>
+      <h1 class="title">PEGUEM O NARO — BANDIDO BOM É BANDIDO PRESO</h1>
+      <div class="card">
+        <div class="row" style="margin-bottom:10px">
+          <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
+        </div>
+        <div class="row">
+          <button id="startBtn" class="btn">Iniciar</button>
+          <a id="donateMenu" class="btn secondary hidden" href="#" target="_blank" rel="noopener">DOAR AGORA</a>
+        </div>
+      </div>
+      <div class="helper">PC: use a <b>Barra de Espaço</b> para derrubar a gaiola • Celular: toque em <b>Pegue o Naro</b></div>
+    </div>
+  </section>
+
+  <!-- JOGO -->
+  <section id="gamePage" class="page hidden">
+    <div id="gameBg" class="bg"></div>
+
+    <div class="game-topbar">
+      <div class="game-logo">
+        <img id="gameLogo" alt="Logo do jogo">
+      </div>
+      <a id="donateGame" class="btn donate-btn hidden" href="#" target="_blank" rel="noopener">DOAR AGORA</a>
+    </div>
+
+    <div class="arena" id="arena">
+      <div class="layer">
+        <div class="naro" id="naro"><img id="naroImg" alt="Naro"></div>
+        <div class="cage" id="cage"><img id="cageImg" alt="Gaiola"></div>
+        <div class="balloon" id="balloon"></div>
+      </div>
+    </div>
+
+    <div class="hud">
+      <div class="pill">Tempo: <b id="time">00:00</b></div>
+      <div class="pill">Nível: <b id="level">1</b></div>
+      <div class="pill">Velocidade: <b id="speed">0</b></div>
+      <div class="pill">Score: <b id="score">0</b></div>
+    </div>
+
+    <div class="mobile-drop">
+      <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
+    </div>
+  </section>
+</div>
+
+<!-- MODAL RESULTADO -->
+<div id="overlay" class="overlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <h2 id="modalTitle">Resultado</h2>
+    <p id="modalMsg">Mensagem</p>
+    <div class="actions">
+      <button id="modalPrimary" class="btn">Próximo nível</button>
+      <button id="modalSecondary" class="btn secondary">SALVAR A DEMOCRACIA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   IMAGENS (Google Drive)
+   =========================
+   Formato usado: https://drive.google.com/uc?export=view&id=ARQUIVO_ID
+*/
+const GDRIVE = {
+  bgDesktop: 'https://drive.google.com/uc?export=view&id=1aK-LmXKQnTjoFJo9SUOhZqs3RDrOYms_',
+  bgMobile:  'https://drive.google.com/uc?export=view&id=1C64gln39Yq_n25oZOpnLgTsHqAWp5F8J',
+  naro:      'https://drive.google.com/uc?export=view&id=15_FakU5UeuhCc1nu1ozAsVSbm7Josov1',
+  logoGame:  'https://drive.google.com/uc?export=view&id=1Ju4_u0plyxsaSnN4-difSkYNFwK5rLkw',
+  cage:      'https://drive.google.com/uc?export=view&id=16elKT2JpshDSz9mzAznx0TBOCn2NoExb',
+  logoMenu:  'https://drive.google.com/uc?export=view&id=1ZZfkeYe7r7HZPldrvAn8N2g7jCgFyFMW'
+};
+
+// Se quiser mostrar o botão de doação, coloque o link aqui:
+const DONATE_URL = ''; // exemplo: 'https://arco.org.br/doe'
+
+/* =========================
+   ESTADO DO JOGO
+   ========================= */
+let state = {
+  userName:'',
+  level:1, score:0,
+  startedAt:0, elapsed:0,
+  playing:false,
+  dir:1, x:0, vx:0,
+  cageDropping:false
+};
+
+/* =========================
+   CONFIG PARÂMETROS
+   ========================= */
+const params = {
+  baseSpeed:220,
+  speedIncreasePerLevel:60,
+  speedRampByTime:0.01, // +1% por segundo
+  dropSpeed:1000,
+  hitboxPadding:10,
+  balloonIntervalRangeMs:[4000,9000],
+  balloonDurationMs:2500,
+  balloons:[
+    "Isso nunca vai dar em nada!",
+    "Acabou a mamata?!",
+    "Eu sou imbrochável!",
+    "Fake news!"
+  ]
+};
+
+function $(id){return document.getElementById(id)}
+function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
+function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
+function currentBg(){ return isMobile()? (GDRIVE.bgMobile || GDRIVE.bgDesktop) : (GDRIVE.bgDesktop || GDRIVE.bgMobile); }
+
+/* =========================
+   INICIALIZAÇÃO UI
+   ========================= */
+function loadImages(){
+  $('menuBg').style.backgroundImage = `url(${currentBg()})`;
+  $('gameBg').style.backgroundImage = `url(${currentBg()})`;
+  $('menuLogoTop').src = GDRIVE.logoMenu;
+  $('menuLogoGame').src = GDRIVE.logoGame;
+  $('gameLogo').src = GDRIVE.logoGame;
+  $('naroImg').src = GDRIVE.naro;
+  $('cageImg').src = GDRIVE.cage;
+
+  if(DONATE_URL){
+    $('donateMenu').href = DONATE_URL;
+    $('donateGame').href = DONATE_URL;
+    $('donateMenu').classList.remove('hidden');
+    $('donateGame').classList.remove('hidden');
+  }
+}
+function showMenu(){
+  $('menuPage').classList.remove('hidden');
+  $('gamePage').classList.add('hidden');
+  $('overlay').classList.remove('show');
+  state.playing=false; state.cageDropping=false;
+}
+function showGame(){
+  $('menuPage').classList.add('hidden');
+  $('gamePage').classList.remove('hidden');
+  $('overlay').classList.remove('show');
+}
+
+/* =========================
+   JOGO
+   ========================= */
+let balloonTimer=null;
+function scheduleBalloon(){
+  clearTimeout(balloonTimer);
+  if(!params.balloons.length) return;
+  const [min,max]=params.balloonIntervalRangeMs;
+  const wait=Math.floor(min + Math.random()*(max-min));
+  balloonTimer=setTimeout(()=>{
+    const t=params.balloons[Math.floor(Math.random()*params.balloons.length)];
+    showBalloon(t);
+    setTimeout(hideBalloon, params.balloonDurationMs);
+    scheduleBalloon();
+  }, wait);
+}
+function showBalloon(t){
+  const b=$('balloon'); b.textContent=t;
+  const naro=$('naro').getBoundingClientRect();
+  const arena=$('arena').getBoundingClientRect();
+  const left=clamp((naro.left-arena.left)+naro.width/2-120, 8, arena.width-250);
+  b.style.left=left+'px';
+  b.classList.add('show');
+}
+function hideBalloon(){ $('balloon').classList.remove('show'); }
+
+function resetRound(){
+  state.startedAt=performance.now();
+  state.elapsed=0;
+  state.cageDropping=false;
+  $('cage').style.top='0px';
+  state.x=0; $('naro').style.left='0px'; state.dir=1;
+  updateHUD();
+  scheduleBalloon();
+}
+function currentSpeed(){
+  const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
+  const ramp=1 + params.speedRampByTime * (state.elapsed/1000);
+  return base*ramp;
+}
+function updateHUD(){
+  $('time').textContent = fmtTime(state.elapsed/1000);
+  $('level').textContent = state.level;
+  $('speed').textContent = Math.round(currentSpeed());
+  $('score').textContent = state.score;
+}
+function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
+function rectsIntersect(a,b){ return !(b.left>a.right || b.right<a.left || b.top>a.bottom || b.bottom<a.top); }
+function checkResult(){
+  const cage=$('cage').getBoundingClientRect();
+  const naro=$('naro').getBoundingClientRect();
+  const pad=params.hitboxPadding||0;
+  const cageBase={left:cage.left+pad, right:cage.right-pad, top:cage.bottom-30, bottom:cage.bottom};
+  const naroBox={left:naro.left+pad, right:naro.right-pad, top:naro.top+pad, bottom:naro.bottom};
+  return rectsIntersect(cageBase, naroBox);
+}
+
+let raf=null;
+function loop(ts){
+  if(!state.playing){ raf=requestAnimationFrame(loop); return; }
+  if(!state.startedAt) state.startedAt=ts;
+  state.elapsed=ts-state.startedAt;
+
+  const arena=$('arena').getBoundingClientRect();
+  const naroEl=$('naro'); const cageEl=$('cage');
+
+  const v=currentSpeed(); state.vx=v*(1/60);
+  state.x += state.vx*state.dir;
+  const maxX = arena.width - naroEl.getBoundingClientRect().width - 6;
+  if(state.x<0){ state.x=0; state.dir=1; }
+  if(state.x>maxX){ state.x=maxX; state.dir=-1; }
+  naroEl.style.left = `${state.x}px`;
+
+  if(state.cageDropping){
+    const topPx=parseFloat(cageEl.style.top || '0');
+    const step=params.dropSpeed*(1/60);
+    const next=topPx+step;
+    const ground = arena.height - cageEl.getBoundingClientRect().height + 6;
+    if(next>=ground){
+      cageEl.style.top=ground+'px';
+      state.cageDropping=false;
+      showResult(checkResult());
+    }else{
+      cageEl.style.top=next+'px';
+    }
+  }
+
+  updateHUD();
+  raf=requestAnimationFrame(loop);
+}
+
+function showResult(win){
+  state.playing=false;
+  const name=state.userName||'Você';
+  $('overlay').classList.add('show');
+  if(win){
+    $('modalTitle').textContent='Parabéns!';
+    $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
+    $('modalPrimary').textContent='Próximo nível';
+    $('modalSecondary').classList.add('hidden');
+    state.score+=100;
+  }else{
+    $('modalTitle').textContent='Falhou';
+    $('modalMsg').textContent=`${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+    $('modalPrimary').textContent='Tentar novamente';
+    $('modalSecondary').textContent='SALVAR A DEMOCRACIA';
+    $('modalSecondary').classList.remove('hidden');
+  }
+}
+
+/* =========================
+   CONTROLES / START
+   ========================= */
+$('startBtn').addEventListener('click', startGame);
+$('mobileDropBtn').addEventListener('click', dropCage);
+document.addEventListener('keydown',(e)=>{
+  if(e.code==='Space' && $('menuPage') && !$('menuPage').classList.contains('hidden')){
+    e.preventDefault(); startGame(); return;
+  }
+  if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
+  if(e.key==='d' || e.key==='D'){ if(DONATE_URL) window.open(DONATE_URL,'_blank','noopener'); }
+});
+$('modalPrimary').addEventListener('click', ()=>{
+  $('overlay').classList.remove('show');
+  if(state.score>0){ state.level++; } // vitória → próximo nível
+  state.playing=true; resetRound();
+});
+$('modalSecondary').addEventListener('click', ()=>{
+  $('overlay').classList.remove('show');
+  state.playing=true; resetRound();   // falha → mesmo nível
+});
+
+function startGame(){
+  state.userName = $('userName').value.trim();
+  state.level = state.level || 1;
+  state.playing = true;
+  $('overlay').classList.remove('show');
+  showGame();
+  resetRound();
+}
+
+/* =========================
+   BOOT
+   ========================= */
+function init(){
+  loadImages();
+  showMenu();
+  loop(0);
+}
+init();
+</script>
+</body>
+</html>
