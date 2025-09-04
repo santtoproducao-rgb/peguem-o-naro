@@ -18,13 +18,13 @@
     --credit-gap: 8px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-    /* === CONTROLE DE POSIÇÃO (edite estes 4) === */
-    --naro-bottom-desktop: 25px; /* Naro mais baixo = valor menor */
-    --cage-top-desktop:     10px; /* Gaiola mais baixa = valor MAIOR */
+    /* === CONTROLE DE POSIÇÃO (mapeadas pelo breakpoint) === */
+    --naro-bottom-desktop: 25px;
+    --cage-top-desktop:     10px;
     --naro-bottom-mobile:   110px;
     --cage-top-mobile:      12px;
 
-    /* Variáveis efetivas (mapeadas pelo breakpoint) */
+    /* Variáveis efetivas */
     --naro-bottom: 200px; /* fallback */
     --cage-top:     10px; /* fallback */
 
@@ -64,7 +64,7 @@
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
   .splash-logo{width:min(320px,60vw); height:auto;}
   .splash-btn{
-    background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px; 
+    background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px;
     font-weight:800; box-shadow:var(--shadow);
   }
   .splash-btn:hover{ background:#f59e0b; color:#111; }
@@ -212,7 +212,7 @@
 <!-- ========== SPLASH (ACESSAR) ========== -->
 <section id="splashPage" class="page">
   <div class="splash-wrap">
-    <!-- Use a mesma marca do jogo -->
+    <!-- usa a mesma marca do jogo -->
     <img id="splashLogo" class="splash-logo" alt="Logo do jogo">
     <button id="accessBtn" class="splash-btn">ACESSAR</button>
   </div>
@@ -359,43 +359,23 @@ let ducking = false;
 let duckTimeout = null;
 
 function getBgm(){ return $('bgm'); }
-
-function setBgmVolume(v){
-  const a = getBgm(); if(!a) return;
-  a.volume = Math.max(0, Math.min(1, v));
-}
-
+function setBgmVolume(v){ const a=getBgm(); if(a) a.volume=Math.max(0,Math.min(1,v)); }
 function playBgm(){
-  const a = getBgm(); if(!a) return;
+  const a=getBgm(); if(!a) return;
   a.loop = true;
   setBgmVolume(ducking ? BGM_DUCK_VOL : BGM_BASE_VOL);
-  const p = a.play();
-  if (p && typeof p.then === 'function') {
-    p.catch(()=>{}); // pode falhar sem gesto
-  }
+  const p=a.play(); if(p && p.catch) p.catch(()=>{});
 }
-
 /* Reduz o volume do BGM durante um efeito; restaura ao final */
 function duckForAudio(effectEl){
   if(!effectEl) return;
-  const a = getBgm(); if(!a) return;
-
+  const a=getBgm(); if(!a) return;
   ducking = true;
   setBgmVolume(BGM_DUCK_VOL);
-
-  // Limpa restaurações pendentes
-  if (duckTimeout){ clearTimeout(duckTimeout); duckTimeout = null; }
-
-  // Quando o efeito terminar, restaurar
-  const restore = ()=>{
-    ducking = false;
-    setBgmVolume(BGM_BASE_VOL);
-  };
-
-  // Alguns navegadores não disparam 'ended' se play() falhar; coloca um fallback
+  if (duckTimeout){ clearTimeout(duckTimeout); duckTimeout=null; }
+  const restore = ()=>{ ducking=false; setBgmVolume(BGM_BASE_VOL); };
   effectEl.addEventListener('ended', restore, {once:true});
-  // Fallback por tempo (2s) caso ended não dispare
-  duckTimeout = setTimeout(restore, 2000);
+  duckTimeout = setTimeout(restore, 2000); // fallback
 }
 
 /* ===== Áudio: helpers ===== */
@@ -405,27 +385,18 @@ function primeAudio(){
   [ok,bad,bgm].forEach(a=>{
     if(!a) return;
     try{
-      if (a === bgm) setBgmVolume(BGM_BASE_VOL);
-      const p = a.play();
-      if (p && typeof p.then === 'function'){
-        p.then(()=>a.pause()).catch(()=>{ /* sem gesto */ });
-      } else {
-        a.pause();
-      }
+      if (a===bgm) setBgmVolume(BGM_BASE_VOL);
+      const p=a.play();
+      if(p && p.then){ p.then(()=>a.pause()).catch(()=>{}); } else { a.pause(); }
     }catch(e){}
   });
   audioPrimed = true;
 }
-
 function playOk(){ const a=$('sOK'); if(!a) return; duckForAudio(a); a.play().catch(()=>{}); }
 function playBad(){ const a=$('sBad'); if(!a) return; duckForAudio(a); a.play().catch(()=>{}); }
 
-/* === Vibração: helper só em gesto do usuário === */
-function vibrateTap(){
-  try{
-    if (navigator.vibrate) navigator.vibrate([20]);
-  }catch(e){}
-}
+/* === Vibração (tap) === */
+function vibrateTap(){ try{ if(navigator.vibrate) navigator.vibrate([20]); }catch(e){} }
 
 /* Aplica src nos <img> e background-images */
 function applyAssets(){
@@ -440,11 +411,11 @@ function applyAssets(){
   const logoGameCard = $('gameLogoCard'); if(logoGameCard) logoGameCard.src = ASSETS.logoGame;
   const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame) logoArcoGame.src = ASSETS.logoMenu;
 
+  // splash usa a mesma marca do jogo
+  const splashLogo = $('splashLogo'); if(splashLogo) splashLogo.src = ASSETS.logoGame;
+
   const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
   const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
-
-  // Usa o mesmo logo na splash
-  const splashLogo = $('splashLogo'); if(splashLogo) splashLogo.src = ASSETS.logoGame;
 }
 
 function preloadImages(paths){ paths.forEach(p => { const i = new Image(); i.src = p; }); }
@@ -509,7 +480,7 @@ function resetRound(){
   state.cageDir = Math.random()<0.5 ? -1 : 1;
   state.cageDropping=false;
 
-  // === Reset da gaiola para o topo e sem X anterior ===
+  // Reset da gaiola para o topo e sem X anterior
   const cageEl = $('cage');
   if (cageEl){
     cageEl.style.top = '';          // volta ao CSS: top: var(--cage-top)
@@ -533,7 +504,6 @@ function dropCage(){
     primeAudio(); // garantia
   }
 }
-
 function cageGroundY(){
   const arena = $('arena').getBoundingClientRect();
   const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
@@ -611,12 +581,11 @@ function showResult(win){
 
 /** Controles */
 $('startBtn').addEventListener('click', ()=>{
-  primeAudio();  
-  playBgm();    // garante BGM
+  primeAudio();
+  playBgm();    // garante BGM ativa
   startGame();
 });
-
-const mobileBtn=$('mobileDropBtn'); 
+const mobileBtn=$('mobileDropBtn');
 if(mobileBtn){
   mobileBtn.addEventListener('click', ()=>{
     vibrateTap();
@@ -624,27 +593,25 @@ if(mobileBtn){
     dropCage();
   });
 }
-
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){
     e.preventDefault(); primeAudio(); playBgm(); startGame(); return;
   }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
-
 $('modalAction').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
   if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; }
   else if (state.lastWin === true) { state.level++; }
   state.playing = true;
-  resetRound(); // <- aqui a gaiola volta para o topo
+  resetRound();
 });
 
-/* Botão ACESSAR da splash */
+/* Botão ACESSAR da splash: inicia BGM e vai para o menu */
 $('accessBtn').addEventListener('click', ()=>{
   primeAudio();    // destrava áudio
   playBgm();       // inicia trilha (loop)
-  showMenu();      // vai para a tela inicial
+  showMenu();      // mostra tela inicial (nome + iniciar)
 });
 
 /* Pausa/retoma BGM ao trocar de aba */
@@ -707,4 +674,3 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
-
