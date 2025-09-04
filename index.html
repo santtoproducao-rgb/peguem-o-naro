@@ -56,6 +56,7 @@
   /* ======= SPLASH (ACESSAR) ======= */
   #splashPage{background:#fff; color:#111; display:flex; align-items:center; justify-content:center;}
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
+  .splash-logo-menu{width:min(220px,50vw); height:auto;} /* NOVO: logo-menu acima */
   .splash-logo{width:min(320px,60vw); height:auto;}
   .splash-btn{ background:#111; color:#fff; border:0; border-radius:16px; padding:14px 22px; font-weight:800; box-shadow:var(--shadow); }
   .splash-btn:hover{ background:#f59e0b; color:#111; }
@@ -171,15 +172,15 @@
       left: auto;
     }
   }
-  /* Mobile: posição independente (exemplo: canto inferior direito, acima do botão móvel) */
-@media (max-width:767px){
-  .sound-toggle{
-    top: 135px;      /* perto do topo */
-    right: 12px;
-    bottom: auto;   /* desativa a âncora inferior */
-    left: auto;
+  /* Mobile: posição independente */
+  @media (max-width:767px){
+    .sound-toggle{
+      top: 135px;   /* ajuste aqui para “subir/baixar” no mobile */
+      right: 12px;
+      bottom: auto;
+      left: auto;
+    }
   }
-}
 
 </style>
 </head>
@@ -188,6 +189,8 @@
 <!-- ========== SPLASH (ACESSAR) ========== -->
 <section id="splashPage" class="page">
   <div class="splash-wrap">
+    <!-- NOVO: logo do menu acima do logo do jogo -->
+    <img id="splashLogoMenu" class="splash-logo-menu" alt="Logo ARCO">
     <img id="splashLogo" class="splash-logo" alt="Logo do jogo">
     <button id="accessBtn" class="splash-btn">ACESSAR</button>
   </div>
@@ -399,8 +402,9 @@ function applyAssets(){
   const logoGameCard = $('gameLogoCard'); if(logoGameCard) logoGameCard.src = ASSETS.logoGame;
   const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame) logoArcoGame.src = ASSETS.logoMenu;
 
-  // splash usa a mesma marca do jogo
-  const splashLogo = $('splashLogo'); if(splashLogo) splashLogo.src = ASSETS.logoGame;
+  /* SPLASH: define as duas marcas */
+  const splashLogoMenu = $('splashLogoMenu'); if(splashLogoMenu) splashLogoMenu.src = ASSETS.logoMenu; /* NOVO */
+  const splashLogo = $('splashLogo');         if(splashLogo)      splashLogo.src      = ASSETS.logoGame;
 
   const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
   const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
