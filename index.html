@@ -18,9 +18,30 @@
     --credit-gap: 8px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-    /* NOVO: Controle de altura */
-    --naro-bottom: 200px;   /* quanto maior o valor, mais baixo fica o Naro */
-    --cage-top: 10px;       /* quanto maior o valor, mais baixo fica a gaiola */
+    /* === CONTROLE DE POSIÇÃO (edite estes 4) === */
+    --naro-bottom-desktop: 250px; /* Naro mais baixo = valor MAIOR */
+    --cage-top-desktop:     10px; /* Gaiola mais baixa = valor MAIOR */
+    --naro-bottom-mobile:   200px;
+    --cage-top-mobile:      12px;
+
+    /* Variáveis efetivas (são mapeadas pelo breakpoint) */
+    --naro-bottom: 200px; /* fallback */
+    --cage-top:     10px; /* fallback */
+  }
+
+  /* Desktop aplica fontes desktop */
+  @media (min-width:768px){
+    :root{
+      --naro-bottom: var(--naro-bottom-desktop);
+      --cage-top:    var(--cage-top-desktop);
+    }
+  }
+  /* Mobile aplica fontes mobile */
+  @media (max-width:767px){
+    :root{
+      --naro-bottom: var(--naro-bottom-mobile);
+      --cage-top:    var(--cage-top-mobile);
+    }
   }
 
   *{box-sizing:border-box}
@@ -141,7 +162,7 @@
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(250px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
+  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(150px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
   .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
@@ -253,7 +274,6 @@
 <!-- ========== SCRIPT DO JOGO ========== -->
 <script>
 /** ====== ASSETS ====== **/
-/* Os nomes abaixo batem 100% com os arquivos da pasta (print). */
 const ASSETS = {
   bgDesktop: 'bg-desktop.jpg',
   bgMobile:  'bg-mobile.jpg',
@@ -266,6 +286,7 @@ const ASSETS = {
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
+/* Escalas independentes */
 const RATIO_DESK = { cageH: 0.40, naroH: 0.35 };
 const RATIO_MOB  = { cageH: 0.22, naroH: 0.20 };
 
@@ -274,36 +295,28 @@ let state = { userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:fal
 const params = { baseSpeed: 360, speedIncreasePerLevel: 90, speedRampByTime: 0.018, cagePatrolSpeed: 260, dropSpeed: 1100, hitboxInnerPadding:14, minOverlapToCaptureMobile:0.60, minOverlapToCaptureDesktop:0.75, balloonIntervalRangeMs:[4000,9000], balloonDurationMs:2500, balloons:["Isso nunca vai dar em nada!","Acabou a mamata?!","Eu sou imbrochável!","Fake news!"], transparentWhiteThreshold:242 };
 
 function $(id){return document.getElementById(id)}
-function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
 
-/* === NOVO: aplica src nos <img> e background-images === */
+/* Aplica src nos <img> e background-images */
 function applyAssets(){
-  // Fundos (menu e jogo)
   const bgUrl = `url("${currentBg()}")`;
   const menuBg = $('menuBg'); const gameBg = $('gameBg');
   if(menuBg) menuBg.style.backgroundImage = bgUrl;
   if(gameBg) gameBg.style.backgroundImage = bgUrl;
 
-  // Logos (menu)
-  const logoArco = $('menuLogoLeft');  if(logoArco && !logoArco.src) logoArco.src = ASSETS.logoMenu;
-  const logoGameMenu = $('menuLogoRight'); if(logoGameMenu && !logoGameMenu.src) logoGameMenu.src = ASSETS.logoGame;
+  const logoArco = $('menuLogoLeft');  if(logoArco) logoArco.src = ASSETS.logoMenu;
+  const logoGameMenu = $('menuLogoRight'); if(logoGameMenu) logoGameMenu.src = ASSETS.logoGame;
 
-  // Logos (jogo)
-  const logoGameCard = $('gameLogoCard'); if(logoGameCard && !logoGameCard.src) logoGameCard.src = ASSETS.logoGame;
-  const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame && !logoArcoGame.src) logoArcoGame.src = ASSETS.logoMenu;
+  const logoGameCard = $('gameLogoCard'); if(logoGameCard) logoGameCard.src = ASSETS.logoGame;
+  const logoArcoGame = $('gameLogoLeft'); if(logoArcoGame) logoArcoGame.src = ASSETS.logoMenu;
 
-  // Sprites
-  const naroImg = $('naroImg'); if(naroImg && !naroImg.src) naroImg.src = ASSETS.naro;
-  const cageImg = $('cageImg'); if(cageImg && !cageImg.src) cageImg.src = ASSETS.cage;
+  const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
+  const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
 }
 
-/* Opcional: pré-carregar para evitar piscar */
-function preloadImages(paths){
-  paths.forEach(p => { const i = new Image(); i.src = p; });
-}
+function preloadImages(paths){ paths.forEach(p => { const i = new Image(); i.src = p; }); }
 
 /** Sprites */
 function layoutSprites(){
@@ -357,12 +370,36 @@ function naroCaptured(){
 
 /** Jogo */
 function resetRound(){
-  state.startedAt=performance.now(); state.elapsed=0; state.dir = Math.random()<0.5 ? -1 : 1; state.vx=0; state.cageDir = Math.random()<0.5 ? -1 : 1; state.cageDropping=false; layoutSprites(); updateHUD(); scheduleBalloon();
+  state.startedAt=performance.now();
+  state.elapsed=0;
+  state.dir = Math.random()<0.5 ? -1 : 1;
+  state.vx=0;
+  state.cageDir = Math.random()<0.5 ? -1 : 1;
+  state.cageDropping=false;
+
+  // === Reset da gaiola para o topo e sem X anterior ===
+  const cageEl = $('cage');
+  if (cageEl){
+    cageEl.style.top = '';          // volta ao CSS: top: var(--cage-top)
+    delete cageEl.dataset.x;        // reseta posição horizontal inicial
+  }
+
+  // Naro volta ao início da esquerda
+  state.x = 0;
+
+  layoutSprites();
+  updateHUD();
+  scheduleBalloon();
 }
 function currentSpeed(){ const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1); const ramp=1 + params.speedRampByTime * (state.elapsed/1000); return base*ramp; }
 function updateHUD(){ const t = fmtTime(state.elapsed/1000); const sp = Math.round(currentSpeed()); $('time').textContent=t; $('timeDesk').textContent=t; $('level').textContent=state.level; $('levelDesk').textContent=state.level; $('speed').textContent=sp; $('speedDesk').textContent=sp; $('score').textContent=state.score; $('scoreDesk').textContent=state.score; }
 function dropCage(){ if(state.playing && !state.cageDropping){ state.cageDropping=true; } }
-function cageGroundY(){ const arena = $('arena').getBoundingClientRect(); const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0; const pad = 0; return arena.height - state.cageH - naroBottom - pad; }
+function cageGroundY(){
+  const arena = $('arena').getBoundingClientRect();
+  const naroBottom = parseFloat(getComputedStyle($('naro')).bottom) || 0;
+  const pad = 0;
+  return arena.height - state.cageH - naroBottom - pad;
+}
 
 /** Loop */
 let raf=null;
@@ -415,8 +452,16 @@ function showResult(win){
   $('overlay').classList.add('show');
   const title = $('modalTitle'); const icon  = $('modalIcon'); const ttext = $('modalTitleText');
   title.classList.remove('success','error');
-  if(win){ window.incWin && window.incWin(); ttext.textContent = 'Parabéns!'; title.classList.add('success'); icon.textContent = '✅'; $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`; state.score += 100; }
-  else{ state.level = 1; ttext.textContent = 'FALHOU'; title.classList.add('error'); icon.textContent = '❌'; $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`; }
+  if(win){
+    window.incWin && window.incWin();
+    ttext.textContent = 'Parabéns!'; title.classList.add('success'); icon.textContent = '✅';
+    $('modalMsg').textContent = `Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
+    state.score += 100;
+  }else{
+    state.level = 1;
+    ttext.textContent = 'FALHOU'; title.classList.add('error'); icon.textContent = '❌';
+    $('modalMsg').textContent = `${name} VOCÊ FALHOU E O NARO ESTÁ SOLTO. TENTE NOVAMENTE PARA SALVAR A DEMOCRACIA.`;
+  }
   $('modalAction').textContent = 'TENTAR SALVAR A DEMOCRACIA NOVAMENTE';
 }
 
@@ -427,23 +472,35 @@ document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){ e.preventDefault(); startGame(); return; }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
 });
-$('modalAction').addEventListener('click', ()=>{ $('overlay').classList.remove('show'); if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; } else if (state.lastWin === true) { state.level++; } state.playing = true; resetRound(); });
+$('modalAction').addEventListener('click', ()=>{
+  $('overlay').classList.remove('show');
+  if (state.lastWin === false) { window.incPlayed && window.incPlayed(); state.level = 1; }
+  else if (state.lastWin === true) { state.level++; }
+  state.playing = true;
+  resetRound(); // <- aqui a gaiola volta para o topo
+});
 
-function startGame(){ state.userName = $('userName').value.trim(); state.level = state.level || 1; state.playing = true; state.lastWin = null; window.incPlayed && window.incPlayed(); $('overlay').classList.remove('show'); showGame(); resetRound(); }
+function startGame(){
+  state.userName = $('userName').value.trim();
+  state.level = state.level || 1;
+  state.playing = true;
+  state.lastWin = null;
+  window.incPlayed && window.incPlayed();
+  $('overlay').classList.remove('show');
+  showGame();
+  resetRound();
+}
 
-/* === NOVO: init visual + listeners de mudança de viewport === */
+/* Init */
 function init(){
-  // Preload leve (evita “piscar”)
   preloadImages([ASSETS.bgDesktop, ASSETS.bgMobile, ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu]);
-
-  applyAssets();          // define src e fundos
+  applyAssets();
   showMenu();
   layoutSprites();
   loop(0);
 
-  // Atualiza fundos ao mudar orientação/viewport
-  window.addEventListener('resize', applyAssets);
-  window.addEventListener('orientationchange', applyAssets);
+  window.addEventListener('resize', ()=>{ applyAssets(); layoutSprites(); });
+  window.addEventListener('orientationchange', ()=>{ applyAssets(); layoutSprites(); });
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>
