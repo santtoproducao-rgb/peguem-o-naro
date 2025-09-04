@@ -11,7 +11,6 @@
     --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
     --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
-    --naro-bottom:2px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -36,14 +35,21 @@
     position:absolute; left:0; right:0; bottom:6vh;
     display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
   }
+
+  /* Contadores – ficam DENTRO da .content, acima do card */
   .counters{
     background:#fff; color:#111; border-radius:14px; padding:10px 14px;
     display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
   }
   .counters b{font-variant-numeric:tabular-nums}
+  /* Desktop: sobe para o topo e centraliza */
   @media (min-width:768px){
-    .counters{ position:absolute; top:15px; left:50%; transform:translateX(-50%); z-index:8; }
+    .counters{
+      position:absolute; top:15px; left:50%; transform:translateX(-50%);
+      z-index:8;
+    }
   }
+  /* Mobile: fica no fluxo, colada no card */
   @media (max-width:767px){
     .counters{ position:relative; margin:0 0 6px 0; }
   }
@@ -59,7 +65,7 @@
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px}
 
-  /* ======= JOGO ======= */
+  /* ======= JOGO – DESKTOP ======= */
   .brand-left{
     position:absolute;top:24px;left:24px;z-index:7;
     display:flex;flex-direction:column;gap:18px;align-items:flex-start
@@ -75,20 +81,36 @@
   .pill{background:#d2b48c;color:#1c160f;padding:6px 12px;border-radius:12px;font-weight:900;display:flex;gap:6px;align-items:center}
   .donate-btn{white-space:nowrap;border-radius:16px;padding:12px 18px;box-shadow:var(--shadow);background:#0f172a;color:#fff;text-decoration:none}
 
+  /* BG/arena cobre 100% da tela */
   .arena{position:absolute;inset:0;width:100vw;height:100vh;overflow:hidden}
   .arena .layer{position:absolute;inset:0}
   .sprite-img{max-width:100%;max-height:100%;object-fit:contain}
 
-  .naro{position:absolute;bottom:var(--naro-bottom,2px);left:0;display:flex;align-items:flex-end;justify-content:center}
-  .cage{position:absolute;top:0;left:0;transform:none;display:flex;align-items:flex-end;justify-content:center}
+  .naro{position:absolute;bottom:2px;left:0;display:flex;align-items:flex-end;justify-content:center}
+  .cage{
+    position:absolute;top:0;left:0;
+    transform:none;
+    display:flex;align-items:flex-end;justify-content:center
+  }
 
   .balloon{position:absolute;bottom:240px;padding:10px 12px;max-width:420px;border-radius:12px;background:#fff;border:1px solid rgba(17,17,17,.08);box-shadow:0 6px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(6px);transition:.25s;white-space:nowrap;pointer-events:none}
   .balloon.show{opacity:1;transform:translateY(0)}
 
+  /* ======= MOBILE ======= */
   @media (max-width:767px){
-    .top-mobile-hud{ position:absolute;top:8px;left:8px;right:8px;z-index:9; display:flex;gap:10px;justify-content:space-between; }
-    .top-mobile-hud .box{ background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12); display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111; padding:0 8px;min-width:0; }
-    .brand-left{ top:58px; left:10px; right:10px; flex-direction:row; justify-content:space-between; align-items:center; gap:10px; }
+    .top-mobile-hud{
+      position:absolute;top:8px;left:8px;right:8px;z-index:9;
+      display:flex;gap:10px;justify-content:space-between;
+    }
+    .top-mobile-hud .box{
+      background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12);
+      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;
+      padding:0 8px;min-width:0;
+    }
+    .brand-left{
+      top:58px; left:10px; right:10px;
+      flex-direction:row; justify-content:space-between; align-items:center; gap:10px;
+    }
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:150px}
     .logo-arco img{width:92px}
@@ -108,27 +130,9 @@
   .modal{background:var(--modal-card);color:var(--modal-text);border-radius:18px;width:min(520px,92vw);padding:22px;text-align:center;box-shadow:0 14px 50px rgba(0,0,0,.35)}
   .modal h2{margin:0 0 8px}
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-
-  /* ===== ADMIN ===== */
-  .admin-wrap{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;padding:12px;background:#0b0b0bcc;color:#fff}
-  .admin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .admin-bar .btn{background:#2563eb}
-  .admin-grid{display:grid;grid-template-columns:340px 1fr;gap:12px;align-items:start}
-  .admin-card{background:#111827;border:1px solid #2b364b;border-radius:12px;padding:12px}
-  .admin-field{display:flex;gap:8px;align-items:center;margin:8px 0}
-  .admin-field label{width:140px}
-  .admin-preview{position:relative;background:#222;height:64vh;border-radius:12px;overflow:hidden}
-  .admin-preview .arena{position:absolute;inset:0}
-  .drag-wrap{position:absolute;inset:0}
-  .drag-box{position:absolute;border:2px dashed #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;user-select:none}
-  .resize-handle{position:absolute;width:12px;height:12px;right:-6px;bottom:-6px;background:#fff;border-radius:50%;border:2px solid #111;cursor:nwse-resize}
-  .admin-auth{display:flex;gap:8px;align-items:center}
-  .admin-auth input{padding:8px;border-radius:8px;border:1px solid #3d4c6b;background:#0f172a;color:#fff}
-  .admin-auth small{opacity:.8}
 </style>
 </head>
 <body>
-
 <!-- ========== MENU ========== -->
 <section id="menuPage" class="page">
   <div id="menuBg" class="bg"></div>
@@ -162,6 +166,7 @@
 <section id="gamePage" class="page hidden">
   <div id="gameBg" class="bg"></div>
 
+  <!-- HUD MOBILE -->
   <div class="top-mobile-hud">
     <div class="box">⏱ <span id="time">00:00</span></div>
     <div class="box">⚡ <span id="speed">0</span></div>
@@ -169,11 +174,13 @@
     <div class="box">🎯 <span id="level">1</span></div>
   </div>
 
+  <!-- logos -->
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
   </div>
 
+  <!-- HUD desktop -->
   <div class="top-right">
     <div class="hud">
       <div class="pill pill-time">⏱ <b id="timeDesk">00:00</b></div>
@@ -184,6 +191,7 @@
     <a class="donate-btn" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
   </div>
 
+  <!-- arena ocupa 100% -->
   <div class="arena" id="arena">
     <div class="layer">
       <div class="naro" id="naro"><img id="naroImg" class="sprite-img" alt="Naro"></div>
@@ -194,77 +202,6 @@
 
   <div class="mobile-drop">
     <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
-  </div>
-</section>
-
-<!-- ========== ADMIN (via ?admin=1) ========== -->
-<section id="adminPage" class="page hidden" aria-label="Admin">
-  <div class="admin-wrap">
-    <div class="admin-bar">
-      <strong>Admin de Layout (global)</strong>
-      <div class="admin-auth" id="authArea">
-        <input id="admEmail" type="email" placeholder="Email" value="santto.producao@gmail.com">
-        <input id="admPass" type="password" placeholder="Senha">
-        <button id="btnLogin" class="btn">Entrar</button>
-        <button id="btnLogout" class="btn hidden">Sair</button>
-        <small id="authState"></small>
-      </div>
-      <button id="adminBack" class="btn">Voltar ao jogo</button>
-      <button id="adminApply" class="btn">Aplicar agora</button>
-      <button id="adminSave" class="btn">Salvar (Firebase)</button>
-      <span id="adminStatus" style="margin-left:auto;opacity:.85"></span>
-    </div>
-
-    <div class="admin-grid">
-      <div class="admin-card">
-        <div class="admin-field">
-          <label>Modo</label>
-          <select id="adminMode">
-            <option value="desk">Desktop</option>
-            <option value="mob">Mobile</option>
-          </select>
-        </div>
-
-        <div class="admin-field"><label>Gaiola – altura (% tela)</label>
-          <input id="inpCageH" type="range" min="0.05" max="0.70" step="0.01"><span id="labCageH" style="min-width:60px;display:inline-block"></span>
-        </div>
-        <div class="admin-field"><label>Gaiola – topo (px)</label>
-          <input id="inpCageTop" type="range" min="0" max="200" step="1"><span id="labCageTop" style="min-width:60px;display:inline-block"></span>
-        </div>
-        <div class="admin-field"><label>Gaiola – início X (%)</label>
-          <input id="inpCageX" type="range" min="0" max="100" step="1"><span id="labCageX" style="min-width:60px;display:inline-block"></span>
-        </div>
-
-        <hr style="border-color:#344;border-style:solid;border-width:1px;margin:10px 0">
-
-        <div class="admin-field"><label>Naro – altura (% tela)</label>
-          <input id="inpNaroH" type="range" min="0.10" max="0.60" step="0.01"><span id="labNaroH" style="min-width:60px;display:inline-block"></span>
-        </div>
-        <div class="admin-field"><label>Naro – base (px)</label>
-          <input id="inpNaroBottom" type="range" min="0" max="200" step="1"><span id="labNaroBottom" style="min-width:60px;display:inline-block"></span>
-        </div>
-        <div class="admin-field"><label>Naro – início X (%)</label>
-          <input id="inpNaroX" type="range" min="0" max="100" step="1"><span id="labNaroX" style="min-width:60px;display:inline-block"></span>
-        </div>
-
-        <p style="opacity:.75;font-size:12px;margin-top:8px">
-          Você pode <b>arrastar</b> os blocos no preview (bordas tracejadas) para mudar posição e usar a <b>alça</b> para redimensionar (altura). Tudo é aplicado em tempo real.
-        </p>
-      </div>
-
-      <div class="admin-card">
-        <div class="admin-preview" id="adminPreview">
-          <div class="arena">
-            <img id="prevBg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25" alt="">
-            <div class="drag-wrap">
-              <div id="prevCage" class="drag-box" style="left:50%;top:0;width:30%;height:24%;">GAIOLA<div class="resize-handle"></div></div>
-              <div id="prevNaro" class="drag-box" style="left:10%;bottom:16px;width:16%;height:22%;">NARO<div class="resize-handle"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -280,21 +217,7 @@
   </div>
 </div>
 
-<script>
-/*
-Cole estas **Rules** no console do Firebase (Realtime Database → Rules):
-
-{
-  "rules": {
-    ".read": true,
-    "counters": { ".read": true, ".write": true },
-    "layout":   { ".read": true, ".write": "auth != null" }
-  }
-}
-*/
-</script>
-
-<!-- ===== Scripts do jogo ===== -->
+<!-- ========== SCRIPT DO JOGO (lógica principal) ========== -->
 <script>
 /** ====== ASSETS ====== **/
 const ASSETS = {
@@ -310,28 +233,16 @@ const ASSETS = {
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/** RATIOS padrão (podem ser sobrescritos pelo layout global) */
-let RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0,  naroBottom: 2,  cageStartXPct: 72, naroStartXPct: 0 };
-let RATIO_MOB  = { cageH: 0.11, naroH: 0.20, cageTop: 0,  naroBottom: 16, cageStartXPct: 72, naroStartXPct: 0 };
-
-/** FALLBACK local (sem Firebase) */
-const LS_LAYOUT_KEY = 'pegueonaro_layout_overrides';
-function loadLayoutOverrides(){
-  try{
-    const raw = localStorage.getItem(LS_LAYOUT_KEY);
-    if(!raw) return;
-    const o = JSON.parse(raw);
-    if(o.desk){ RATIO_DESK = {...RATIO_DESK, ...o.desk}; }
-    if(o.mob ){ RATIO_MOB  = {...RATIO_MOB , ...o.mob }; }
-  }catch(e){}
-}
+/** RATIOS (ajuste fino) */
+const RATIO_DESK = { cageH: 0.38, naroH: 0.30, cageTop: 0 };
+const RATIO_MOB  = { cageH: 0.22, naroH: 0.20, cageTop: 0 };
 
 /** Estado */
 let state = {
   userName:'', level:1, score:0, startedAt:0, elapsed:0, playing:false,
   dir:1, x:0, vx:0, naroW:0, naroH:0,
   cageDir:1, cageX:0, cageDropping:false, cageW:0, cageH:0, suspendedTop:0,
-  lastWin:null, roundInit:false
+  lastWin:null
 };
 
 const params = {
@@ -351,7 +262,6 @@ function clamp(v,min,max){return Math.max(min, Math.min(max,v))}
 function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function currentBg(){ return isMobile()? (ASSETS.bgMobile || ASSETS.bgDesktop) : (ASSETS.bgDesktop || ASSETS.bgMobile); }
-function hasFirebase(){ return (typeof firebase!=='undefined' && firebase.apps && firebase.apps.length); }
 
 /** trata branco como transparente (opcional) */
 function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
@@ -361,7 +271,9 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
       const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
       const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
       const data=ctx.getImageData(0,0,c.width,c.height); const d=data.data; let changed=false;
-      for(let i=0;i<d.length;i+=4){ const r=d[i],g=d[i+1],b=d[i+2]; if(r>=threshold&&g>=threshold&&b>=threshold){d[i+3]=0;changed=true;} }
+      for(let i=0;i<d.length;i+=4){
+        const r=d[i],g=d[i+1],b=d[i+2]; if(r>=threshold&&g>=threshold&&b>=threshold){d[i+3]=0;changed=true;}
+      }
       if(changed){ ctx.putImageData(data,0,0); resolve(c.toDataURL('image/png')); } else resolve(url);
     };
     img.onerror=()=>resolve(url);
@@ -370,11 +282,9 @@ function makeWhiteTransparent(url, threshold=params.transparentWhiteThreshold){
 }
 
 /** layout – usa a tela inteira */
-function getR(){ return isMobile()? RATIO_MOB : RATIO_DESK; }
-
 function layoutSprites(){
   const arena = $('arena').getBoundingClientRect();
-  const R = getR();
+  const R = isMobile()? RATIO_MOB : RATIO_DESK;
 
   const cageH = Math.round(arena.height * R.cageH);
   const sCage = cageH / CAGE_H0; const cageW = Math.round(CAGE_W0 * sCage);
@@ -386,28 +296,15 @@ function layoutSprites(){
   $('cage').style.width=cageW+'px'; $('cage').style.height=cageH+'px';
   $('naro').style.width=naroW+'px'; $('naro').style.height=naroH+'px';
 
-  state.suspendedTop = R.cageTop|0; $('cage').style.top = state.suspendedTop+'px';
+  state.suspendedTop = R.cageTop; $('cage').style.top = state.suspendedTop+'px';
 
-  const naroBottom = (R.naroBottom!=null) ? R.naroBottom : (isMobile()?16:2);
-  $('naro').style.setProperty('--naro-bottom', naroBottom+'px');
-
-  // posicionamentos horizontais iniciais (percentual da largura disponível)
   const maxNaroX = arena.width - naroW;
-  if(!state.roundInit){
-    state.x = clamp((R.naroStartXPct/100)*(arena.width - state.naroW), 0, maxNaroX);
-  }else{
-    state.x = clamp(state.x, 0, maxNaroX);
-  }
-  $('naro').style.left = Math.round(state.x)+'px';
+  state.x = clamp(state.x, 0, maxNaroX); $('naro').style.left = state.x+'px';
 
-  const maxCageX = arena.width - state.cageW;
-  let cx;
-  if(!$('cage').dataset.x || !state.roundInit){
-    cx = clamp((R.cageStartXPct/100)*(arena.width - state.cageW), 0, maxCageX);
-  }else{
-    cx = clamp(Number($('cage').dataset.x), 0, maxCageX);
-  }
-  $('cage').dataset.x = cx; $('cage').style.left = Math.round(cx)+'px';
+  const maxCageX = arena.width - cageW;
+  let x = Number($('cage').dataset.x ?? Math.round(arena.width*0.72 - cageW/2));
+  x = clamp(x, 0, maxCageX);
+  $('cage').dataset.x = x; $('cage').style.left = x+'px';
 }
 
 async function loadImages(){
@@ -431,12 +328,10 @@ async function loadImages(){
 function showMenu(){ 
   $('menuPage').classList.remove('hidden'); 
   $('gamePage').classList.add('hidden'); 
-  $('adminPage').classList.add('hidden');
   $('overlay').classList.remove('show'); 
   state.playing=false; state.cageDropping=false; 
 }
-function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('adminPage').classList.add('hidden'); $('overlay').classList.remove('show'); }
-function showAdmin(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.add('hidden'); $('adminPage').classList.remove('hidden'); }
+function showGame(){ $('menuPage').classList.add('hidden'); $('gamePage').classList.remove('hidden'); $('overlay').classList.remove('show'); }
 
 /** balões */
 let balloonTimer=null;
@@ -492,10 +387,8 @@ function resetRound(){
   state.vx=0;
   state.cageDir = Math.random()<0.5 ? -1 : 1;
   state.cageDropping=false;
-  state.roundInit=false; // para re-aplicar posições iniciais no layoutSprites
   $('cage').style.top = state.suspendedTop+'px';
-  layoutSprites(); state.roundInit=true;
-  updateHUD(); scheduleBalloon();
+  layoutSprites(); updateHUD(); scheduleBalloon();
 }
 function currentSpeed(){
   const base=params.baseSpeed + params.speedIncreasePerLevel*(state.level-1);
@@ -534,7 +427,7 @@ function loop(ts){
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed + 30*(state.level-1))*(1/60);
     const maxCageX = arena.width - state.cageW;
-    let x = Number(cageEl.dataset.x ?? (getR().cageStartXPct/100)*(arena.width - state.cageW));
+    let x = Number(cageEl.dataset.x ?? (arena.width*0.72 - state.cageW/2));
     x += patrolV*state.cageDir;
     if(x < 0){ x = 0; state.cageDir = 1; }
     else if(x > maxCageX){ x = maxCageX; state.cageDir = -1; }
@@ -565,7 +458,7 @@ function showResult(win){
   const name=state.userName||'Você';
   $('overlay').classList.add('show');
   if(win){
-    incWin();
+    window.incWin && window.incWin();     // contador global
     $('modalTitle').textContent='Parabéns!';
     $('modalMsg').textContent=`Parabéns, ${name}, você ajudou a salvar a nossa democracia!`;
     $('modalPrimary').textContent='Próximo nível';
@@ -579,285 +472,7 @@ function showResult(win){
   }
 }
 
-/** ====== CONTADORES GLOBAIS ====== */
-const STORAGE_KEYS = { plays: 'pegueonaro_plays', wins: 'pegueonaro_wins' };
-function lsGetCounters(){ return { plays:Number(localStorage.getItem(STORAGE_KEYS.plays)||0), wins:Number(localStorage.getItem(STORAGE_KEYS.wins)||0) }; }
-function lsSetCounters({plays,wins}){ localStorage.setItem(STORAGE_KEYS.plays,String(plays)); localStorage.setItem(STORAGE_KEYS.wins,String(wins)); }
-function renderCountersUI(plays, wins){
-  const pc=$('playedCount'), wc=$('winCount');
-  if(pc) pc.textContent=String(plays);
-  if(wc) wc.textContent=String(wins);
-}
-async function bootstrapCounters(){
-  if (hasFirebase()){
-    try{
-      const db = firebase.database();
-      const refPlays = db.ref("counters/plays");
-      const refWins  = db.ref("counters/wins");
-      const [snapP, snapW] = await Promise.all([refPlays.get(), refWins.get()]);
-      const plays0 = Number(snapP.val() ?? 0);
-      const wins0  = Number(snapW.val() ?? 0);
-      renderCountersUI(plays0, wins0);
-      refPlays.on("value", s => { window.__lastPlaysVal = Number(s.val() ?? plays0); renderCountersUI(window.__lastPlaysVal, Number(window.__lastWinsVal ?? wins0)); });
-      refWins .on("value", s => { window.__lastWinsVal  = Number(s.val() ?? wins0);  renderCountersUI(Number(window.__lastPlaysVal ?? plays0), window.__lastWinsVal); });
-    }catch(e){
-      const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
-    }
-  }else{
-    const {plays,wins}=lsGetCounters(); renderCountersUI(plays,wins);
-  }
-}
-async function incPlayed(){
-  if (hasFirebase()){
-    try{ await firebase.database().ref("counters/plays").transaction(v => (Number(v)||0)+1); }catch(_){}
-  }else{
-    const c=lsGetCounters(); c.plays++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
-  }
-}
-async function incWin(){
-  if (hasFirebase()){
-    try{ await firebase.database().ref("counters/wins").transaction(v => (Number(v)||0)+1); }catch(_){}
-  }else{
-    const c=lsGetCounters(); c.wins++; lsSetCounters(c); renderCountersUI(c.plays,c.wins);
-  }
-}
-
-/** ====== LAYOUT GLOBAL (Firebase) ====== */
-async function bootstrapLayout(){
-  if (hasFirebase()){
-    try{
-      const db = firebase.database();
-      const refLayout = db.ref("layout");
-      const snap = await refLayout.get();
-      const val = snap.val() || {};
-      if(val.desk) RATIO_DESK = {...RATIO_DESK, ...val.desk};
-      if(val.mob ) RATIO_MOB  = {...RATIO_MOB , ...val.mob };
-      layoutSprites();
-
-      refLayout.on("value", s=>{
-        const v = s.val() || {};
-        if(v.desk) RATIO_DESK = {...RATIO_DESK, ...v.desk};
-        if(v.mob ) RATIO_MOB  = {...RATIO_MOB , ...v.mob };
-        layoutSprites();
-      });
-    }catch(e){
-      loadLayoutOverrides(); layoutSprites();
-    }
-  }else{
-    loadLayoutOverrides(); layoutSprites();
-  }
-}
-
-/** ====== ADMIN: autenticação + editor drag/resize ====== */
-function qs(name){ return new URLSearchParams(location.search).get(name); }
-
-function setupAdmin(){
-  if(qs('admin')!=='1'){ return; }
-  showAdmin(); state.playing=false;
-
-  const authState=$('authState'), loginBtn=$('btnLogin'), logoutBtn=$('btnLogout'), emailI=$('admEmail'), passI=$('admPass');
-
-  function onAuth(user){
-    if(user){
-      authState.textContent=`Conectado: ${user.email}`;
-      loginBtn.classList.add('hidden');
-      logoutBtn.classList.remove('hidden');
-      emailI.disabled = passI.disabled = true;
-    }else{
-      authState.textContent='Não autenticado';
-      loginBtn.classList.remove('hidden');
-      logoutBtn.classList.add('hidden');
-      emailI.disabled = passI.disabled = false;
-    }
-  }
-  if(hasFirebase()){
-    firebase.auth().onAuthStateChanged(onAuth);
-    loginBtn.onclick= async ()=>{
-      try{
-        await firebase.auth().signInWithEmailAndPassword(emailI.value.trim(), passI.value);
-      }catch(e){ authState.textContent='Falha no login'; }
-    };
-    logoutBtn.onclick= async ()=>{
-      await firebase.auth().signOut();
-    };
-  }else{
-    authState.textContent='Firebase não configurado';
-  }
-
-  // UI & preview
-  const modeSel = $('adminMode');
-  const inpCageH=$('inpCageH'), inpCageTop=$('inpCageTop'), inpNaroH=$('inpNaroH'), inpNaroBottom=$('inpNaroBottom'), inpCageX=$('inpCageX'), inpNaroX=$('inpNaroX');
-  const labCageH=$('labCageH'), labCageTop=$('labCageTop'), labNaroH=$('labNaroH'), labNaroBottom=$('labNaroBottom'), labCageX=$('labCageX'), labNaroX=$('labNaroX');
-  const prev=$('adminPreview'), prevCage=$('prevCage'), prevNaro=$('prevNaro'), prevBg=$('prevBg');
-  const status=$('adminStatus');
-
-  prevBg.src = currentBg();
-
-  const getR = ()=> modeSel.value==='desk'? RATIO_DESK : RATIO_MOB;
-
-  function syncInputsFromR(){
-    const R=getR();
-    inpCageH.value=R.cageH;      labCageH.textContent=Math.round(R.cageH*100)+'%';
-    inpCageTop.value=R.cageTop|0;labCageTop.textContent=(R.cageTop|0)+'px';
-    inpCageX.value=R.cageStartXPct|0; labCageX.textContent=(R.cageStartXPct|0)+'%';
-
-    inpNaroH.value=R.naroH;      labNaroH.textContent=Math.round(R.naroH*100)+'%';
-    const nb=(R.naroBottom!=null?R.naroBottom:(modeSel.value==='mob'?16:2));
-    inpNaroBottom.value=nb;      labNaroBottom.textContent=nb+'px';
-    inpNaroX.value=R.naroStartXPct|0; labNaroX.textContent=(R.naroStartXPct|0)+'%';
-
-    applyPreview();
-  }
-
-  function applyPreview(){
-    const rect=prev.getBoundingClientRect();
-    const R=getR();
-
-    const cageHpx=Math.max(20, Math.round(rect.height*R.cageH));
-    const naroHpx=Math.max(20, Math.round(rect.height*R.naroH));
-    const cageWpx = Math.round(CAGE_W0*(cageHpx/CAGE_H0));
-    const naroWpx = Math.round(NARO_W0*(naroHpx/NARO_H0));
-
-    prevCage.style.height=cageHpx+'px';
-    prevCage.style.width =cageWpx+'px';
-    prevCage.style.top   =(R.cageTop|0)+'px';
-    prevCage.style.left  =Math.round((R.cageStartXPct/100)*(rect.width - cageWpx))+'px';
-
-    prevNaro.style.height=naroHpx+'px';
-    prevNaro.style.width =naroWpx+'px';
-    prevNaro.style.bottom=(R.naroBottom!=null?R.naroBottom:(modeSel.value==='mob'?16:2))+'px';
-    prevNaro.style.left  =Math.round((R.naroStartXPct/100)*(rect.width - naroWpx))+'px';
-
-    // aplica no jogo real-time
-    layoutSprites();
-  }
-
-  function writeInputsToR(){
-    const R=getR();
-    R.cageH=parseFloat(inpCageH.value||R.cageH);
-    R.cageTop=parseInt(inpCageTop.value||R.cageTop,10)|0;
-    R.cageStartXPct=parseInt(inpCageX.value||R.cageStartXPct,10)|0;
-
-    R.naroH=parseFloat(inpNaroH.value||R.naroH);
-    R.naroBottom=parseInt(inpNaroBottom.value,10)|0;
-    R.naroStartXPct=parseInt(inpNaroX.value||R.naroStartXPct,10)|0;
-
-    syncInputsFromR();
-  }
-
-  // Drag & Resize helpers
-  function makeDragXY(box, onDelta){
-    let drag=false, sx=0, sy=0, start={x:0,y:0};
-    const down = (ex,ey)=>{ drag=true; sx=ex; sy=ey; const r=box.getBoundingClientRect(); start={x:r.left, y:r.top}; };
-    const move = (ex,ey,container)=>{
-      if(!drag) return;
-      const dx=ex-sx, dy=ey-sy;
-      onDelta(dx,dy,container,start);
-    };
-    const up = ()=>{ drag=false; };
-
-    box.addEventListener('mousedown',e=>{ if(e.target.classList.contains('resize-handle')) return; down(e.clientX,e.clientY); e.preventDefault(); });
-    window.addEventListener('mousemove',e=>move(e.clientX,e.clientY,prev));
-    window.addEventListener('mouseup',up);
-    box.addEventListener('touchstart',e=>{ if(e.target.classList.contains('resize-handle')) return; const t=e.touches[0]; down(t.clientX,t.clientY); },{passive:false});
-    window.addEventListener('touchmove',e=>{ const t=e.touches?e.touches[0]:null; if(!t) return; move(t.clientX,t.clientY,prev); },{passive:false});
-    window.addEventListener('touchend',up);
-  }
-  function makeResize(box, onResize){
-    let drag=false, sx=0, sy=0, start={w:0,h:0};
-    const handle=box.querySelector('.resize-handle');
-    const down=(ex,ey)=>{
-      drag=true; sx=ex; sy=ey;
-      const r=box.getBoundingClientRect(); start={w:r.width,h:r.height};
-    };
-    const move=(ex,ey)=>{
-      if(!drag) return;
-      const dx=ex-sx, dy=ey-sy;
-      onResize(Math.max(10,start.w+dx), Math.max(10,start.h+dy));
-    };
-    const up=()=>{ drag=false; };
-
-    handle.addEventListener('mousedown',e=>{ down(e.clientX,e.clientY); e.stopPropagation(); e.preventDefault(); });
-    window.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
-    window.addEventListener('mouseup',up);
-    handle.addEventListener('touchstart',e=>{ const t=e.touches[0]; down(t.clientX,t.clientY); e.stopPropagation(); },{passive:false});
-    window.addEventListener('touchmove',e=>{ const t=e.touches?e.touches[0]:null; if(!t) return; move(t.clientX,t.clientY); },{passive:false});
-    window.addEventListener('touchend',up);
-  }
-
-  makeDragXY(prevCage, (dx,dy,container,start)=>{
-    const R=getR();
-    const rect=container.getBoundingClientRect();
-    const cageRect=prevCage.getBoundingClientRect();
-    let newLeft = start.x + dx - rect.left;
-    let newTop  = start.y + dy - rect.top;
-    newLeft = clamp(newLeft, 0, rect.width - cageRect.width);
-    newTop  = clamp(newTop , 0, rect.height - cageRect.height);
-    R.cageTop = Math.round(newTop);
-    R.cageStartXPct = Math.round( (newLeft / (rect.width - cageRect.width)) * 100 );
-    syncInputsFromR();
-  });
-  makeResize(prevCage, (w,h)=>{
-    const rect=prev.getBoundingClientRect();
-    const R=getR();
-    // altura guia (h) → percentual da altura do container
-    R.cageH = clamp(h/rect.height, 0.05, 0.7);
-    syncInputsFromR();
-  });
-
-  makeDragXY(prevNaro, (dx,dy,container,start)=>{
-    const R=getR();
-    const rect=container.getBoundingClientRect();
-    const nRect=prevNaro.getBoundingClientRect();
-    let newLeft = start.x + dx - rect.left;
-    let newTop  = start.y + dy - rect.top;
-    newLeft = clamp(newLeft, 0, rect.width - nRect.width);
-    newTop  = clamp(newTop , 0, rect.height - nRect.height);
-    // Em vez de top, o Naro usa bottom:
-    const bottom = Math.round( rect.height - (newTop + nRect.height) );
-    R.naroBottom = Math.max(0,bottom);
-    R.naroStartXPct = Math.round( (newLeft / (rect.width - nRect.width)) * 100 );
-    syncInputsFromR();
-  });
-  makeResize(prevNaro, (w,h)=>{
-    const rect=prev.getBoundingClientRect();
-    const R=getR();
-    R.naroH = clamp(h/rect.height, 0.10, 0.60);
-    syncInputsFromR();
-  });
-
-  // inputs ↔ preview
-  [modeSel, inpCageH, inpCageTop, inpNaroH, inpNaroBottom, inpCageX, inpNaroX].forEach(el=>{
-    el.addEventListener('input', ()=>{ writeInputsToR(); });
-  });
-
-  $('adminApply').addEventListener('click', ()=>{
-    layoutSprites();
-    status.textContent='Aplicado no jogo';
-    setTimeout(()=>status.textContent='',1200);
-  });
-
-  $('adminSave').addEventListener('click', async ()=>{
-    // exige login
-    if(!hasFirebase() || !firebase.auth().currentUser){
-      status.textContent='Faça login para salvar.';
-      return;
-    }
-    const data={ desk:RATIO_DESK, mob:RATIO_MOB };
-    try{
-      await firebase.database().ref("layout").set(data);
-      status.textContent='Salvo globalmente ✅';
-    }catch(e){
-      status.textContent='Erro ao salvar no Firebase';
-    }
-    setTimeout(()=>status.textContent='',1800);
-  });
-
-  $('adminBack').addEventListener('click', ()=>{ showMenu(); });
-
-  syncInputsFromR();
-}
-
+/** controles */
 $('startBtn').addEventListener('click', startGame);
 const mobileBtn=$('mobileDropBtn'); if(mobileBtn) mobileBtn.addEventListener('click', dropCage);
 document.addEventListener('keydown',(e)=>{
@@ -866,7 +481,7 @@ document.addEventListener('keydown',(e)=>{
 });
 $('modalPrimary').addEventListener('click', ()=>{
   $('overlay').classList.remove('show');
-  if (state.lastWin === false) { incPlayed(); }
+  if (state.lastWin === false) { window.incPlayed && window.incPlayed(); }
   if(state.score>0){ state.level++; }
   state.playing=true; resetRound();
 });
@@ -877,46 +492,55 @@ function startGame(){
   state.level = state.level || 1;
   state.playing = true;
   state.lastWin = null;
-  incPlayed();
+  window.incPlayed && window.incPlayed();  // contador global
   $('overlay').classList.remove('show');
   showGame(); resetRound();
 }
 
-/** boot */
-function init(){
-  loadImages(); 
-  bootstrapLayout();   // layout global
-  bootstrapCounters(); // contadores globais
-  showMenu(); 
-  loop(0);
+/* Stub — os contadores agora são controlados pelo módulo Firebase abaixo */
+function bootstrapCounters(){}
 
-  if (isMobile()){
-    document.documentElement.style.setProperty('--naro-bottom', (RATIO_MOB.naroBottom!=null?RATIO_MOB.naroBottom:16)+'px');
-  }else{
-    document.documentElement.style.setProperty('--naro-bottom', (RATIO_DESK.naroBottom!=null?RATIO_DESK.naroBottom:2)+'px');
-  }
-
-  setupAdmin();
-}
+function init(){ loadImages(); showMenu(); bootstrapCounters(); loop(0); }
 init();
 </script>
 
-<!-- ===== Firebase (Auth + Database) ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script>
-/* PREENCHA COM SEU PROJETO FIREBASE */
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
-  projectId: "SEU_PROJETO",
-  storageBucket: "SEU_PROJETO.appspot.com",
-  messagingSenderId: "XXXXXXXXXXXX",
-  appId: "1:XXXXXXXXXXXX:web:YYYYYYYYYYYYYY"
-};
-try{ firebase.initializeApp(firebaseConfig); }catch(e){}
+<!-- ========== FIREBASE (MÓDULO) — contadores globais ==========
+     Mantém os números sincronizados para todo mundo, em tempo real. -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA8Ab-sVO3yagkZkKgYTr5bbTBhll9stpQ",
+    authDomain: "peguenaro.firebaseapp.com",
+    databaseURL: "https://peguenaro-default-rtdb.firebaseio.com",
+    projectId: "peguenaro",
+    storageBucket: "peguenaro.firebasestorage.app",
+    messagingSenderId: "349978296089",
+    appId: "1:349978296089:web:3ad31deace7b55c7ff8f88"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const playsRef = ref(db, "counters/plays");
+  const winsRef  = ref(db, "counters/wins");
+
+  // Render em tempo real
+  onValue(playsRef, (snap)=>{
+    const v = snap.val() ?? 0;
+    const el = document.getElementById("playedCount");
+    if (el) el.textContent = v;
+  });
+  onValue(winsRef, (snap)=>{
+    const v = snap.val() ?? 0;
+    const el = document.getElementById("winCount");
+    if (el) el.textContent = v;
+  });
+
+  // Expor funções globais para o script do jogo
+  window.incPlayed = () => runTransaction(playsRef, (cur)=> (cur||0)+1);
+  window.incWin    = () => runTransaction(winsRef,  (cur)=> (cur||0)+1);
 </script>
 </body>
 </html>
