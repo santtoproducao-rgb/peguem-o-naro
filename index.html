@@ -182,6 +182,37 @@
     }
   }
 
+  /* ===== Overrides — Splash ===== */
+
+  /* Tamanhos */
+  #splashLogoMenu { width: 220px; }    /* logo-menu (ARCO) */
+  #splashLogo     { width: 320px; }    /* logo do jogo */
+  #accessBtn      { font-size: 16px; padding: 14px 24px; } /* botão ACESSAR */
+
+  /* Espaçamento entre os três (gera “respiro” vertical entre eles) */
+  .splash-wrap { gap: 18px; }
+
+  /* Altura (sobe/baixa TODO o bloco central da splash) */
+  #splashPage .splash-wrap { transform: translateY(-50px); } /* valor negativo = “sobe” */
+
+  /* Se preferir ajustar cada elemento individualmente: */
+  #splashLogoMenu { margin-top: 0; }
+  #splashLogo     { margin-top: 8px; }
+  #accessBtn      { margin-top: 16px; }
+
+  /* Desktop: tamanhos/altura independentes */
+  @media (min-width:768px){
+    #splashLogoMenu { width: 150px; }
+    #splashLogo     { width: 380px; }
+    #splashPage .splash-wrap { transform: translateY(-20px); }
+  }
+
+  /* Mobile: tamanhos/altura independentes */
+  @media (max-width:767px){
+    #splashLogoMenu { width: 100px; }
+    #splashLogo     { width: 280px; }
+    #splashPage .splash-wrap { transform: translateY(-40px); }
+  }
 </style>
 </head>
 <body>
