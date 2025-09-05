@@ -1041,17 +1041,15 @@ document.addEventListener('DOMContentLoaded', init);
   window.incPlayed = () => runTransaction(playsRef, (cur)=> (cur||0)+1);
   window.incWin    = () => runTransaction(winsRef,  (cur)=> (cur||0)+1);
 </script>
+</script>
   <style id="demo-mobile-force">
-/* Força layout "mobile" quando ?demo=1 (sem tocar no que já existe) */
+/* Força layout “mobile” quando ?demo=1 (sem tocar no CSS existente) */
 html.demo-force-mobile{
-  /* variáveis de posição iguais às do mobile */
   --naro-bottom: var(--naro-bottom-mobile);
   --cage-top: var(--cage-top-mobile);
 }
-/* mostra HUD mobile / esconde HUD desktop */
 html.demo-force-mobile .top-mobile-hud{ display:flex !important; }
 html.demo-force-mobile .top-right .hud{ display:none !important; }
-/* garante botão mobile visível */
 html.demo-force-mobile .mobile-drop{ display:block !important; }
 html.demo-force-mobile .donate-btn-desktop{ display:none !important; }
 </style>
@@ -1063,137 +1061,158 @@ html.demo-force-mobile .donate-btn-desktop{ display:none !important; }
   const forceMobile = qs.get('mobile') !== '0'; // default: força mobile
 
   if(!isDemo) return;
-
-  // força "mobile look"
   if(forceMobile) document.documentElement.classList.add('demo-force-mobile');
 
-  // --- utilidades do bot ---
-  function delay(ms){ return new Promise(res=>setTimeout(res, ms)); }
-  function innerCageRect(){
-    const pad = (window.params?.hitboxInnerPadding ?? 14);
-    const r = document.getElementById('cage').getBoundingClientRect();
-    return { left:r.left+pad, right:r.right-pad, width:r.width-2*pad };
-  }
-  function arenaRect(){ return document.getElementById('arena').getBoundingClientRect(); }
+  // utilidade
+  const $ = (id)=>document.getElementById(id);
+  const wait = (ms)=>new Promise(res=>setTimeout(res,ms));
+  const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
 
-  // projeta X do Naro no futuro com reflexão nas bordas (movimento ping-pong)
-  function projectNaroX(x0, dir, v, t, maxX){
-    // distância que andaria em linha reta
-    let d = v * t * (dir>=0 ? 1 : -1);
-    const span = maxX;
-    if (span <= 0) return {x:x0, dir};
-    // mapeia para onda triangular (reflexões)
-    let pos = x0 + d;
-    const period = 2*span;
-    let m = ((pos % period) + period) % period; // [0, 2*span)
-    if(m <= span){
-      return { x: m, dir: +1 };
-    }else{
-      return { x: 2*span - m, dir: -1 };
+  // Silencia trilha de fundo p/ evitar bloqueio de autoplay (não mexe nos efeitos)
+  try{ window.setBgmMuted && window.setBgmMuted(true); }catch(e){}
+
+  // Clica automaticamente nos modais (CONTINUAR / PRÓXIMA FASE / TENTAR NOVAMENTE)
+  const overlay = $('overlay');
+  const modalBtn = $('modalAction');
+  const autoClickModal = new MutationObserver(async ()=>{
+    if(!overlay.classList.contains('show')) return;
+    // dá um tempinho pra “assistir”
+    await wait(900);
+    modalBtn && modalBtn.click();
+  });
+  autoClickModal.observe(overlay, {attributes:true, attributeFilter:['class']});
+
+  // Para quando chegar na tela final
+  let finished = false;
+  const finalWatch = new MutationObserver(()=>{
+    const isFinalVisible = !$('finalPage')?.classList.contains('hidden');
+    if(isFinalVisible){ finished = true; }
+  });
+  finalWatch.observe(document.body, {subtree:true, childList:true, attributes:true});
+
+  // Centraliza a gaiola sobre o Naro (ou desloca para errar)
+  function placeCage(overNaro=true){
+    const cageEl = $('cage'), naroEl = $('naro'), arena = $('arena')?.getBoundingClientRect();
+    if(!cageEl || !naroEl || !arena || !window.state) return false;
+
+    const cageW = window.state.cageW || cageEl.getBoundingClientRect().width || 0;
+    const naroW = window.state.naroW || naroEl.getBoundingClientRect().width || 0;
+    const maxCageX = Math.max(0, arena.width - cageW);
+
+    // posição atual do Naro (em px, dentro da arena)
+    const nX = window.state.x || 0;
+
+    // alvo “perfeito”: centro da gaiola alinhado ao centro do Naro
+    let target = nX + (naroW - cageW)/2;
+
+    if(!overNaro){
+      // desloca bastante para garantir ERRO (fora do inner hitbox)
+      const offset = cageW * 0.75 * (Math.random()<0.5 ? -1 : 1);
+      target += offset;
     }
+
+    target = clamp(target, 0, maxCageX);
+
+    // congela movimentos horizontais para não “escapar” durante a queda
+    window.state.dir = 0;       // Naro para
+    window.state.cageDir = 0;   // Gaiola para
+
+    // aplica posição horizontal
+    cageEl.dataset.x = target;
+    cageEl.style.left = Math.round(target) + 'px';
+    return true;
   }
 
-  // joga automaticamente
-  async function runDemo(){
-    // silencia bgm (evita bloqueio de autoplay)
-    try{ window.setBgmMuted && window.setBgmMuted(true); }catch(e){}
+  // Solta a gaiola com alinhamento desejado (hit=true para ACERTAR, false para ERRAR)
+  async function drop(hit=true){
+    if(!window.state || !state.playing || state.cageDropping) return;
+    if(!placeCage(hit)) return;
 
-    // dá tempo do seu init() preparar tudo
-    await delay(200);
+    // dá um “frame” pro layout aplicar
+    await wait(60);
+    // solta
+    try{ window.dropCage && dropCage(); }catch(e){}
+  }
 
-    // põe um nome e inicia
-    const name = document.getElementById('userName');
-    if(name) name.value = 'DEMO';
+  // Plano da demo:
+  // - 1 erro rápido no início
+  // - Fase 1: 3 acertos
+  // - 1 erro rápido no início da Fase 2
+  // - Fase 2: 3 acertos
+  // - Fase 3: 3 acertos
+  const plan = [
+    {hit:false},
+
+    {hit:true},{hit:true},{hit:true},   // Fase 1 completa
+    {phaseBreak:true},                  // (apenas marcador lógico)
+
+    {hit:false},                        // erro de “aquecimento” na Fase 2
+    {hit:true},{hit:true},{hit:true},   // Fase 2 completa
+    {phaseBreak:true},
+
+    {hit:true},{hit:true},{hit:true},   // Fase 3 completa → final
+  ];
+  let idx = 0;
+  let doing = false;
+
+  // Avança o plano quando resultado aparecer no modal
+  const afterResult = new MutationObserver(()=>{
+    if(!overlay.classList.contains('show')) return;
+    // resultado já está em state.lastWin
+    idx = Math.min(plan.length, idx + 1);
+    doing = false;
+  });
+  afterResult.observe(overlay, {attributes:true, attributeFilter:['class']});
+
+  async function runStep(){
+    if(finished || doing || !window.state) return;
+    if(!state.playing || state.cageDropping) return;
+    if(overlay.classList.contains('show')) return; // aguardando clique automático
+
+    const step = plan[idx];
+    if(!step){ return; } // fim do plano
+
+    doing = true;
+
+    // Se for marcador de fase, apenas espera recomeçar a rodada
+    if(step.phaseBreak){
+      doing = false;
+      idx++;
+      return;
+    }
+
+    // Importantíssimo: aguardamos a rodada estar prontinha (gaiola no topo)
+    // Se a gaiola estiver muito baixa (pós-queda), espere resetRound() acontecer.
+    const cageTop = parseFloat(getComputedStyle($('cage')).top) || 0;
+    const ground = (window.cageGroundY ? cageGroundY() : 0) || 1;
+    if(cageTop > ground * 0.1){
+      // parece que ainda está baixando/voltando; tenta de novo já já
+      doing = false;
+      return;
+    }
+
+    await drop(step.hit);
+
+    // Se por acaso o resultado não abrir modal (ex.: erro de alinhamento acidental),
+    // garantimos que o “doing” não trave para sempre:
+    setTimeout(()=>{ doing = false; }, 4000);
+  }
+
+  // Loop de decisão
+  const loop = setInterval(()=>{
+    try{
+      if(finished){ clearInterval(loop); return; }
+      runStep();
+    }catch(e){}
+  }, 80);
+
+  // Inicia o jogo automaticamente
+  (async function startDemo(){
+    await wait(250);
+    const name = $('userName'); if(name) name.value = 'DEMO';
     try{ window.showMenu && window.showMenu(); }catch(e){}
     try{ window.startGame && window.startGame(); }catch(e){}
-
-    // loop principal do "bot"
-    const tickMs = 40; // ~25 fps de decisão
-    let lastDropAt = 0;
-
-    // Observa o modal para clicar sozinho
-    const overlay = document.getElementById('overlay');
-    const modalBtn = document.getElementById('modalAction');
-    const obs = new MutationObserver(async()=>{
-      if(!overlay.classList.contains('show')) return;
-      // espera um pouquinho para o jogador "assistir"
-      await delay(900);
-      if(modalBtn){
-        modalBtn.click();
-      }
-    });
-    obs.observe(overlay, { attributes:true, attributeFilter:['class'] });
-
-    // Quando terminar (tela final), toca "jogar novamente" e volta ao menu
-    const playAgainBtn = document.getElementById('playAgainBtn');
-    if(playAgainBtn){
-      playAgainBtn.addEventListener('click', ()=>{}, { once:true });
-    }
-
-    // Loop de decisão de queda da gaiola
-    const loop = setInterval(()=>{
-      try{
-        if(!window.state || !state.playing || state.cageDropping) return;
-
-        const cageEl = document.getElementById('cage');
-        const naroEl = document.getElementById('naro');
-        if(!cageEl || !naroEl) return;
-
-        // tempo para a gaiola encostar no chão, em segundos
-        const curTop = parseFloat(getComputedStyle(cageEl).top) || 0;
-        const ground = window.cageGroundY ? cageGroundY() : 0;
-        const tGround = Math.max(0, (ground - curTop)) / (window.params?.dropSpeed || 1100);
-
-        // estado atual do Naro
-        const a = arenaRect();
-        const maxNaroX = Math.max(0, a.width - (state.naroW||0));
-        const v = (typeof window.currentSpeed === 'function') ? currentSpeed() : 0; // px/s
-
-        // previsão de onde o Naro estará quando a gaiola tocar o chão
-        const proj = projectNaroX(state.x || 0, state.dir || 1, v, tGround, maxNaroX);
-
-        // retângulo interno da gaiola no chão (em coordenadas da janela)
-        const inner = innerCageRect();
-        const naroPredCenter = a.left + proj.x + (state.naroW||0)/2;
-
-        // margem de segurança e "erro humano" (às vezes erra de propósito)
-        const margin = Math.max(8, (state.naroW||0)*0.08); // tolerância
-        let jitter = 0;
-        if (Math.random() < 0.22){ // ~22% de chances de errar (soltar cedo/tarde)
-          jitter = (Math.random() < 0.5 ? -1 : 1) * (80 + Math.random()*160); // ms
-        }
-        const tFuture = Math.max(0, tGround + jitter/1000);
-        const proj2 = projectNaroX(state.x || 0, state.dir || 1, v, tFuture, maxNaroX);
-        const naroCenter2 = a.left + proj2.x + (state.naroW||0)/2;
-
-        // condição de "alinhado" (centro do Naro previsto dentro da área útil da gaiola)
-        const aligned =
-          (naroCenter2 >= (inner.left + margin)) &&
-          (naroCenter2 <= (inner.right - margin));
-
-        // não spammar: mínimo 300ms entre drops
-        const now = performance.now();
-        if (aligned && (now - lastDropAt > 300)){
-          lastDropAt = now;
-          window.dropCage && dropCage();
-        }
-      }catch(e){
-        // silencia qualquer erro do bot para não afetar o jogo
-      }
-    }, tickMs);
-
-    // Para de rodar o loop quando chegar na tela final
-    const stopOnFinal = new MutationObserver(()=>{
-      const finalHidden = document.getElementById('finalPage')?.classList.contains('hidden');
-      if(finalHidden === false){
-        clearInterval(loop);
-      }
-    });
-    stopOnFinal.observe(document.body, { childList:true, subtree:true, attributes:true });
-  }
-
-  // começa quando tudo da página estiver pronto
-  window.addEventListener('load', runDemo);
+  })();
 })();
 </script>
 
