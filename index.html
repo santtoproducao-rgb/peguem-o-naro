@@ -265,6 +265,15 @@
   @media (max-width:767px){
     .phase-transition img{ width:min(96vw,540px); }
   }
+/* tela cheia para o GIF da transição */
+.phase-transition img{
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;   /* use contain se não quiser cortes */
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+}
 </style>
 </head>
 <body>
