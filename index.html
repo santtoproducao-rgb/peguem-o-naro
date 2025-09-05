@@ -242,18 +242,29 @@
   }
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-@media (max-width:767px){
-  /* Cores do botão "Pegue o Naro" no mobile */
-  #mobileDropBtn{
-    background: var(--mobile-btn-bg);
-    color: var(--mobile-btn-fg);
-  }
-  #mobileDropBtn:hover{
-    background: var(--mobile-btn-bg-hover);
-    color: var(--mobile-btn-fg-hover);
-  }
-}
 
+  /* ===== Botão móvel (cores já definidas) ===== */
+  @media (max-width:767px){
+    #mobileDropBtn{
+      background: var(--mobile-btn-bg);
+      color: var(--mobile-btn-fg);
+    }
+    #mobileDropBtn:hover{
+      background: var(--mobile-btn-bg-hover);
+      color: var(--mobile-btn-fg-hover);
+    }
+  }
+
+  /* ===== (ADICIONAL) Tela de transição de fase ===== */
+  .phase-transition{
+    position:fixed; inset:0; z-index:80;
+    background:#000; display:none; align-items:center; justify-content:center;
+  }
+  .phase-transition.show{ display:flex; }
+  .phase-transition img{ width:min(680px,96vw); height:auto; }
+  @media (max-width:767px){
+    .phase-transition img{ width:min(96vw,540px); }
+  }
 </style>
 </head>
 <body>
@@ -388,6 +399,11 @@
   </div>
 </div>
 
+<!-- (ADICIONAL) TELA DE TRANSIÇÃO ENTRE FASES -->
+<div id="phaseTransition" class="phase-transition" aria-hidden="true">
+  <img id="phaseTransitionImg" alt="Transição de fase">
+</div>
+
 <!-- Botão global de som -->
 <button id="soundToggle" class="sound-toggle" aria-pressed="false" aria-label="Som de fundo ligado" title="Som de fundo: ligado">🔊</button>
 
@@ -398,6 +414,9 @@
 <!-- ===== ÁUDIO (efeitos) ===== -->
 <audio id="sOK" preload="auto"><source src="success.mp3" type="audio/mpeg"></audio>
 <audio id="sBad" preload="auto"><source src="fail.mp3" type="audio/mpeg"></audio>
+
+<!-- (ADICIONAL) ÁUDIO DA TRANSIÇÃO -->
+<audio id="sLulis" preload="auto"><source src="lulisaudio.mp3" type="audio/mpeg"></audio>
 
 <!-- ===== TRILHA (música de fundo) ===== -->
 <audio id="bgm" preload="auto" loop><source src="remix.mp3" type="audio/mpeg"></audio>
@@ -462,7 +481,10 @@ const params = {
 };
 
 function $(id){return document.getElementById(id)}
-function fmtTime(sec){const m=Math.floor(sec/60), s=Math.floor(sec%60); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function fmtTime(sec){
+  const m=Math.floor(sec/60), s=Math.floor(sec%60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
 function isMobile(){ return window.matchMedia('(max-width: 767px)').matches; }
 function phaseConf(){ return PHASES[state.phase] || PHASES[1]; }
 function currentBg(){
@@ -846,6 +868,37 @@ function showResult(win){
   refreshModalUI();
 }
 
+/* ===== (ADICIONAL) Função de transição de fase ===== */
+function showPhaseTransitionThen(next){
+  const wrap = $('phaseTransition');
+  const img  = $('phaseTransitionImg');
+  const s    = $('sLulis');
+
+  if(!wrap || !img || !s){
+    // Fallback: se algo não existir, apenas segue
+    next();
+    return;
+  }
+
+  img.src = isMobile() ? 'lulis-mobile.gif' : 'lulis-desktop.gif';
+  wrap.classList.add('show');
+
+  try { s.currentTime = 0; } catch(e){}
+  muteBgmWhile(s);
+
+  const finish = ()=>{
+    wrap.classList.remove('show');
+    next();
+  };
+
+  s.addEventListener('ended', finish, { once:true });
+
+  const p = s.play();
+  if(p && p.catch){
+    p.catch(()=>{ finish(); }); // fallback caso o autoplay bloqueie
+  }
+}
+
 /** Controles **/
 $('startBtn').addEventListener('click', ()=>{ primeAudio(); playBgm(); startGame(); });
 
@@ -868,10 +921,14 @@ $('modalAction').addEventListener('click', ()=>{
   const act = state.modalActionType;
 
   if(act === 'nextPhase'){
-    state.phase = Math.min(3, state.phase + 1);
-    state.capturesInPhase = 0;
-    applyAssets(); // troca BG
-    state.playing = true; resetRound();
+    // >>> ADICIONADO: roda transição (gif+áudio), depois avança de fase
+    const goNext = ()=>{
+      state.phase = Math.min(3, state.phase + 1);
+      state.capturesInPhase = 0;
+      applyAssets(); // troca BG
+      state.playing = true; resetRound();
+    };
+    showPhaseTransitionThen(goNext);
   }else if(act === 'continue'){
     state.playing = true; resetRound();
   }else if(act === 'retryPhase'){
@@ -933,7 +990,9 @@ function init(){
     ASSETS.bgDesktop2, ASSETS.bgMobile2,
     ASSETS.bgDesktop3, ASSETS.bgMobile3,
     ASSETS.finalDesktop, ASSETS.finalMobile,
-    ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu
+    ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu,
+    // >>> ADICIONAL: gifs da transição
+    'lulis-desktop.gif', 'lulis-mobile.gif'
   ]);
   applyAssets();
   setBgmMuted(false); // BGM ligado por padrão
@@ -975,3 +1034,4 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
+
