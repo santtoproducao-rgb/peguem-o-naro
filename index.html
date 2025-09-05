@@ -254,6 +254,16 @@
   }
 }
 
+/* ===== Transição entre fases (GIF + som) ===== */
+.phase-transition{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:#000;
+  z-index:80;
+}
+.phase-transition.hidden{ display:none !important; }
+.phase-transition img{ width:min(640px, 90vw); height:auto; }
+
 </style>
 </head>
 <body>
@@ -360,6 +370,11 @@
   </div>
 </section>
 
+<!-- ========== TRANSIÇÃO ENTRE FASES ========== -->
+<div id="phaseTransition" class="phase-transition hidden" aria-hidden="true">
+  <img id="phaseTransitionImg" src="" alt="Transição para a próxima fase">
+</div>
+
 <!-- MODAL (melhorado) -->
 <div id="overlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
@@ -398,6 +413,7 @@
 <!-- ===== ÁUDIO (efeitos) ===== -->
 <audio id="sOK" preload="auto"><source src="success.mp3" type="audio/mpeg"></audio>
 <audio id="sBad" preload="auto"><source src="fail.mp3" type="audio/mpeg"></audio>
+<audio id="sLulis" preload="auto"><source src="lulisaudio.mp3" type="audio/mpeg"></audio>
 
 <!-- ===== TRILHA (música de fundo) ===== -->
 <audio id="bgm" preload="auto" loop><source src="remix.mp3" type="audio/mpeg"></audio>
@@ -616,7 +632,7 @@ function scheduleBalloon(){
 }
 
 /** Captura */
-function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad}; }
+function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left:cage.left+pad,right=cage.right-pad,top=cage.top+pad,bottom=cage.bottom-pad}; }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
 function naroCaptured(){
   const inner=getInnerCageRect(), n=getNaroRect();
@@ -763,7 +779,8 @@ function plural(n){ return n===1 ? 'vez' : 'vezes'; }
 
 /* Atualiza componentes do modal */
 function refreshModalUI(){
-  const phaseChip = $('phaseChip'); if (phaseChip) phaseChip.textContent = `Fase ${state.phase}/3`;
+  const phaseChip = $('phaseChip'); if (phaseChip) text = `Fase ${state.phase}/3`;
+  const phaseChipEl = $('phaseChip'); if (phaseChipEl) phaseChipEl.textContent = `Fase ${state.phase}/3`;
   const c = state.capturesInPhase;
   const pct = Math.min(100, Math.max(0, (c/3)*100));
   const capCount = $('capCount'); const pbar = $('progressBar');
@@ -846,6 +863,51 @@ function showResult(win){
   refreshModalUI();
 }
 
+/* ===== Tela de transição entre fases (GIF + som) ===== */
+function showPhaseTransitionThen(next){
+  const layer = $('phaseTransition');
+  const img = $('phaseTransitionImg');
+  if(!layer || !img){ next(); return; }
+
+  // escolhe GIF conforme dispositivo
+  const gifSrc = isMobile() ? 'lulis-mobile.gif' : 'lulis-desktop.gif';
+  img.src = gifSrc;
+
+  // mostra a tela
+  layer.setAttribute('aria-hidden', 'false');
+  layer.classList.remove('hidden');
+
+  // toca o efeito e silencia o BGM enquanto toca
+  const s = $('sLulis');
+  const finish = () => {
+    layer.classList.add('hidden');
+    layer.setAttribute('aria-hidden', 'true');
+    next();
+  };
+
+  if(s){
+    try{
+      s.currentTime = 0;
+      muteBgmWhile(s);
+      const onEnd = () => { s.removeEventListener('ended', onEnd); finish(); };
+      s.addEventListener('ended', onEnd, { once:true });
+
+      // fallback de segurança
+      const safety = (isFinite(s.duration) && s.duration>0) ? (s.duration*1000 + 150) : 4000;
+      const timer = setTimeout(() => { s.pause(); onEnd(); }, safety);
+
+      s.play().catch(() => {
+        clearTimeout(timer);
+        setTimeout(finish, 2500);
+      });
+    }catch(e){
+      setTimeout(finish, 2000);
+    }
+  }else{
+    setTimeout(finish, 2000);
+  }
+}
+
 /** Controles **/
 $('startBtn').addEventListener('click', ()=>{ primeAudio(); playBgm(); startGame(); });
 
@@ -868,10 +930,14 @@ $('modalAction').addEventListener('click', ()=>{
   const act = state.modalActionType;
 
   if(act === 'nextPhase'){
-    state.phase = Math.min(3, state.phase + 1);
-    state.capturesInPhase = 0;
-    applyAssets(); // troca BG
-    state.playing = true; resetRound();
+    // Mostra transição (GIF + som), muta remix e só então inicia a nova fase
+    showPhaseTransitionThen(() => {
+      state.phase = Math.min(3, state.phase + 1);
+      state.capturesInPhase = 0;
+      applyAssets();              // troca o BG da fase
+      state.playing = true; 
+      resetRound();
+    });
   }else if(act === 'continue'){
     state.playing = true; resetRound();
   }else if(act === 'retryPhase'){
@@ -933,7 +999,8 @@ function init(){
     ASSETS.bgDesktop2, ASSETS.bgMobile2,
     ASSETS.bgDesktop3, ASSETS.bgMobile3,
     ASSETS.finalDesktop, ASSETS.finalMobile,
-    ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu
+    ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu,
+    'lulis-desktop.gif', 'lulis-mobile.gif' // pré-carrega transições
   ]);
   applyAssets();
   setBgmMuted(false); // BGM ligado por padrão
