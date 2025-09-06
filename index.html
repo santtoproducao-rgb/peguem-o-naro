@@ -137,9 +137,8 @@
     .logo-arco img{width:60px}
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
-    .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:center; justify-content:center;}
+    .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;}
     .mobile-drop .row-mobile-actions .btn{ flex:1; }
-    .donate-btn-mobile{display:inline-flex; align-items:center; justify-content:center;padding:12px 16px; border-radius:16px; background:var(--donate); color:#fff; text-decoration:none;box-shadow:var(--shadow); font-weight:800; white-space:nowrap;}
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
@@ -223,22 +222,20 @@
   }
   .credit:hover{ text-decoration: underline; }
 
-  /* ===== Botão DOAR (desktop) — verde com texto branco e escondido no mobile ===== */
-  .donate-btn-desktop{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:12px 18px;
-    border-radius:16px;
-    background: var(--donate) !important;
-    color:#fff !important;
-    text-decoration:none;
-    box-shadow: var(--shadow);
-    font-weight:800;
+  /* ===== Botão PIX (substitui DOAR) ===== */
+  .donate-note{
+    color:#fff; font-weight:900; text-transform:uppercase; letter-spacing:.02em;
+    text-shadow: 0 2px 10px rgba(0,0,0,.35);
   }
-  .donate-btn-desktop:hover{ filter: brightness(0.95); }
+  .pix-btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:12px 18px; border-radius:16px; background: var(--donate);
+    color:#fff; text-decoration:none; box-shadow: var(--shadow);
+    font-weight:800; border:0;
+  }
+  .pix-btn:hover{ filter: brightness(0.95); }
   @media (max-width:767px){
-    .donate-btn-desktop{ display:none !important; }
+    .donate-note{ color:#111; text-shadow:none; }
   }
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -306,9 +303,15 @@
       <div class="row" style="margin-bottom:10px">
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
-      <div class="row">
+      <div class="row" style="gap:10px; align-items:center; justify-content:center;">
         <button id="startBtn" class="btn">Iniciar</button>
-        <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
+
+        <!-- Nota + Botão PIX (MENU) -->
+        <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
+        <button class="pix-btn pix-copy-btn"
+                data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+          COPIAR CHAVE PIX AGORA
+        </button>
       </div>
     </div>
 
@@ -333,7 +336,13 @@
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
-    <a class="donate-btn-desktop" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR AGORA</a>
+
+    <!-- Nota + Botão PIX (DESKTOP, lateral) -->
+    <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
+    <button class="pix-btn pix-copy-btn"
+            data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+      COPIAR CHAVE PIX AGORA
+    </button>
   </div>
 
   <div class="top-right">
@@ -356,7 +365,13 @@
   <div class="mobile-drop">
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
-      <a class="donate-btn-mobile" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR</a>
+
+      <!-- Nota + Botão PIX (MOBILE) -->
+      <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
+      <button class="pix-btn pix-copy-btn"
+              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+        COPIAR CHAVE PIX AGORA
+      </button>
     </div>
   </div>
 </section>
@@ -373,9 +388,15 @@
 
   <!-- Ações centrais -->
   <div class="content">
-    <div class="row">
+    <div class="row" style="gap:10px; align-items:center; justify-content:center;">
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
-      <a class="btn secondary" href="https://www.ongarco.org/quero-ajudar" target="_blank" rel="noopener">DOAR</a>
+
+      <!-- Nota + Botão PIX (FINAL) -->
+      <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
+      <button class="pix-btn pix-copy-btn"
+              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+        COPIAR CHAVE PIX AGORA
+      </button>
     </div>
   </div>
 </section>
@@ -992,6 +1013,40 @@ function startGame(){
   resetRound();
 }
 
+/* ====== PIX: copiar chave em todos os botões ====== */
+function copyPixKey(key, btn){
+  const original = btn.textContent;
+  const tryClipboard = async () => {
+    try{
+      if (navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(key);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = key;
+        ta.style.position='fixed';
+        ta.style.opacity='0';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      btn.textContent = 'COPIADO!';
+      btn.disabled = true;
+      setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 2000);
+    }catch(e){
+      alert('Não foi possível copiar automaticamente.\nChave PIX:\n' + key);
+    }
+  };
+  tryClipboard();
+}
+
+document.addEventListener('click', (ev)=>{
+  const el = ev.target.closest('.pix-copy-btn');
+  if(!el) return;
+  const key = el.getAttribute('data-key') || '81646d89-0db6-49b4-bc17-386e865fe900';
+  copyPixKey(key, el);
+});
+
 /* Init */
 function init(){
   preloadImages([
@@ -1000,7 +1055,7 @@ function init(){
     ASSETS.bgDesktop3, ASSETS.bgMobile3,
     ASSETS.finalDesktop, ASSETS.finalMobile,
     ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu,
-    // >>> ADICIONAL: gifs da transição
+    // >>> ADICIONADO: gifs da transição
     'lulis-desktop.gif', 'lulis-mobile.gif'
   ]);
   applyAssets();
@@ -1051,7 +1106,6 @@ html.demo-force-mobile{
 html.demo-force-mobile .top-mobile-hud{ display:flex !important; }
 html.demo-force-mobile .top-right .hud{ display:none !important; }
 html.demo-force-mobile .mobile-drop{ display:block !important; }
-html.demo-force-mobile .donate-btn-desktop{ display:none !important; }
 </style>
 
 <script>
@@ -1165,4 +1219,3 @@ html.demo-force-mobile .donate-btn-desktop{ display:none !important; }
 </script>
 </body>
 </html>
-
