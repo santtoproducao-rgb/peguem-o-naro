@@ -46,6 +46,9 @@
     --mobile-btn-fg:#000000;
     --mobile-btn-bg-hover:#808080;
     --mobile-btn-fg-hover:#ffffff;
+
+    /* NOVO: facilita subir/baixar o bloco de ações do mobile */
+    --mobile-actions-bottom: 200px; /* maior = sobe, menor = desce */
   }
 
   /* Desktop */
@@ -131,18 +134,26 @@
   @media (max-width:767px){
     .top-mobile-hud{position:absolute;top:8px;left:8px;right:8px;z-index:9;display:flex;gap:10px;justify-content:space-between;}
     .top-mobile-hud .box{background:#fff;border-radius:12px;height:28px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#111;padding:0 8px;min-width:0;}
+
     .brand-left{top:58px; left:10px; right:10px;flex-direction:row; justify-content:space-between; align-items:center; gap:10px;}
     .logo-game-card{padding:10px 12px;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
     .logo-game-card img{width:100px}
     .logo-arco img{width:60px}
+
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
-    .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;}
-    .mobile-drop .row-mobile-actions .btn{ flex:1; }
+
+    /* NOVO: frase branca acima + botões lado a lado */
+    .mobile-drop .donate-note{ color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.35); display:block; text-align:center; margin:0 0 8px; }
+    .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap;}
+    .mobile-drop .row-mobile-actions .btn,
+    .mobile-drop .row-mobile-actions .pix-btn{ flex:1 1 0; min-width:0; }
+    .mobile-drop .row-mobile-actions #mobileDropBtn{ width:auto !important; }
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(200px + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
+  /* NOVO: usa variável para controlar a altura do bloco no mobile */
+  .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(var(--mobile-actions-bottom) + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
   /* ===== Botão de som (fixo, pequeno) ===== */
@@ -235,7 +246,8 @@
   }
   .pix-btn:hover{ filter: brightness(0.95); }
   @media (max-width:767px){
-    .donate-note{ color:#111; text-shadow:none; }
+    .donate-note{ color:#111; text-shadow:none; } /* continua valendo pro MENU */
+    /* mas no bloco do jogo (mobile-drop) forçamos branca ↑ */
   }
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -370,12 +382,11 @@
     </div>
   </div>
 
+  <!-- NOVO: frase (branca) acima + botões lado a lado -->
   <div class="mobile-drop">
+    <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR.</span>
     <div class="row-mobile-actions">
-      <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
-
-      <!-- Mobile somente (evita duplicação) -->
-      <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR.</span>
+      <button id="mobileDropBtn" class="btn">Pegue o Naro</button>
       <button class="pix-btn pix-copy-btn only-mobile"
               data-key="81646d89-0db6-49b4-bc17-386e865fe900">
         COPIAR CHAVE PIX AGORA
@@ -1227,4 +1238,5 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
 </script>
 </body>
 </html>
+
 
