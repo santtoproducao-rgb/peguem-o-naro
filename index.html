@@ -8,15 +8,15 @@
   <!-- Open Graph / WhatsApp / Facebook -->
 <meta property="og:title" content="Pegue o Naro – Bandido Bom é Bandido Preso">
 <meta property="og:description" content="Jogo web: derrube a gaiola e prenda o Naro.">
-<meta property="og:image" content="https://pegueonaro.ongarco.org/miniatura.jpg">
-<meta property="og:url" content="https://pegueonaro.ongarco.org">
+<meta property="og:image" content="https://santtoproducao-rgb.github.io/peguem-o-naro/miniatura.jpg">
+<meta property="og:url" content="https://santtoproducao-rgb.github.io/peguem-o-naro/">
 <meta property="og:type" content="website">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pegue o Naro – Bandido Bom é Bandido Preso">
 <meta name="twitter:description" content="Jogo web: derrube a gaiola e prenda o Naro.">
-<meta name="twitter:image" content="https://pegueonaro.ongarco.org/miniatura.jpg">
+<meta name="twitter:image" content="https://santtoproducao-rgb.github.io/peguem-o-naro/miniatura.jpg">
 
 <style>
   :root{
@@ -262,15 +262,23 @@
   @media (max-width:767px){
     .phase-transition img{ width:min(96vw,540px); }
   }
-/* tela cheia para o GIF da transição */
-.phase-transition img{
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;   /* use contain se não quiser cortes */
-  max-width: none;
-  max-height: none;
-  border-radius: 0;
-}
+  /* tela cheia para o GIF da transição */
+  .phase-transition img{
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;   /* use contain se não quiser cortes */
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  /* ===== Visibilidade por dispositivo (p/ evitar duplicações) ===== */
+  .only-desktop{ display:inline; }
+  .only-mobile{ display:none; }
+  @media (max-width:767px){
+    .only-desktop{ display:none !important; }
+    .only-mobile{ display:inline !important; }
+  }
 </style>
 </head>
 <body>
@@ -337,9 +345,9 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <!-- Nota + Botão PIX (DESKTOP, lateral) -->
-    <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
-    <button class="pix-btn pix-copy-btn"
+    <!-- Desktop somente (evita duplicação no mobile) -->
+    <span class="donate-note only-desktop">AJUDE A MANTER O JOGO NO AR.</span>
+    <button class="pix-btn pix-copy-btn only-desktop"
             data-key="81646d89-0db6-49b4-bc17-386e865fe900">
       COPIAR CHAVE PIX AGORA
     </button>
@@ -366,9 +374,9 @@
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn" style="width:100%;">Pegue o Naro</button>
 
-      <!-- Nota + Botão PIX (MOBILE) -->
-      <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
-      <button class="pix-btn pix-copy-btn"
+      <!-- Mobile somente (evita duplicação) -->
+      <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR.</span>
+      <button class="pix-btn pix-copy-btn only-mobile"
               data-key="81646d89-0db6-49b4-bc17-386e865fe900">
         COPIAR CHAVE PIX AGORA
       </button>
@@ -1096,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', init);
   window.incPlayed = () => runTransaction(playsRef, (cur)=> (cur||0)+1);
   window.incWin    = () => runTransaction(winsRef,  (cur)=> (cur||0)+1);
 </script>
-</script>
+
 <style id="demo-mobile-force">
 /* Força layout “mobile” quando ?demo=1 (sem tocar no seu CSS existente) */
 html.demo-force-mobile{
@@ -1219,3 +1227,4 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
 </script>
 </body>
 </html>
+
