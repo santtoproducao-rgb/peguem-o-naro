@@ -70,7 +70,8 @@
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
   /* ======= SPLASH (ACESSAR) ======= */
-  #splashPage{background:#fff; color:#111; display:flex; align-items:center; justify-content:center;}
+  /* AJUSTE: cor de fundo alterada para #11171f */
+  #splashPage{background:#11171f; color:#fff; display:flex; align-items:center; justify-content:center;}
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
   .splash-logo-menu{width:min(220px,50vw); height:auto;}
   .splash-logo{width:min(320px,60vw); height:auto;}
@@ -102,6 +103,8 @@
   .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
   .btn:hover{background:var(--accent)}
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
+  /* AJUSTE: estado desabilitado do botão */
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
 
   /* Helper */
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px;text-align:center}
@@ -143,7 +146,7 @@
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
 
-    /* NOVO: frase branca acima + botões lado a lado */
+    /* AJUSTE: frase acima + botões lado a lado e centralizados */
     .mobile-drop .donate-note{ color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.35); display:block; text-align:center; margin:0 0 8px; }
     .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap;}
     .mobile-drop .row-mobile-actions .btn,
@@ -152,7 +155,7 @@
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  /* NOVO: usa variável para controlar a altura do bloco no mobile */
+  /* Usa variável para controlar a altura do bloco no mobile */
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(var(--mobile-actions-bottom) + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
@@ -233,7 +236,7 @@
   }
   .credit:hover{ text-decoration: underline; }
 
-  /* ===== Botão PIX (substitui DOAR) ===== */
+  /* ===== Botão PIX / DOAR ===== */
   .donate-note{
     color:#fff; font-weight:900; text-transform:uppercase; letter-spacing:.02em;
     text-shadow: 0 2px 10px rgba(0,0,0,.35);
@@ -246,8 +249,7 @@
   }
   .pix-btn:hover{ filter: brightness(0.95); }
   @media (max-width:767px){
-    .donate-note{ color:#111; text-shadow:none; } /* continua valendo pro MENU */
-    /* mas no bloco do jogo (mobile-drop) forçamos branca ↑ */
+    .donate-note{ color:#111; text-shadow:none; } /* continua valendo pro MENU mobile */
   }
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -278,19 +280,51 @@
   .phase-transition img{
     width: 100vw;
     height: 100vh;
-    object-fit: cover;   /* use contain se não quiser cortes */
+    object-fit: cover;
     max-width: none;
     max-height: none;
     border-radius: 0;
   }
 
-  /* ===== Visibilidade por dispositivo (p/ evitar duplicações) ===== */
+  /* ===== Visibilidade por dispositivo ===== */
   .only-desktop{ display:inline; }
   .only-mobile{ display:none; }
   @media (max-width:767px){
     .only-desktop{ display:none !important; }
     .only-mobile{ display:inline !important; }
   }
+
+  /* ===== AJUSTES PEDIDOS ===== */
+
+  /* 1) Retirar cartões brancos atrás dos logos (menu, jogo, final, splash) */
+  .menu-logo-right.card-white,
+  .logo-game-card,
+  .logo-game-card.card-white{
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+  @media (max-width:767px){
+    .logo-game-card{
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+  }
+
+  /* 2) Frase centralizada acima dos botões do MENU */
+  .menu-actions-wrap{
+    display:flex; flex-direction:column; align-items:center; width:100%;
+  }
+  .donate-center{
+    display:block; width:100%; text-align:center; margin:0 0 8px 0;
+  }
+  .menu-actions-buttons{
+    display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap; width:100%;
+  }
+  .menu-actions-buttons .btn,
+  .menu-actions-buttons .pix-btn{ flex:1 1 0; min-width:0; }
 </style>
 </head>
 <body>
@@ -323,15 +357,17 @@
       <div class="row" style="margin-bottom:10px">
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
-      <div class="row" style="gap:10px; align-items:center; justify-content:center;">
-        <button id="startBtn" class="btn">Iniciar</button>
 
-        <!-- Nota + Botão PIX (MENU) -->
-        <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
-        <button class="pix-btn pix-copy-btn"
-                data-key="81646d89-0db6-49b4-bc17-386e865fe900">
-          COPIAR CHAVE PIX AGORA
-        </button>
+      <!-- AJUSTE: frase centralizada acima + botões Iniciar/Doar lado a lado -->
+      <div class="menu-actions-wrap">
+        <span class="donate-note donate-center">AJUDE A MANTER O JOGO NO AR.</span>
+        <div class="menu-actions-buttons">
+          <button id="startBtn" class="btn" disabled>Iniciar</button>
+          <button class="pix-btn pix-copy-btn"
+                  data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+            DOAR
+          </button>
+        </div>
       </div>
     </div>
 
@@ -357,11 +393,11 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <!-- Desktop somente (evita duplicação no mobile) -->
+    <!-- Desktop somente -->
     <span class="donate-note only-desktop">AJUDE A MANTER O JOGO NO AR.</span>
     <button class="pix-btn pix-copy-btn only-desktop"
             data-key="81646d89-0db6-49b4-bc17-386e865fe900">
-      COPIAR CHAVE PIX AGORA
+      DOAR
     </button>
   </div>
 
@@ -382,14 +418,14 @@
     </div>
   </div>
 
-  <!-- NOVO: frase (branca) acima + botões lado a lado -->
+  <!-- AJUSTE: frase centralizada (branca) acima + botões lado a lado no MOBILE -->
   <div class="mobile-drop">
     <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR.</span>
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn">Pegue o Naro</button>
       <button class="pix-btn pix-copy-btn only-mobile"
               data-key="81646d89-0db6-49b4-bc17-386e865fe900">
-        COPIAR CHAVE PIX AGORA
+        DOAR
       </button>
     </div>
   </div>
@@ -410,11 +446,11 @@
     <div class="row" style="gap:10px; align-items:center; justify-content:center;">
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
 
-      <!-- Nota + Botão PIX (FINAL) -->
+      <!-- Nota + Botão DOAR (FINAL) -->
       <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
       <button class="pix-btn pix-copy-btn"
               data-key="81646d89-0db6-49b4-bc17-386e865fe900">
-        COPIAR CHAVE PIX AGORA
+        DOAR
       </button>
     </div>
   </div>
@@ -716,7 +752,7 @@ function resetRound(){
 
   layoutSprites();
 
-  /* ===== Novos pontos iniciais por fase (aleatórios e distintos) ===== */
+  /* Pontos iniciais por fase (aleatórios e distintos) */
   const arena = $('arena').getBoundingClientRect();
   const maxNaroX = arena.width - state.naroW;
   const maxCageX = arena.width - state.cageW;
@@ -751,7 +787,7 @@ function resetRound(){
 /* Velocidades influenciadas pela fase e pela rodada */
 function currentSpeed(){
   const base=params.baseSpeed;
-  return base * rampWithinPhase() * phaseSpeedMult(); // velocidade do Naro
+  return base * rampWithinPhase() * phaseSpeedMult();
 }
 
 function updateHUD(){
@@ -799,7 +835,7 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // Cage (patrulha horizontal) — acelera por tempo/capturas e por fase
+  // Cage (patrulha horizontal)
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed * phaseSpeedMult() * rampWithinPhase())*(1/60);
     const maxCageX = arena.width - state.cageW;
@@ -814,7 +850,7 @@ function loop(ts){
   // Cage (queda)
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
-    const step=params.dropSpeed*(1/60); // queda mantém velocidade base para não facilitar
+    const step=params.dropSpeed*(1/60);
     const ground = cageGroundY();
     const next=Math.min(curTop+step, ground);
     cageEl.style.top=next+'px';
@@ -829,7 +865,7 @@ function loop(ts){
   raf=requestAnimationFrame(loop);
 }
 
-/* Ajuda de pluralização */
+/* Pluralização */
 function plural(n){ return n===1 ? 'vez' : 'vezes'; }
 
 /* Atualiza componentes do modal */
@@ -864,14 +900,14 @@ function showResult(win){
     // Progresso da fase
     state.capturesInPhase = Math.min(3, state.capturesInPhase + 1);
 
-    // FINAL: fase 3 completa → mostra tela final com GIF (sem modal)
+    // FINAL: fase 3 completa
     if(state.phase === 3 && state.capturesInPhase >= 3){
       $('overlay').classList.remove('show');
       showFinal();
       return;
     }
 
-    // Demais casos: usa modal
+    // Demais casos
     $('overlay').classList.add('show');
     const c = state.capturesInPhase;
     const remaining = 3 - c;
@@ -891,18 +927,17 @@ function showResult(win){
         $('modalAction').textContent = 'PRÓXIMA FASE';
         state.modalActionType = 'nextPhase';
       }
-    }else{ // fase 3, mas ainda não completou (c < 3)
+    }else{
       $('modalMsg').textContent =
         `Parabéns, você prendeu o Naro ${c} ${plural(c)}, prenda mais ${remaining} para salvar a democracia de vez.`;
       $('modalAction').textContent = 'CONTINUAR';
       state.modalActionType = 'continue';
     }
   }else{
-    // Erro: recomeça a MESMA fase (2 ou 3 mantêm)
     if (badge){ badge.classList.add('hidden'); }
     playBad();
 
-    state.capturesInPhase = 0; // zera progresso desta fase (mantém a fase)
+    state.capturesInPhase = 0;
     $('overlay').classList.add('show');
 
     ttext.textContent = 'FALHOU';
@@ -917,14 +952,13 @@ function showResult(win){
   refreshModalUI();
 }
 
-/* ===== (ADICIONAL) Função de transição de fase ===== */
+/* Transição de fase */
 function showPhaseTransitionThen(next){
   const wrap = $('phaseTransition');
   const img  = $('phaseTransitionImg');
   const s    = $('sLulis');
 
   if(!wrap || !img || !s){
-    // Fallback: se algo não existir, apenas segue
     next();
     return;
   }
@@ -944,12 +978,17 @@ function showPhaseTransitionThen(next){
 
   const p = s.play();
   if(p && p.catch){
-    p.catch(()=>{ finish(); }); // fallback caso o autoplay bloqueie
+    p.catch(()=>{ finish(); });
   }
 }
 
 /** Controles **/
-$('startBtn').addEventListener('click', ()=>{ primeAudio(); playBgm(); startGame(); });
+/* AJUSTE: só inicia se nome preenchido */
+$('startBtn').addEventListener('click', ()=>{
+  const btn = $('startBtn');
+  if(btn.disabled) return;
+  primeAudio(); playBgm(); startGame();
+});
 
 const mobileBtn=$('mobileDropBtn');
 if(mobileBtn){
@@ -959,6 +998,8 @@ if(mobileBtn){
 
 document.addEventListener('keydown',(e)=>{
   if(e.code==='Space' && !$('menuPage').classList.contains('hidden')){
+    const nameOk = !!($('userName')?.value.trim());
+    if(!nameOk) return; // AJUSTE: sem nome não inicia
     e.preventDefault(); primeAudio(); playBgm(); startGame(); return;
   }
   if(e.code==='Space' && state.playing){ e.preventDefault(); dropCage(); }
@@ -970,11 +1011,10 @@ $('modalAction').addEventListener('click', ()=>{
   const act = state.modalActionType;
 
   if(act === 'nextPhase'){
-    // >>> ADICIONADO: roda transição (gif+áudio), depois avança de fase
     const goNext = ()=>{
       state.phase = Math.min(3, state.phase + 1);
       state.capturesInPhase = 0;
-      applyAssets(); // troca BG
+      applyAssets();
       state.playing = true; resetRound();
     };
     showPhaseTransitionThen(goNext);
@@ -982,9 +1022,8 @@ $('modalAction').addEventListener('click', ()=>{
     state.playing = true; resetRound();
   }else if(act === 'retryPhase'){
     window.incPlayed && window.incPlayed();
-    // mantém state.phase, apenas recomeça esta fase
     state.capturesInPhase = 0;
-    applyAssets(); // mantém BG desta fase
+    applyAssets();
     state.playing = true; resetRound();
   }else if(act === 'resetToMenu'){
     state.phase = 1; state.capturesInPhase = 0; state.playing = false;
@@ -996,7 +1035,6 @@ $('modalAction').addEventListener('click', ()=>{
 
 /* Botões da TELA FINAL */
 $('playAgainBtn').addEventListener('click', ()=>{
-  // Reinicia “de verdade”
   state.userName = '';
   state.score = 0;
   state.phase = 1;
@@ -1020,14 +1058,17 @@ document.addEventListener('visibilitychange', () => {
 });
 
 function startGame(){
-  state.userName = $('userName').value.trim();
+  const nameField = $('userName');
+  state.userName = (nameField?.value || '').trim();
+  if(!state.userName){ return; } // AJUSTE: segurança extra
+
   state.phase = state.phase || 1;
   state.capturesInPhase = 0;
   state.lastWin = null;
   window.incPlayed && window.incPlayed();
   $('overlay').classList.remove('show');
   showGame();
-  applyAssets(); // garante BG correto no começo
+  applyAssets();
   state.playing = true;
   resetRound();
 }
@@ -1074,14 +1115,23 @@ function init(){
     ASSETS.bgDesktop3, ASSETS.bgMobile3,
     ASSETS.finalDesktop, ASSETS.finalMobile,
     ASSETS.naro, ASSETS.cage, ASSETS.logoGame, ASSETS.logoMenu,
-    // >>> ADICIONADO: gifs da transição
     'lulis-desktop.gif', 'lulis-mobile.gif'
   ]);
   applyAssets();
-  setBgmMuted(false); // BGM ligado por padrão
+  setBgmMuted(false);
   showSplash();
   layoutSprites();
   loop(0);
+
+  /* AJUSTE: habilitar/desabilitar botão Iniciar conforme nome */
+  const nameEl = $('userName');
+  const startBtn = $('startBtn');
+  function syncStartBtn(){
+    const ok = !!(nameEl?.value.trim());
+    if(startBtn) startBtn.disabled = !ok;
+  }
+  if(nameEl){ nameEl.addEventListener('input', syncStartBtn); }
+  syncStartBtn();
 
   window.addEventListener('resize', ()=>{ applyAssets(); layoutSprites(); });
   window.addEventListener('orientationchange', ()=>{ applyAssets(); layoutSprites(); });
@@ -1159,7 +1209,7 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
   const modalBtn = $('modalAction');
   const clickModalObs = new MutationObserver(async ()=>{
     if(!overlay.classList.contains('show')) return;
-    await wait(800); // deixa “assistir” um pouquinho
+    await wait(800);
     modalBtn && modalBtn.click();
   });
   clickModalObs.observe(overlay, {attributes:true, attributeFilter:['class']});
@@ -1191,11 +1241,11 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
 
   // Roteiro da demo
   const plan = [
-    false,                 // 1 erro no começo
-    true,true,true, 'break', // Fase 1 completa
-    false,                 // 1 erro no começo da Fase 2
-    true,true,true, 'break', // Fase 2 completa
-    true,true,true         // Fase 3 completa → final
+    false,
+    true,true,true, 'break',
+    false,
+    true,true,true, 'break',
+    true,true,true
   ];
   let stepIndex = 0;
   let busy = false;
@@ -1204,39 +1254,33 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
     if(busy) return;
     if(!$('gamePage') || !$('cage') || !$('naro')) return;
 
-    // se modal aberto, esperamos o auto-click
     if(overlay.classList.contains('show')) return;
 
-    // garante que o jogo começou
     if(menuVisible()){ await startGameDemo(); return; }
     if(!gameVisible()) return;
 
-    // só solta quando a gaiola estiver “no topo”
     const cageTop = parseFloat(getComputedStyle($('cage')).top) || 0;
-    if(cageTop > 25){ return; } // ainda voltando do chão
+    if(cageTop > 25){ return; }
 
     const item = plan[stepIndex];
-    if(item == null) return; // fim do roteiro
+    if(item == null) return;
     if(item === 'break'){ stepIndex++; return; }
 
     busy = true;
-    alignCage(item);          // posiciona
-    await wait(30);           // dá 1 frame pro layout aplicar
-    pressSpace();             // solta (seu listener de teclado chama dropCage)
+    alignCage(item);
+    await wait(30);
+    pressSpace();
     stepIndex++;
 
-    // solta o lock mesmo que algo não dispare modal
     setTimeout(()=>{ busy=false; }, 1200);
   }
 
-  // loop leve que “joga” a demo
   const tick = setInterval(tryPlayStep, 60);
-
-  // dispara o início caso a página já abra no menu
   document.addEventListener('DOMContentLoaded', startGameDemo);
 })();
 </script>
 </body>
 </html>
+
 
 
