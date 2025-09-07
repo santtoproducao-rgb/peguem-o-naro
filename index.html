@@ -311,7 +311,7 @@
   }
 
   /* MENU: frase centralizada (apenas mobile) + botões lado a lado */
-  .menu-actions-wrap{ display:flex; flex-direction:column; align-items:center; width:100%; }
+  .menu-actions-wrap{ display:flex; flex-direction:column; alinhamento:center; width:100%; }
   .donate-center{ display:block; width:100%; text-align:center; margin:0 0 8px 0; }
   .menu-actions-buttons{ display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap; width:100%; }
   .menu-actions-buttons .btn, .menu-actions-buttons .pix-btn{ flex:1 1 0; min-width:0; }
@@ -353,7 +353,6 @@
 /* FINAL — Desktop: jogo (finalLogoGame) no canto superior esquerdo
    e menu (finalLogoMenu) no canto superior direito */
 @media (min-width:768px){
-  /* tira a âncora absoluta do grupo para não forçar posição central */
   #finalPage .brand-left{
     position: static !important;
     top: auto !important;
@@ -361,23 +360,19 @@
     right: auto !important;
     transform: none !important;
   }
-
-  /* posiciona diretamente as IMAGENS pelos IDs */
   #finalLogoGame{
     position: absolute !important;
-    top: 24px;           /* ajuste fino aqui */
-    left: 24px;          /* ajuste fino aqui */
+    top: 24px;
+    left: 24px;
     z-index: 7;
   }
   #finalLogoMenu{
     position: absolute !important;
-    top: 24px;           /* ajuste fino aqui */
-    right: 24px;         /* ajuste fino aqui */
+    top: 24px;
+    right: 24px;
     z-index: 7;
   }
 }
-
-
 </style>
 </head>
 <body>
@@ -401,32 +396,29 @@
   </div>
 
   <div class="content">
-    <!-- 1) CONTEINER NOME + BOTÕES -->
     <div class="card">
       <div class="row" style="margin-bottom:10px">
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
 
       <div class="menu-actions-wrap">
-        <!-- No desktop o texto é oculto; no mobile mostramos -->
         <span class="donate-note donate-center only-mobile">AJUDE A MANTER O JOGO NO AR</span>
         <div class="menu-actions-buttons">
           <button id="startBtn" class="btn" disabled>Iniciar</button>
-          <!-- ALTERADO: botão DOAR vira link -->
-          <a class="pix-btn" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
+          <!-- Botão DOAR (mantido como button) -->
+          <button class="pix-btn pix-copy-btn"
+                  data-key="81646d89-0db6-49b4-bc17-386e865fe900">
             DOAR
-          </a>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- 2) CONTADORES (AGORA ABAIXO DO CARD, NÃO MAIS NO TOPO) -->
     <div id="globalCounters" class="counters">
       <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
       <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
     </div>
 
-    <!-- 3) CONTEINER DE DICAS -->
     <div class="helper">
       <span class="only-desk">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></span>
       <span class="only-mob">PC: use a <b>Barra de Espaço</b><br>Celular: toque em <b>Pegue o Naro</b></span>
@@ -449,10 +441,11 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <!-- ALTERADO: botão DOAR (desktop) vira link -->
-    <a class="pix-btn only-desktop" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
+    <!-- Botão DOAR (desktop) -->
+    <button class="pix-btn pix-copy-btn only-desktop"
+            data-key="81646d89-0db6-49b4-bc17-386e865fe900">
       DOAR
-    </a>
+    </button>
   </div>
 
   <div class="top-right">
@@ -476,10 +469,11 @@
     <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR</span>
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn">Pegue o Naro</button>
-      <!-- ALTERADO: botão DOAR (mobile) vira link -->
-      <a class="pix-btn only-mobile" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
+      <!-- Botão DOAR (mobile) -->
+      <button class="pix-btn pix-copy-btn only-mobile"
+              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
         DOAR
-      </a>
+      </button>
     </div>
   </div>
 </section>
@@ -498,10 +492,11 @@
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
 
       <span class="donate-note">AJUDE A MANTER O JOGO NO AR</span>
-      <!-- ALTERADO: botão DOAR (final) vira link -->
-      <a class="pix-btn" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
+      <!-- Botão DOAR (final) -->
+      <button class="pix-btn pix-copy-btn"
+              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
         DOAR
-      </a>
+      </button>
     </div>
   </div>
 </section>
@@ -767,7 +762,12 @@ function scheduleBalloon(){
 }
 
 /** Captura */
-function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left=cage.left+pad,right=cage.right-pad,top=cage.top+pad,bottom=cage.bottom-pad}; }
+function getInnerCageRect(){
+  const cage=$('cage').getBoundingClientRect();
+  const pad=params.hitboxInnerPadding;
+  /* FIX: propriedades com ":" (antes quebrei isto) */
+  return { left: cage.left+pad, right: cage.right-pad, top: cage.top+pad, bottom: cage.bottom-pad };
+}
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
 function naroCaptured(){
   const inner=getInnerCageRect(), n=getNaroRect();
@@ -1101,11 +1101,15 @@ function startGame(){
   resetRound();
 }
 
-/* ====== REMOVIDO: lógica antiga de copiar PIX ====== */
-/*
-function copyPixKey(...) { ... }
-document.addEventListener('click', (ev)=>{ ... });
-*/
+/* ===== DOAR: abrir link em nova guia (substitui cópia PIX) ===== */
+const DONATE_URL = 'https://apoia.se/pegueonaro';
+document.addEventListener('click', (ev)=>{
+  const el = ev.target.closest('.pix-copy-btn');
+  if(!el) return;
+  ev.preventDefault();
+  try{ window.open(DONATE_URL, '_blank', 'noopener'); }
+  catch(e){ location.href = DONATE_URL; }
+});
 
 /* Init */
 function init(){
@@ -1278,4 +1282,5 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
 </script>
 </body>
 </html>
+
 
