@@ -32,8 +32,8 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
 
     /* === CONTROLE DE POSIÇÃO (mapeadas pelo breakpoint) === */
-    --naro-bottom-desktop: 12px;   /* mais perto do bottom */
-    --cage-top-desktop:      6px;  /* mais perto do top   */
+    --naro-bottom-desktop: 12px;
+    --cage-top-desktop:      6px;
     --naro-bottom-mobile:   110px;
     --cage-top-mobile:      12px;
 
@@ -42,12 +42,12 @@
     --cage-top:     10px;
 
     /* === CORES DO BOTÃO MOBILE (PEGUE O NARO) === */
-    --mobile-btn-bg:#ffffff;        /* fundo branco */
-    --mobile-btn-fg:#11171f;        /* texto azul escuro */
-    --mobile-btn-bg-hover:#f1f5f9;  /* hover leve */
+    --mobile-btn-bg:#ffffff;
+    --mobile-btn-fg:#11171f;
+    --mobile-btn-bg-hover:#f1f5f9;
     --mobile-btn-fg-hover:#11171f;
 
-    /* NOVO: controla a altura do bloco de ações do mobile */
+    /* POSIÇÃO DO BLOCO DE AÇÕES MOBILE */
     --mobile-actions-bottom: 200px;
   }
 
@@ -69,7 +69,7 @@
   .page{position:relative;height:100vh;width:100vw;overflow:hidden}
   .bg{position:absolute;inset:0;z-index:-2;background:#000 center/cover no-repeat}
 
-  /* ======= SPLASH (ACESSAR) ======= */
+  /* ======= SPLASH ======= */
   #splashPage{background:#11171f; color:#fff; display:flex; align-items:center; justify-content:center;}
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
   .splash-logo-menu{width:min(220px,50vw); height:auto;}
@@ -80,7 +80,7 @@
   }
   .splash-btn:hover{ filter:brightness(.92); color:#fff; }
 
-  /* ======= TELA INICIAL ======= */
+  /* ======= MENU ======= */
   .menu-logos{
     position:absolute;top:22px;left:22px;right:22px;z-index:6;
     display:flex;justify-content:space-between;gap:16px;align-items:flex-start;
@@ -90,20 +90,40 @@
   .menu-logo-right img{width:300px}
   @media (max-width:1024px){ .menu-logo-left img{width:120px}.menu-logo-right img{width:240px} }
 
-  .content{ position:absolute; left:0; right:0; bottom:14vh; display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px; }
-  @media (max-width:767px){ .content{ bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom)); } }
+  /* container inferior (grupo) */
+  .content{
+    position:absolute; left:0; right:0; bottom:14vh;
+    display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px;
+  }
+  /* DESKTOP: descer o grupo para perto dos créditos */
+  @media (min-width:768px){
+    .content{ bottom: calc(6vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom)); }
+  }
+  /* MOBILE mantém ajuste existente pelos créditos */
+  @media (max-width:767px){
+    .content{ bottom: calc(14vh + var(--credit-h) + var(--credit-gap) + var(--safe-bottom)); }
+  }
 
   /* Contadores */
-  .counters{ background:#fff; color:#111; border-radius:14px; padding:10px 14px; display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+  .counters{
+    background:#fff; color:#111; border-radius:14px; padding:10px 14px;
+    display:flex; gap:18px; font-weight:800; box-shadow:0 8px 24px rgba(0,0,0,.18);
+  }
   .counters b{font-variant-numeric:tabular-nums}
-  @media (min-width:768px){ .counters{ position:fixed; top:250px; left:50%; transform:translateX(-50%); z-index:1000; } }
-  @media (max-width:767px){ .counters{ position:relative; margin:0 0 6px 0; flex-wrap:nowrap; justify-content:center; gap:10px; padding:6px 10px; font-size:12px; white-space:nowrap; max-width:92vw; } }
+  /* DESKTOP: remover posição fixa do contador (ficava no topo) */
+  @media (min-width:768px){
+    .counters{ position:relative; top:auto; left:auto; transform:none; margin-top:10px; }
+  }
+  /* MOBILE: já era fluido */
+  @media (max-width:767px){
+    .counters{ position:relative; margin:0 0 6px 0; flex-wrap:nowrap; justify-content:center; gap:10px; padding:6px 10px; font-size:12px; white-space:nowrap; max-width:92vw; }
+  }
 
   .card{ background:rgba(255,255,255,.75); backdrop-filter:blur(6px) saturate(1.2); border-radius:16px; padding:16px; width:min(560px,92vw); box-shadow:var(--shadow) }
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
 
-  /* ====== Botões – tamanhos unificados ====== */
+  /* Botões (tipografia unificada) */
   .btn{
     background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);
     font-weight:var(--btn-weight); font-size:var(--btn-font-size); line-height:1.1; transition:.15s
@@ -127,10 +147,10 @@
   @media (max-width:767px){.helper .only-desk{display:none}.helper .only-mob{display:inline}}
 
   /* ======= JOGO – DESKTOP ======= */
-  .brand-left{ position:absolute;top:24px;left:24px;z-index:7; display:flex;flex-direction:column;gap:12px;align-items:flex-start }
+  .brand-left{ position:absolute;top:24px;left:24px;z-index:7; display:flex;flex-direction:column;gap:6px;align-items:flex-start }
   .logo-game-card img{width:300px}
-  .logo-arco img{width:140px}
-  @media (max-width:1024px){ .logo-game-card img{width:240px}.logo-arco img{width:110px} }
+  .logo-arco img{width:110px}
+  @media (max-width:1024px){ .logo-game-card img{width:240px}.logo-arco img{width:100px} }
 
   .top-right{ position:absolute;top:16px;right:16px;z-index:7;display:flex;gap:12px;align-items:center;flex-wrap:wrap }
   .hud{display:flex;gap:10px;align-items:center;background:var(--hud-bg);padding:8px 10px;border-radius:14px;box-shadow:var(--shadow)}
@@ -160,7 +180,7 @@
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
 
-    /* Tira o texto no jogo MOBILE */
+    /* Jogo MOBILE: remover texto */
     #gamePage .mobile-drop .donate-note{ display:none !important; }
 
     .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap;}
@@ -174,7 +194,7 @@
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(var(--mobile-actions-bottom) + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
-  /* ===== Botão de som (fixo, pequeno) ===== */
+  /* Botão de som (fixo) */
   .sound-toggle{
     position:fixed; top:80px; right:16px; z-index:9999;
     width:36px; height:36px; border-radius:999px;
@@ -184,7 +204,7 @@
   }
   @media (max-width:767px){ .sound-toggle{ top: 135px; right: 12px; } }
 
-  /* ===== Overrides — Splash ===== */
+  /* Overrides — Splash */
   #splashLogoMenu { width: 220px; }
   #splashLogo     { width: 320px; }
   #accessBtn      { font-size: var(--btn-font-size); padding: 14px 24px; }
@@ -204,7 +224,7 @@
     #splashPage .splash-wrap { transform: translateY(-40px); }
   }
 
-  /* ===== Modal ===== */
+  /* Modal */
   .overlay{position:fixed;inset:0;background:var(--modal-bg);display:none;align-items:center;justify-content:center;z-index:50}
   .overlay.show{display:flex}
   .modal{
@@ -226,7 +246,7 @@
   .progress-bar{ height:100%; width:0%; background:linear-gradient(90deg,#f59e0b,#16a34a); }
   .score-total{ font-size:12px; color:#444; margin:8px 0 0; font-weight:800; }
 
-  /* ===== Créditos ===== */
+  /* Créditos */
   .credit{
     position: fixed;
     left: 50%;
@@ -250,12 +270,12 @@
   }
   .credit:hover{ text-decoration: underline; }
 
-  /* ===== Texto de doação (padrão: azul escuro, sem ponto) ===== */
+  /* Texto de doação */
   .donate-note{
     color:#11171f; font-weight:900; text-transform:uppercase; letter-spacing:.02em;
     text-shadow:none;
   }
-  /* MENU DESKTOP: remover o texto (manter só os botões) */
+  /* MENU DESKTOP: ocultar o texto (pedido anterior) */
   @media (min-width:768px){
     #menuPage .donate-note{ display:none !important; }
   }
@@ -264,17 +284,12 @@
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
-  /* ===== Tela de transição de fase ===== */
-  .phase-transition{
-    position:fixed; inset:0; z-index:80;
-    background:#000; display:none; align-items:center; justify-content:center;
-  }
+  /* Transição */
+  .phase-transition{ position:fixed; inset:0; z-index:80; background:#000; display:none; align-items:center; justify-content:center; }
   .phase-transition.show{ display:flex; }
-  .phase-transition img{
-    width: 100vw; height: 100vh; object-fit: cover; max-width: none; max-height: none; border-radius: 0;
-  }
+  .phase-transition img{ width: 100vw; height: 100vh; object-fit: cover; max-width: none; max-height: none; border-radius: 0; }
 
-  /* ===== Visibilidade por dispositivo ===== */
+  /* Visibilidade por dispositivo */
   .only-desktop{ display:inline; }
   .only-mobile{ display:none; }
   @media (max-width:767px){
@@ -282,7 +297,7 @@
     .only-mobile{ display:inline !important; }
   }
 
-  /* ===== Remover “cartão branco” atrás dos logos ===== */
+  /* Remover “cartão branco” atrás dos logos */
   .menu-logo-right.card-white,
   .logo-game-card,
   .logo-game-card.card-white{
@@ -292,32 +307,27 @@
     border-radius: 0 !important;
   }
 
-  /* ===== Frase centralizada e botões no MENU ===== */
+  /* MENU: frase centralizada (apenas mobile) + botões lado a lado */
   .menu-actions-wrap{ display:flex; flex-direction:column; align-items:center; width:100%; }
   .donate-center{ display:block; width:100%; text-align:center; margin:0 0 8px 0; }
   .menu-actions-buttons{ display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap; width:100%; }
   .menu-actions-buttons .btn, .menu-actions-buttons .pix-btn{ flex:1 1 0; min-width:0; }
 
-  /* ===== Ajustes da TELA DE JOGO (DESKTOP) ===== */
+  /* Ajustes do jogo (desktop) — botão DOAR abaixo do som (mantido do ajuste anterior) */
   @media (min-width:768px){
-    /* Logo-menu menor e mais próximo do logo do jogo */
-    #gamePage .brand-left{ gap:6px; }
-    #gamePage .brand-left .logo-arco img{ width:110px; }
-
-    /* Botão DOAR abaixo do botão de som (direita) */
     #gamePage .brand-left .pix-btn.only-desktop{
       position:fixed; right:16px; top:128px; z-index:9998;
     }
   }
 
-  /* ===== MENU: Start verde / Doar branco com azul-escuro ===== */
+  /* MENU: Start verde / Doar branco com azul-escuro */
   #menuPage #startBtn{ background: var(--donate); color:#fff; }
   #menuPage #startBtn:hover{ filter:brightness(.92); background: var(--donate); }
   #menuPage .menu-actions-buttons .pix-btn{
     background:#fff; color:#11171f; border:1px solid #11171f;
   }
 
-  /* ===== MOBILE: “Pegue o Naro” branco com azul-escuro ===== */
+  /* MOBILE: “Pegue o Naro” branco com azul-escuro */
   @media (max-width:767px){
     #mobileDropBtn{
       background: var(--mobile-btn-bg);
@@ -330,7 +340,7 @@
     }
   }
 
-  /* ===== TELA FINAL: logos lado a lado, centralizados no topo ===== */
+  /* FINAL: logos lado a lado, centralizados no topo */
   #finalPage .brand-left{
     top:18px; left:50%; transform:translateX(-50%);
     right:auto; flex-direction:row; align-items:center; gap:10px;
@@ -339,7 +349,7 @@
 </head>
 <body>
 
-<!-- ========== SPLASH (ACESSAR) ========== -->
+<!-- ========== SPLASH ========== -->
 <section id="splashPage" class="page">
   <div class="splash-wrap">
     <img id="splashLogoMenu" class="splash-logo-menu" alt="Logo ARCO">
@@ -358,18 +368,14 @@
   </div>
 
   <div class="content">
-    <div id="globalCounters" class="counters">
-      <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
-      <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
-    </div>
-
+    <!-- 1) CONTEINER NOME + BOTÕES -->
     <div class="card">
       <div class="row" style="margin-bottom:10px">
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
 
-      <!-- Frase (somente no mobile) + botões Iniciar/Doar -->
       <div class="menu-actions-wrap">
+        <!-- No desktop o texto é oculto; no mobile mostramos -->
         <span class="donate-note donate-center only-mobile">AJUDE A MANTER O JOGO NO AR</span>
         <div class="menu-actions-buttons">
           <button id="startBtn" class="btn" disabled>Iniciar</button>
@@ -381,6 +387,13 @@
       </div>
     </div>
 
+    <!-- 2) CONTADORES (AGORA ABAIXO DO CARD, NÃO MAIS NO TOPO) -->
+    <div id="globalCounters" class="counters">
+      <div>JOGADO: <b id="playedCount">0</b> VEZES</div>
+      <div>NARO PEGO: <b id="winCount">0</b> VEZES</div>
+    </div>
+
+    <!-- 3) CONTEINER DE DICAS -->
     <div class="helper">
       <span class="only-desk">PC: use a <b>Barra de Espaço</b> • Celular: toque em <b>Pegue o Naro</b></span>
       <span class="only-mob">PC: use a <b>Barra de Espaço</b><br>Celular: toque em <b>Pegue o Naro</b></span>
@@ -403,7 +416,6 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <!-- Desktop: manter frase (sem ponto) -->
     <span class="donate-note only-desktop">AJUDE A MANTER O JOGO NO AR</span>
     <button class="pix-btn pix-copy-btn only-desktop"
             data-key="81646d89-0db6-49b4-bc17-386e865fe900">
@@ -428,7 +440,6 @@
     </div>
   </div>
 
-  <!-- MOBILE: texto oculto -->
   <div class="mobile-drop">
     <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR</span>
     <div class="row-mobile-actions">
@@ -441,17 +452,15 @@
   </div>
 </section>
 
-<!-- ========== TELA FINAL (GIF) ========== -->
+<!-- ========== TELA FINAL ========== -->
 <section id="finalPage" class="page hidden">
   <div id="finalBg" class="bg"></div>
 
-  <!-- Logos lado a lado, centralizados no topo -->
   <div class="brand-left">
     <div class="logo-game-card card-white"><img id="finalLogoGame" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="finalLogoMenu" alt="Logo ARCO"></div>
   </div>
 
-  <!-- Ações centrais -->
   <div class="content">
     <div class="row" style="gap:10px; align-items:center; justify-content:center;">
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
@@ -493,7 +502,7 @@
   </div>
 </div>
 
-<!-- Transição de fase -->
+<!-- Transição -->
 <div id="phaseTransition" class="phase-transition" aria-hidden="true">
   <img id="phaseTransitionImg" alt="Transição de fase">
 </div>
@@ -533,7 +542,7 @@ const ASSETS = {
   logoMenu:   'logo-menu.png'
 };
 
-/* Fases: BG por fase + multiplicador de velocidade */
+/* Fases */
 const PHASES = {
   1: { bgDesktop: ASSETS.bgDesktop,  bgMobile: ASSETS.bgMobile,  speedMult: 1.00 },
   2: { bgDesktop: ASSETS.bgDesktop2, bgMobile: ASSETS.bgMobile2, speedMult: 1.18 },
@@ -543,7 +552,7 @@ const PHASES = {
 const NARO_W0=480, NARO_H0=1080;
 const CAGE_W0=864, CAGE_H0=1080;
 
-/* Escalas independentes — desktop um pouco menores */
+/* Escalas (desktop levemente menores) */
 const RATIO_DESK = { cageH: 0.36, naroH: 0.32 };
 const RATIO_MOB  = { cageH: 0.22, naroH: 0.20 };
 
@@ -591,12 +600,11 @@ function currentFinalBg(){
 }
 function phaseSpeedMult(){ return (phaseConf().speedMult || 1); }
 
-/* ramp dentro da fase (tempo + capturas) */
 function rampWithinPhase(){
   return 1 + params.speedRampByTime * (state.elapsed/1000) + (state.capturesInPhase * params.speedRampPerCapture);
 }
 
-/* ===== Música de fundo (BGM) ===== */
+/* Áudio */
 let audioPrimed = false;
 let bgmMuted = false;
 let fxInProgress = 0;
@@ -627,7 +635,6 @@ function muteBgmWhile(effectEl){
   setTimeout(restore, 8000);
 }
 
-/* Áudio: helpers */
 function primeAudio(){
   if (audioPrimed) return;
   const ok = $('sOK'), bad = $('sBad'), bgm = $('bgm');
@@ -643,10 +650,8 @@ function primeAudio(){
 function playOk(){ const a=$('sOK'); if(!a) return; a.currentTime=0; muteBgmWhile(a); a.play().catch(()=>{}); }
 function playBad(){ const a=$('sBad'); if(!a) return; a.currentTime=0; muteBgmWhile(a); a.play().catch(()=>{}); }
 
-/* Vibração (tap) */
 function vibrateTap(){ try{ if(navigator.vibrate) navigator.vibrate([20]); }catch(e){} }
 
-/* Mute/Unmute apenas do BGM */
 function setBgmMuted(flag){
   bgmMuted = !!flag;
   ensureBgmMuteState();
@@ -662,7 +667,7 @@ $('soundToggle').addEventListener('click', ()=>{
   if(!bgmMuted){ playBgm(); }
 });
 
-/* Aplica src nos <img> e BGs */
+/* Aplica assets */
 function applyAssets(){
   const bgUrl = `url("${currentBg()}")`;
   const menuBg = $('menuBg'); const gameBg = $('gameBg');
@@ -684,9 +689,8 @@ function applyAssets(){
   const finalLogoGame = $('finalLogoGame'); if(finalLogoGame) finalLogoGame.src = ASSETS.logoGame;
   const finalLogoMenu = $('finalLogoMenu'); if(finalLogoMenu) finalLogoMenu.src = ASSETS.logoMenu;
 
-  const naroImg = $('naroImg'); if(naroImg) nazoImg = ASSETS.naro; // typo guard (ignored)
+  const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
   const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
-  const nImg = $('naroImg'); if(nImg) nImg.src = ASSETS.naro;
 }
 
 function preloadImages(paths){ paths.forEach(p => { const i = new Image(); i.src = p; }); }
@@ -760,7 +764,6 @@ function resetRound(){
 
   layoutSprites();
 
-  /* Pontos iniciais por fase */
   const arena = $('arena').getBoundingClientRect();
   const maxNaroX = arena.width - state.naroW;
   const maxCageX = arena.width - state.cageW;
@@ -790,7 +793,6 @@ function resetRound(){
   scheduleBalloon();
 }
 
-/* Velocidades influenciadas */
 function currentSpeed(){
   const base=params.baseSpeed;
   return base * rampWithinPhase() * phaseSpeedMult();
@@ -809,7 +811,6 @@ function updateHUD(){
   if($('scoreDesk')){$('scoreDesk').textContent=state.score;}
 }
 
-/* Queda da gaiola */
 function dropCage(){
   if(state.playing && !state.cageDropping){
     state.cageDropping=true;
@@ -833,7 +834,6 @@ function loop(ts){
   const arena=$('arena').getBoundingClientRect();
   const naroEl=$('naro'); const cageEl=$('cage');
 
-  // Naro (horizontal)
   const v=currentSpeed(); state.vx=v*(1/60);
   state.x += state.vx*state.dir;
   const maxNaroX = arena.width - state.naroW;
@@ -841,7 +841,6 @@ function loop(ts){
   else if(state.x > maxNaroX){ state.x = maxNaroX; state.dir = -1; }
   naroEl.style.left = Math.round(state.x)+'px';
 
-  // Cage (patrulha horizontal)
   if(!state.cageDropping){
     const patrolV=(params.cagePatrolSpeed * phaseSpeedMult() * rampWithinPhase())*(1/60);
     const maxCageX = arena.width - state.cageW;
@@ -853,7 +852,6 @@ function loop(ts){
     cageEl.style.left = Math.round(x)+'px';
   }
 
-  // Cage (queda)
   if(state.cageDropping){
     const curTop=parseFloat(getComputedStyle(cageEl).top);
     const step=params.dropSpeed*(1/60);
@@ -871,10 +869,8 @@ function loop(ts){
   raf=requestAnimationFrame(loop);
 }
 
-/* Pluralização */
 function plural(n){ return n===1 ? 'vez' : 'vezes'; }
 
-/* Modal UI */
 function refreshModalUI(){
   const phaseChip = $('phaseChip'); if (phaseChip) phaseChip.textContent = `Fase ${state.phase}/3`;
   const c = state.capturesInPhase;
@@ -885,7 +881,6 @@ function refreshModalUI(){
   const scoreTotal = $('scoreTotal'); if (scoreTotal) scoreTotal.textContent = state.score;
 }
 
-/* Resultado / fluxo */
 function showResult(win){
   state.playing=false;
   state.lastWin = win;
@@ -955,7 +950,6 @@ function showResult(win){
   refreshModalUI();
 }
 
-/* Transição de fase */
 function showPhaseTransitionThen(next){
   const wrap = $('phaseTransition');
   const img  = $('phaseTransitionImg');
@@ -986,8 +980,7 @@ function showPhaseTransitionThen(next){
 }
 
 /** Controles **/
-/* Só inicia se nome preenchido */
-$('startBtn').addEventListener('click', ()=>{
+document.getElementById('startBtn').addEventListener('click', ()=>{
   const btn = $('startBtn');
   if(btn.disabled) return;
   primeAudio(); playBgm(); startGame();
@@ -1053,7 +1046,7 @@ $('accessBtn').addEventListener('click', ()=>{
   showMenu();
 });
 
-/* Pausa/retoma BGM ao trocar de aba */
+/* Visibilidade da página */
 document.addEventListener('visibilitychange', () => {
   const a = $('bgm'); if(!a) return;
   if (document.hidden) a.pause();
@@ -1076,7 +1069,7 @@ function startGame(){
   resetRound();
 }
 
-/* ====== PIX: copiar chave ====== */
+/* PIX: copiar chave */
 function copyPixKey(key, btn){
   const original = btn.textContent;
   const tryClipboard = async () => {
