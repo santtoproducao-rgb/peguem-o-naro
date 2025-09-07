@@ -346,6 +346,25 @@
     right:auto; flex-direction:row; align-items:center; gap:10px;
   }
 #finalPage .donate-note{ display:none !important; }
+/* FINAL — Desktop: logo-game no canto superior esquerdo
+   e logo-menu no canto superior direito (mobile continua centralizado) */
+@media (min-width:768px){
+  /* tira qualquer centralização prévia do grupo */
+  #finalPage .brand-left{
+    position: static;       /* mantém o container, mas sem centralizar */
+  }
+
+  /* posiciona cada logo nos cantos */
+  #finalPage .logo-game-card,
+  #finalPage .logo-arco{
+    position: absolute;     /* relativo ao #finalPage (que ocupa a tela) */
+    top: 24px;
+    z-index: 7;
+  }
+  #finalPage .logo-game-card{ left: 24px; }   /* logo do jogo → canto ESQUERDO */
+  #finalPage .logo-arco{ right: 24px; }       /* logo do menu → canto DIREITO */
+}
+
 </style>
 </head>
 <body>
