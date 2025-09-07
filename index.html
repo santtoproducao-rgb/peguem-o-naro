@@ -412,10 +412,10 @@
         <span class="donate-note donate-center only-mobile">AJUDE A MANTER O JOGO NO AR</span>
         <div class="menu-actions-buttons">
           <button id="startBtn" class="btn" disabled>Iniciar</button>
-          <button class="pix-btn pix-copy-btn"
-                  data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+          <!-- ALTERADO: botão DOAR vira link -->
+          <a class="pix-btn" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
             DOAR
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -449,10 +449,10 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <button class="pix-btn pix-copy-btn only-desktop"
-            data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+    <!-- ALTERADO: botão DOAR (desktop) vira link -->
+    <a class="pix-btn only-desktop" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
       DOAR
-    </button>
+    </a>
   </div>
 
   <div class="top-right">
@@ -476,10 +476,10 @@
     <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR</span>
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn">Pegue o Naro</button>
-      <button class="pix-btn pix-copy-btn only-mobile"
-              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+      <!-- ALTERADO: botão DOAR (mobile) vira link -->
+      <a class="pix-btn only-mobile" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
         DOAR
-      </button>
+      </a>
     </div>
   </div>
 </section>
@@ -498,10 +498,10 @@
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
 
       <span class="donate-note">AJUDE A MANTER O JOGO NO AR</span>
-      <button class="pix-btn pix-copy-btn"
-              data-key="81646d89-0db6-49b4-bc17-386e865fe900">
+      <!-- ALTERADO: botão DOAR (final) vira link -->
+      <a class="pix-btn" href="https://apoia.se/pegueonaro" target="_blank" rel="noopener">
         DOAR
-      </button>
+      </a>
     </div>
   </div>
 </section>
@@ -767,7 +767,7 @@ function scheduleBalloon(){
 }
 
 /** Captura */
-function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left:cage.left+pad,right:cage.right-pad,top:cage.top+pad,bottom:cage.bottom-pad}; }
+function getInnerCageRect(){ const cage=$('cage').getBoundingClientRect(); const pad=params.hitboxInnerPadding; return {left=cage.left+pad,right=cage.right-pad,top=cage.top+pad,bottom=cage.bottom-pad}; }
 function getNaroRect(){ return $('naro').getBoundingClientRect(); }
 function naroCaptured(){
   const inner=getInnerCageRect(), n=getNaroRect();
@@ -1101,39 +1101,11 @@ function startGame(){
   resetRound();
 }
 
-/* PIX: copiar chave */
-function copyPixKey(key, btn){
-  const original = btn.textContent;
-  const tryClipboard = async () => {
-    try{
-      if (navigator.clipboard && window.isSecureContext){
-        await navigator.clipboard.writeText(key);
-      } else {
-        const ta = document.createElement('textarea');
-        ta.value = key;
-        ta.style.position='fixed';
-        ta.style.opacity='0';
-        document.body.appendChild(ta);
-        ta.focus(); ta.select();
-        document.execCommand('copy');
-        ta.remove();
-      }
-      btn.textContent = 'COPIADO!';
-      btn.disabled = true;
-      setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 2000);
-    }catch(e){
-      alert('Não foi possível copiar automaticamente.\nChave PIX:\n' + key);
-    }
-  };
-  tryClipboard();
-}
-
-document.addEventListener('click', (ev)=>{
-  const el = ev.target.closest('.pix-copy-btn');
-  if(!el) return;
-  const key = el.getAttribute('data-key') || '81646d89-0db6-49b4-bc17-386e865fe900';
-  copyPixKey(key, el);
-});
+/* ====== REMOVIDO: lógica antiga de copiar PIX ====== */
+/*
+function copyPixKey(...) { ... }
+document.addEventListener('click', (ev)=>{ ... });
+*/
 
 /* Init */
 function init(){
@@ -1306,3 +1278,4 @@ html.demo-force-mobile .mobile-drop{ display:block !important; }
 </script>
 </body>
 </html>
+
