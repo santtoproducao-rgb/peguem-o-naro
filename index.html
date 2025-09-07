@@ -23,7 +23,7 @@
     --primary:#111827; --accent:#f59e0b; --text:#111;
     --hud-bg:#2b241d; --hud-chip:#ffffff; --hud-text:#111;
     --modal-bg:rgba(0,0,0,.5); --modal-card:#fff; --modal-text:#111;
-    --btn-radius:16px; --btn-weight:800; --shadow:0 10px 30px rgba(0,0,0,.25);
+    --btn-radius:16px; --btn-weight:800; --btn-font-size:16px; --shadow:0 10px 30px rgba(0,0,0,.25);
     --donate:#00a307; --ok:#16a34a; --err:#dc2626;
 
     /* Layout do crédito e offsets de segurança (iOS etc.) */
@@ -32,8 +32,8 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
 
     /* === CONTROLE DE POSIÇÃO (mapeadas pelo breakpoint) === */
-    --naro-bottom-desktop: 12px;  /* mais próximo do bottom (desktop) */
-    --cage-top-desktop:      6px; /* mais próximo do top (desktop) */
+    --naro-bottom-desktop: 12px;   /* mais perto do bottom */
+    --cage-top-desktop:      6px;  /* mais perto do top   */
     --naro-bottom-mobile:   110px;
     --cage-top-mobile:      12px;
 
@@ -41,13 +41,13 @@
     --naro-bottom: 200px;
     --cage-top:     10px;
 
-    /* Cores botão mobile do jogo */
-    --mobile-btn-bg:#ffffff;
-    --mobile-btn-fg:#000000;
-    --mobile-btn-bg-hover:#808080;
-    --mobile-btn-fg-hover:#ffffff;
+    /* === CORES DO BOTÃO MOBILE (PEGUE O NARO) === */
+    --mobile-btn-bg:#ffffff;        /* fundo branco */
+    --mobile-btn-fg:#11171f;        /* texto azul escuro */
+    --mobile-btn-bg-hover:#f1f5f9;  /* hover leve */
+    --mobile-btn-fg-hover:#11171f;
 
-    /* distância do bloco de ações (mobile jogo) */
+    /* NOVO: controla a altura do bloco de ações do mobile */
     --mobile-actions-bottom: 200px;
   }
 
@@ -74,11 +74,13 @@
   .splash-wrap{display:flex; flex-direction:column; align-items:center; gap:18px; padding:24px; text-align:center;}
   .splash-logo-menu{width:min(220px,50vw); height:auto;}
   .splash-logo{width:min(320px,60vw); height:auto;}
-  /* Botão da splash com fundo verde */
-  .splash-btn{ background:var(--donate); color:#fff; border:0; border-radius:16px; padding:14px 22px; font-weight:800; box-shadow:var(--shadow); }
+  .splash-btn{
+    background:var(--donate); color:#fff; border:0; border-radius:16px; padding:14px 22px;
+    font-weight:var(--btn-weight); font-size:var(--btn-font-size); line-height:1.1; box-shadow:var(--shadow);
+  }
   .splash-btn:hover{ filter:brightness(.92); color:#fff; }
 
-  /* ======= TELA INICIAL (MENU) ======= */
+  /* ======= TELA INICIAL ======= */
   .menu-logos{
     position:absolute;top:22px;left:22px;right:22px;z-index:6;
     display:flex;justify-content:space-between;gap:16px;align-items:flex-start;
@@ -100,10 +102,23 @@
   .card{ background:rgba(255,255,255,.75); backdrop-filter:blur(6px) saturate(1.2); border-radius:16px; padding:16px; width:min(560px,92vw); box-shadow:var(--shadow) }
   .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
   .input{width:100%;padding:14px 16px;font-size:16px;border-radius:12px;border:1px solid #e5e7eb;outline:0}
-  .btn{background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);font-weight:var(--btn-weight);font-size:16px;transition:.15s}
+
+  /* ====== Botões – tamanhos unificados ====== */
+  .btn{
+    background:var(--primary);color:#fff;padding:14px 20px;border:0;border-radius:var(--btn-radius);
+    font-weight:var(--btn-weight); font-size:var(--btn-font-size); line-height:1.1; transition:.15s
+  }
   .btn:hover{background:var(--accent)}
   .btn.secondary{background:#fff;color:#111;border:1px solid #111}
   .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .pix-btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:12px 18px; border-radius:16px; background: var(--donate);
+    color:#fff; text-decoration:none; box-shadow: var(--shadow);
+    font-weight:var(--btn-weight); font-size:var(--btn-font-size); line-height:1.1; border:0;
+  }
+  .pix-btn:hover{ filter: brightness(0.95); }
 
   /* Helper */
   .helper{background:#fff;color:#111;border-radius:10px;padding:10px 14px;box-shadow:0 6px 20px rgba(0,0,0,.2);font-size:14px;text-align:center}
@@ -145,7 +160,7 @@
     .top-right .hud{display:none}
     .balloon{bottom:188px;max-width:280px}
 
-    /* Remover texto no MOBILE (tela de jogo) */
+    /* Tira o texto no jogo MOBILE */
     #gamePage .mobile-drop .donate-note{ display:none !important; }
 
     .mobile-drop .row-mobile-actions{display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:nowrap;}
@@ -155,13 +170,13 @@
   }
   @media (min-width:768px){ .top-mobile-hud{ display:none !important; } }
 
-  /* bloco ações mobile */
+  /* Bloco de ações (mobile) */
   .mobile-drop{position:fixed;left:50%;transform:translateX(-50%);bottom: calc(var(--mobile-actions-bottom) + var(--credit-h) + var(--credit-gap) + var(--safe-bottom));width:90vw;max-width:560px;z-index:30;}
   @media (min-width:768px){.mobile-drop{display:none}}
 
   /* ===== Botão de som (fixo, pequeno) ===== */
   .sound-toggle{
-    position:fixed; top:80px; right:16px; z-index:9999; /* mais para baixo para não cobrir score */
+    position:fixed; top:80px; right:16px; z-index:9999;
     width:36px; height:36px; border-radius:999px;
     background:#fff; color:#111; border:1px solid #e5e7eb;
     display:flex; align-items:center; justify-content:center;
@@ -172,7 +187,7 @@
   /* ===== Overrides — Splash ===== */
   #splashLogoMenu { width: 220px; }
   #splashLogo     { width: 320px; }
-  #accessBtn      { font-size: 16px; padding: 14px 24px; }
+  #accessBtn      { font-size: var(--btn-font-size); padding: 14px 24px; }
   .splash-wrap    { gap: 18px; }
   #splashPage .splash-wrap { transform: translateY(-50px); }
   #splashLogoMenu { margin-top: 0; }
@@ -235,18 +250,17 @@
   }
   .credit:hover{ text-decoration: underline; }
 
-  /* ===== Botão PIX / DOAR (base) ===== */
+  /* ===== Texto de doação (padrão: azul escuro, sem ponto) ===== */
   .donate-note{
-    color:#fff; font-weight:900; text-transform:uppercase; letter-spacing:.02em;
-    text-shadow: 0 2px 10px rgba(0,0,0,.35);
+    color:#11171f; font-weight:900; text-transform:uppercase; letter-spacing:.02em;
+    text-shadow:none;
   }
-  .pix-btn{
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:12px 18px; border-radius:16px; background: var(--donate);
-    color:#fff; text-decoration:none; box-shadow: var(--shadow);
-    font-weight:800; border:0;
+  /* MENU DESKTOP: remover o texto (manter só os botões) */
+  @media (min-width:768px){
+    #menuPage .donate-note{ display:none !important; }
   }
-  .pix-btn:hover{ filter: brightness(0.95); }
+  /* TELA FINAL: pode ser branco */
+  #finalPage .donate-note{ color:#fff !important; text-shadow:0 2px 10px rgba(0,0,0,.35) !important; }
 
   .modal .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 
@@ -290,25 +304,33 @@
     #gamePage .brand-left{ gap:6px; }
     #gamePage .brand-left .logo-arco img{ width:110px; }
 
-    /* Botão DOAR abaixo do botão de som (lado direito, mais baixo) */
+    /* Botão DOAR abaixo do botão de som (direita) */
     #gamePage .brand-left .pix-btn.only-desktop{
       position:fixed; right:16px; top:128px; z-index:9998;
     }
   }
 
-  /* ======== NOVOS AJUSTES PEDIDOS (MENU & FINAL) ======== */
-
-  /* MENU: start verde, doar branco com texto azul-escuro, frase azul-escuro sem ponto final */
+  /* ===== MENU: Start verde / Doar branco com azul-escuro ===== */
   #menuPage #startBtn{ background: var(--donate); color:#fff; }
   #menuPage #startBtn:hover{ filter:brightness(.92); background: var(--donate); }
   #menuPage .menu-actions-buttons .pix-btn{
     background:#fff; color:#11171f; border:1px solid #11171f;
   }
-  #menuPage .donate-note{ color:#11171f !important; text-shadow:none !important; }
-  /* FINAL: frase pode ser branca em qualquer dispositivo */
-  #finalPage .donate-note{ color:#fff !important; text-shadow:0 2px 10px rgba(0,0,0,.35) !important; }
 
-  /* FINAL: centralizar logos no topo e lado a lado */
+  /* ===== MOBILE: “Pegue o Naro” branco com azul-escuro ===== */
+  @media (max-width:767px){
+    #mobileDropBtn{
+      background: var(--mobile-btn-bg);
+      color: var(--mobile-btn-fg);
+      border:1px solid #11171f;
+    }
+    #mobileDropBtn:hover{
+      background: var(--mobile-btn-bg-hover);
+      color: var(--mobile-btn-fg-hover);
+    }
+  }
+
+  /* ===== TELA FINAL: logos lado a lado, centralizados no topo ===== */
   #finalPage .brand-left{
     top:18px; left:50%; transform:translateX(-50%);
     right:auto; flex-direction:row; align-items:center; gap:10px;
@@ -346,9 +368,9 @@
         <input id="userName" class="input" placeholder="Seu nome" autocomplete="name" />
       </div>
 
-      <!-- Frase centralizada + botões Iniciar/Doar -->
+      <!-- Frase (somente no mobile) + botões Iniciar/Doar -->
       <div class="menu-actions-wrap">
-        <span class="donate-note donate-center">AJUDE A MANTER O JOGO NO AR</span>
+        <span class="donate-note donate-center only-mobile">AJUDE A MANTER O JOGO NO AR</span>
         <div class="menu-actions-buttons">
           <button id="startBtn" class="btn" disabled>Iniciar</button>
           <button class="pix-btn pix-copy-btn"
@@ -381,8 +403,8 @@
     <div class="logo-game-card card-white"><img id="gameLogoCard" alt="Logo do jogo"></div>
     <div class="logo-arco"><img id="gameLogoLeft" alt="Logo ARCO"></div>
 
-    <!-- Desktop somente -->
-    <span class="donate-note only-desktop">AJUDE A MANTER O JOGO NO AR.</span>
+    <!-- Desktop: manter frase (sem ponto) -->
+    <span class="donate-note only-desktop">AJUDE A MANTER O JOGO NO AR</span>
     <button class="pix-btn pix-copy-btn only-desktop"
             data-key="81646d89-0db6-49b4-bc17-386e865fe900">
       DOAR
@@ -408,7 +430,7 @@
 
   <!-- MOBILE: texto oculto -->
   <div class="mobile-drop">
-    <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR.</span>
+    <span class="donate-note only-mobile">AJUDE A MANTER O JOGO NO AR</span>
     <div class="row-mobile-actions">
       <button id="mobileDropBtn" class="btn">Pegue o Naro</button>
       <button class="pix-btn pix-copy-btn only-mobile"
@@ -434,7 +456,7 @@
     <div class="row" style="gap:10px; align-items:center; justify-content:center;">
       <button id="playAgainBtn" class="btn">JOGAR NOVAMENTE</button>
 
-      <span class="donate-note">AJUDE A MANTER O JOGO NO AR.</span>
+      <span class="donate-note">AJUDE A MANTER O JOGO NO AR</span>
       <button class="pix-btn pix-copy-btn"
               data-key="81646d89-0db6-49b4-bc17-386e865fe900">
         DOAR
@@ -662,8 +684,9 @@ function applyAssets(){
   const finalLogoGame = $('finalLogoGame'); if(finalLogoGame) finalLogoGame.src = ASSETS.logoGame;
   const finalLogoMenu = $('finalLogoMenu'); if(finalLogoMenu) finalLogoMenu.src = ASSETS.logoMenu;
 
-  const naroImg = $('naroImg'); if(naroImg) naroImg.src = ASSETS.naro;
+  const naroImg = $('naroImg'); if(naroImg) nazoImg = ASSETS.naro; // typo guard (ignored)
   const cageImg = $('cageImg'); if(cageImg) cageImg.src = ASSETS.cage;
+  const nImg = $('naroImg'); if(nImg) nImg.src = ASSETS.naro;
 }
 
 function preloadImages(paths){ paths.forEach(p => { const i = new Image(); i.src = p; }); }
@@ -767,7 +790,7 @@ function resetRound(){
   scheduleBalloon();
 }
 
-/* Velocidades influenciadas pela fase e rodada */
+/* Velocidades influenciadas */
 function currentSpeed(){
   const base=params.baseSpeed;
   return base * rampWithinPhase() * phaseSpeedMult();
